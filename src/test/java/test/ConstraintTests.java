@@ -3,7 +3,7 @@ package test;
 import org.junit.Test;
 
 public class ConstraintTests {
-	@Test void con01() {
+	@Test public void con01() {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' String('My default value')
@@ -12,7 +12,7 @@ public class ConstraintTests {
 				"String max constraint, must be bigger than 0");
 	}
 	
-	@Test void con02() {
+	@Test public void con02() {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' String('My default value')
@@ -21,7 +21,7 @@ public class ConstraintTests {
 				"String min constraint must be bigger than 0");
 	}
 	
-	@Test void con03() {
+	@Test public void con03() {
 		TestHelper.checkParseError("""
 			'Single Dialog' Single('single my description')
 			cats 'Have cats?' String('My default value')
@@ -29,7 +29,7 @@ public class ConstraintTests {
 			""");			
 	}
 	
-	@Test void con04() {
+	@Test public void con04() {
 		TestHelper.checkParseError("""
 			'Single Dialog' Single('single my description')
 			cats 'Have cats?' String('My default value')
@@ -37,7 +37,7 @@ public class ConstraintTests {
 			""");			
 	}
 	
-	@Test void con05() {
+	@Test public void con05() {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' String('My default value')
@@ -46,7 +46,7 @@ public class ConstraintTests {
 				"inlineRadio is not a valide component style");
 	}
 	
-	@Test void con06() {
+	@Test public void con06() {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' SingleOpt('Yes|No |Maybe |Yes no')
@@ -55,7 +55,7 @@ public class ConstraintTests {
 				"inlineCheckbox is not a valide component style");
 	}
 	
-	@Test void con07() {
+	@Test public void con07() {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' MultiOpt('Yes|No |Maybe |Yes no')
@@ -64,7 +64,7 @@ public class ConstraintTests {
 				"inlineRadio is not a valide component style");
 	}
 	
-	@Test void con08() {
+	@Test public void con08() {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' MultiOpt('Yes|No |Maybe |Yes no|')
@@ -73,7 +73,7 @@ public class ConstraintTests {
 				"'Yes|No |Maybe |Yes no|' are not a valid options");
 	}
 	
-	@Test void con09() {
+	@Test public void con09() {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' MultiOpt('Yes| |Maybe |Yes no')
@@ -82,7 +82,7 @@ public class ConstraintTests {
 				"Empty value is not a valid option");
 	}
 	
-	@Test void con10() {
+	@Test public void con10() {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' Slider('My default value')
@@ -91,7 +91,7 @@ public class ConstraintTests {
 				"My default value must contain 2 or 3 numbers seperated by comma");
 	}
 	
-	@Test void con11() {
+	@Test public void con11() {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' Slider('23,2,5')
@@ -100,7 +100,7 @@ public class ConstraintTests {
 				"Slider max value must be bigger than the min value");
 	}
 	
-	@Test void con12() {
+	@Test public void con12() {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' Slider('2,4,5')
@@ -109,7 +109,7 @@ public class ConstraintTests {
 				"Default value must be between or equal to the min and max values");
 	}
 	
-	@Test void con13() {
+	@Test public void con13() {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
 			cats 'Have cats?' Slider('2,4')
@@ -123,7 +123,7 @@ public class ConstraintTests {
 			""");
 	}
 	
-	@Test void con14() {
+	@Test public void con14() {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
 			cats 'Have cats?' Slider('2,44,7')
@@ -137,7 +137,7 @@ public class ConstraintTests {
 			""");
 	}
 	
-	@Test void con15() {
+	@Test public void con15() {
 		TestHelper.arrgumentException("""
 			'Single Dialog' Single('single my description')
 			cats 'Have\ncats?' Slider('2,44,7')
@@ -149,7 +149,7 @@ public class ConstraintTests {
 			""");
 	}
 	
-	@Test void con16() {
+	@Test public void con16() {
 		TestHelper.arrgumentException("""
 			'Single Dialog' Single('single my description')
 			cats 'Have
@@ -162,7 +162,7 @@ public class ConstraintTests {
 			""");
 	}
 	
-	@Test void con17() {
+	@Test public void con17() {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
 			cats 'Have cats?' Boolean('true') {style=inline}
