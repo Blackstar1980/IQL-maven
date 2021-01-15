@@ -91,7 +91,7 @@ public interface Component extends Attributable<JPanelContainer>, Ast.Tabable {
 			if(!" ".equals(requiredError))
 				return requiredError;
 		}
-		if(!text.isEmpty() && constraints.containsKey(ConstraintId.MIN)) {
+		if(text!=null && !text.isEmpty() && constraints.containsKey(ConstraintId.MIN)) {
 			String minError = switch (id) {
 				case Integer ->
 					((Constraint.MinCon)constraints.get(ConstraintId.MIN)).validateInt(text);
@@ -103,7 +103,7 @@ public interface Component extends Attributable<JPanelContainer>, Ast.Tabable {
 			if(!" ".equals(minError))
 				return minError;
 		}
-		if(!text.isEmpty() && constraints.containsKey(ConstraintId.MAX)) {
+		if(text!=null && !text.isEmpty() && constraints.containsKey(ConstraintId.MAX)) {
 			String maxError = switch (id) {
 				case Integer ->
 					((Constraint.MaxCon)constraints.get(ConstraintId.MAX)).validateInt(text);
@@ -115,7 +115,7 @@ public interface Component extends Attributable<JPanelContainer>, Ast.Tabable {
 			if(!" ".equals(maxError))
 				return maxError;
 		}
-		if(!text.isEmpty() && constraints.containsKey(ConstraintId.REGEX)) {
+		if(text!=null && !text.isEmpty() && constraints.containsKey(ConstraintId.REGEX)) {
 			String regexError = ((Constraint.RegexCon)constraints.get(ConstraintId.REGEX)).validate(text);
 			if(!" ".equals(regexError))
 				return regexError;

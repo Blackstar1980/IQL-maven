@@ -2,10 +2,8 @@ package ast.components.test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
 import java.util.List;
 
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import org.junit.Test;
@@ -16,21 +14,10 @@ import ast.constraints.Constraint;
 import ast.constraints.StyleId;
 import fields.JPanelWithValue;
 
-public class MultiOptTest {
-	public static boolean slow=false;
-	
-	private static void withGui(JFrame frame, JPanelWithValue panel) {
-		if(slow == false)
-			return;
-		frame.add(panel);
-		frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true); 
-		try{System.in.read();}catch(IOException e){}
-	}
+public class MultiOptTest {	
 	
 	@Test
-	public void testBlockListStyle() {
+	public void testMultiOptBlockListStyle() {
 		  var frame=new JFrame();
 		  List<String> options = List.of("option1", "option2", "option3", "option4");
 		  List<String> defValues = List.of("option1", "option2");
@@ -39,11 +26,17 @@ public class MultiOptTest {
 		  var cmulti=new CMultiOpt("name","title",options,defValues, constraints);
 		  JPanelWithValue multi=cmulti.make();
 		  assertEquals("option1, option2", multi.getValue());
-		  withGui(frame, multi);
+		  multi.setValueOrDefault("option3, option4", false);
+		  assertEquals("option3, option4", multi.getValue());
+		  multi.setValueOrDefault("", true);
+		  assertEquals("option1, option2", multi.getValue());
+		  multi.setValueOrDefault("", false);
+		  assertEquals("", multi.getValue());
+		  TestHelper.withGui(frame, multi, false);
 	  }
 	
 	@Test 
-	public void testInlineListStyle() {
+	public void testMultiOptInlineListStyle() {
 		  var frame=new JFrame();
 		  List<String> options = List.of("option1", "option2", "option3", "option4");
 		  List<String> defValues = List.of("option1", "option2");
@@ -52,37 +45,18 @@ public class MultiOptTest {
 		  var cmulti=new CMultiOpt("name","title",options,defValues, constraints);
 		  JPanelWithValue multi=cmulti.make();
 		  assertEquals("option1, option2", multi.getValue());
-		  withGui(frame, multi);
-//		  f.add(multi);
-//		  f.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//		  f.pack();
-//		  f.setVisible(true);
-//		  try{System.in.read();}catch(IOException e){}
+		  multi.setValueOrDefault("option3, option4", false);
+		  assertEquals("option3, option4", multi.getValue());
+		  multi.setValueOrDefault("", true);
+		  assertEquals("option1, option2", multi.getValue());
+		  multi.setValueOrDefault("", false);
+		  assertEquals("", multi.getValue());
+		  TestHelper.withGui(frame, multi, false);
 		  
 	  }
-	
-	@Test 
-	public void testChangeListDefaultValue() {
-		  var frame=new JFrame();
-		  List<String> options = List.of("option1", "option2", "option3", "option4");
-		  List<String> defValues = List.of("option1", "option2");
-		  Constraint constraint = StyleId.from(Id.MultiOpt, "inlineList");
-		  List<Constraint> constraints = List.of(constraint);
-		  var cmulti=new CMultiOpt("name","title",options,defValues, constraints);
-		  JPanelWithValue multi=cmulti.make();
-		  multi.setValueOrDefault("option3, option4");
-		  assertEquals("option3, option4", multi.getValue());
-		  withGui(frame, multi);
-//		  f.add(multi);
-//		  f.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//		false  f.pack();
-//		  f.setVisible(true);
-//		  try{System.in.read();}catch(IOException e){}
-	  }
-	  
+
 	@Test
-	public void testBlockCheckboxStyle() {
-//		slow= true;
+	public void testMultiOptBlockCheckboxStyle() {
 		var frame=new JFrame();
 		List<String> options = List.of("option1", "option2", "option3", "option4");
 		List<String> defValues = List.of("option1", "option2");
@@ -90,22 +64,33 @@ public class MultiOptTest {
 		List<Constraint> constraints = List.of(constraint);
 		var cmulti=new CMultiOpt("name","title",options,defValues, constraints);
 		JPanelWithValue multi=cmulti.make();
-//		assertEquals("option1, option2", multi.getValue());
-		withGui(frame, multi);
-//		f.add(multi);
-//		f.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//		f.pack();
-//		f.setVisible(true);
-//		if(slow)try{System.in.read();}catch(IOException e){}
+		assertEquals("option1, option2", multi.getValue());
+		multi.setValueOrDefault("option3, option4", false);
+		assertEquals("option3, option4", multi.getValue());
+		multi.setValueOrDefault("", true);
+		assertEquals("option1, option2", multi.getValue());
+		multi.setValueOrDefault("", false);
+		  assertEquals("", multi.getValue());
+		TestHelper.withGui(frame, multi, false);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
+	@Test
+	public void testMultiOptInlineCheckboxStyle() {
+		var frame=new JFrame();
+		List<String> options = List.of("option1", "option2", "option3", "option4");
+		List<String> defValues = List.of("option1", "option2");
+		Constraint constraint = StyleId.from(Id.MultiOpt, "inlineCheckbox");
+		List<Constraint> constraints = List.of(constraint);
+		var cmulti=new CMultiOpt("name","title",options,defValues, constraints);
+		JPanelWithValue multi=cmulti.make();
+		assertEquals("option1, option2", multi.getValue());
+		multi.setValueOrDefault("option3, option4", false);
+		assertEquals("option3, option4", multi.getValue());
+		multi.setValueOrDefault("", true);
+		assertEquals("option1, option2", multi.getValue());
+		multi.setValueOrDefault("", false);
+		  assertEquals("", multi.getValue());
+		TestHelper.withGui(frame, multi, false);
+	}
 	
 }

@@ -7,10 +7,8 @@ import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,11 +28,11 @@ import generated.GuiInputParser.ComponentContext;
 import ui.Visitor;
 
 public class CMultiOpt implements Component {
-	private String name;
-	private String title;
-	private List<String> options;
-	private List<String> defValues;
-	private List<Constraint> constraints;
+	private final String name;
+	private final String title;
+	private final List<String> options;
+	private final List<String> defValues;
+	private final List<Constraint> constraints;
 	
 	public CMultiOpt(String name, String title, List<String> options, List<String> defValues,
 			List<Constraint> constraints) {
@@ -46,10 +44,22 @@ public class CMultiOpt implements Component {
 	}
 	
 	public CMultiOpt(ComponentContext ctx) {
-		name = extractCompName(ctx);
-		title = extractCompTitle(ctx);
-		options = initOpts(ctx);
-		constraints = extractConstraints(ctx);
+		this.name = extractCompName(ctx);
+		this.title = extractCompTitle(ctx);
+		this.options = initOpts(ctx);
+		this.constraints = extractConstraints(ctx);
+		this.defValues = setDefaultValues(constraints);
+	}
+	
+	private List<String> setDefaultValues(List<Constraint> constraints) {
+		String selected =  constraints.stream()
+			.filter(con -> ConstraintId.SELECTED == con.getID())
+			.map(c -> ((Constraint.SelectedCon)c).value())
+			.findFirst()
+			.get();
+		return Stream.of(selected.split("\\|"))
+			.map(String::trim)
+		    .collect(Collectors.toList());
 	}
 	
 	private List<String> initOpts(ComponentContext ctx) {
@@ -75,33 +85,21 @@ public class CMultiOpt implements Component {
 			style = StyleId.BlockList;
 		}
 		JLabel title = new JLabel(getTitle());
-//		title.setText(getTitle());
-		
-		// TODO make the ctx implement that
-//		List<String> defaultValues= Stream.of(getSelectedOpt(mapConstraints).split("\\|"))
-//			     .map(String::trim)
-//			     .collect(Collectors.toList());
+
 		return switch (style) {
-			case InlineCheckbox -> setMultiInlineCheckboxStyle(name, title, options, defValues, mapConstraints);
-			case BlockCheckbox -> setMultiBlockCheckboxStyle(name, title, options, defValues, mapConstraints);
-			case InlineList -> setMultiInlineListStyle(name, title, options, defValues, mapConstraints);
-			case BlockList -> setMultiBlockListStyle(name, title, options, defValues, mapConstraints);
+			case InlineCheckbox -> setMultiInlineCheckboxStyle(title, mapConstraints);
+			case BlockCheckbox -> setMultiBlockCheckboxStyle(title, mapConstraints);
+			case InlineList -> setMultiInlineListStyle(title, mapConstraints);
+			case BlockList -> setMultiBlockListStyle(title, mapConstraints);
 			default ->
 			throw new IllegalArgumentException("Unexpected value: " + style);
 		};
 	}
 	
-//	private String getSelectedOpt(Map<ConstraintId, Constraint> constraints) {
-//		Constraint.SelectedCon selected = (Constraint.SelectedCon)constraints.get(ConstraintId.SELECTED);
-//		return selected == null? "" : selected.value();
-//	}
-	
-	private JPanelWithValue setMultiBlockListStyle(String name, JLabel title,
-			List<String> options, List<String> defaultValues,
-			Map<ConstraintId, Constraint> constraints) {
+	private JPanelWithValue setMultiBlockListStyle(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		MultiOptItem[] items = new MultiOptItem[options.size()];
 		for(int i=0; i<options.size(); i++) {
-			items[i] = new MultiOptItem(options.get(i), defaultValues.contains(options.get(i)));
+			items[i] = new MultiOptItem(options.get(i), defValues.contains(options.get(i)));
 		}
 		DefaultComboBoxModel<MultiOptItem> model = new DefaultComboBoxModel<>(items);
 		CheckedComboBox<MultiOptItem> ccb = new CheckedComboBox<>(model);
@@ -114,15 +112,15 @@ public class CMultiOpt implements Component {
 			}
 
 			@Override
-			public void setValueOrDefault(String values) {
-				if("".equals(values)) {
+			public void setValueOrDefault(String values, boolean setDefault) {
+				if(setDefault) {
 					for(int i=0; i<options.size(); i++) {
-						items[i].setSelected(defaultValues.contains(options.get(i)));
-						setValue(values);
+						items[i].setSelected(defValues.contains(options.get(i)));
+						setValue(removeParentheses(defValues.toString()));
 					}
 					ccb.updateUI();
-				} else {
-//					List<String> values = new ArrayList<>(Arrays.asList(values.split(Pattern.quote("|"))));
+				}
+				else {
 					for(int i=0; i<options.size(); i++) {
 						items[i].setSelected(values.contains(options.get(i)));
 						setValue(values);
@@ -131,9 +129,7 @@ public class CMultiOpt implements Component {
 				}
 			}
 		};
-//		defaultValues.stream().collect(Collectors.)
-		String defaultValuesAsString = defaultValues.toString();
-		panel.setValueOrDefault(defaultValuesAsString.substring(1, defaultValuesAsString.length()-1));
+		panel.setValueOrDefault("", true);
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
@@ -153,11 +149,10 @@ public class CMultiOpt implements Component {
 		return panel;
 	}
 
-	private JPanelWithValue setMultiInlineListStyle(String name, JLabel title, List<String> options,
-			List<String> defaultValues, Map<ConstraintId, Constraint> constraints) {
+	private JPanelWithValue setMultiInlineListStyle(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		MultiOptItem[] items = new MultiOptItem[options.size()];
 		for(int i=0; i<options.size(); i++) {
-			items[i] = new MultiOptItem(options.get(i), defaultValues.contains(options.get(i)));
+			items[i] = new MultiOptItem(options.get(i), defValues.contains(options.get(i)));
 		}
 		DefaultComboBoxModel<MultiOptItem> model = new DefaultComboBoxModel<>(items);
 		CheckedComboBox<MultiOptItem> ccb = new CheckedComboBox<>(model);
@@ -170,15 +165,23 @@ public class CMultiOpt implements Component {
 			}
 
 			@Override
-			public void setValueOrDefault(String values) {
-				if("".equals(values)) {
+			public void setValueOrDefault(String values, boolean setDefault) {
+				if(setDefault) {
 					for(int i=0; i<options.size(); i++) {
-						items[i].setSelected(defaultValues.contains(options.get(i)));
-						setValue(values);
+						items[i].setSelected(defValues.contains(options.get(i)));
+						setValue(removeParentheses(defValues.toString()));
 					}
 					ccb.updateUI();
-				} else {
-//					List<String> values = new ArrayList<>(Arrays.asList(values.split(Pattern.quote("|"))));
+				}
+					
+//				if("".equals(values)) {
+//					for(int i=0; i<options.size(); i++) {
+//						items[i].setSelected(defValues.contains(options.get(i)));
+//						setValue(removeParentheses(defValues.toString()));
+//					}
+//					ccb.updateUI();
+//				} 
+				else {
 					for(int i=0; i<options.size(); i++) {
 						items[i].setSelected(values.contains(options.get(i)));
 						setValue(values);
@@ -187,8 +190,7 @@ public class CMultiOpt implements Component {
 				}
 			}
 		};
-		String defaultValuesAsString = defaultValues.toString();
-		panel.setValueOrDefault(defaultValuesAsString.substring(1, defaultValuesAsString.length()-1));
+		panel.setValueOrDefault("", true);
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
@@ -209,8 +211,7 @@ public class CMultiOpt implements Component {
 		return panel;
 	}
 
-	private JPanelWithValue setMultiBlockCheckboxStyle(String name, JLabel title,
-			List<String> options, List<String> defaultValues, Map<ConstraintId, Constraint> constraints) {
+	private JPanelWithValue setMultiBlockCheckboxStyle(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
 		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name){
 			@Override
@@ -219,23 +220,28 @@ public class CMultiOpt implements Component {
 						.filter(c -> c.isSelected())
 						.map(c -> c.getText())
 						.collect(Collectors.toList()).toString();
-				// Remove the '[' and ']' characters of the list
-				selectedItems = selectedItems.substring(1, selectedItems.length()-1);
-				setValue(selectedItems);
+				setValue(removeParentheses(selectedItems));
 				return setErrorLabel(validateConstraints(Id.MultiOpt, selectedItems, constraints));
 			}
 
 			@Override
-			public void setValueOrDefault(String value) {
-				if("".equals(value)) {
-					setCheckBoxValues(checkBoxes, defaultValues);
-				}else {
-					List<String> values = new ArrayList<String>(Arrays.asList(value.split(",")));
+			public void setValueOrDefault(String value, boolean setDefault) {
+				if(setDefault) {
+					setCheckBoxValues(checkBoxes, defValues);
+					setValue(removeParentheses(defValues.toString()));
+				}
+//				if("".equals(value)) {
+//					setCheckBoxValues(checkBoxes, defValues);
+//					setValue(removeParentheses(defValues.toString()));
+//				}
+				else {
+					List<String> values = Arrays.stream(value.split(",")).map(String::trim).collect(Collectors.toList());
 					setCheckBoxValues(checkBoxes, values);
+					setValue(value);
 				}
 			}
 		};
-		
+		panel.setValueOrDefault("", true);
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
@@ -247,7 +253,7 @@ public class CMultiOpt implements Component {
 		options.forEach(option -> {
 			JCheckBox checkBox = new JCheckBox(option);
 			checkBoxes.add(checkBox);
-			if(defaultValues.contains(option))
+			if(defValues.contains(option))
 				checkBox.setSelected(true);
 			gbc.gridy++;
 			panel.add(checkBox, gbc);
@@ -258,43 +264,37 @@ public class CMultiOpt implements Component {
 		return panel;
 	}
 
-	private JPanelWithValue setMultiInlineCheckboxStyle(String name, JLabel title,
-			List<String> options, List<String> defaultValues, Map<ConstraintId, Constraint> constraints) {
+	private JPanelWithValue setMultiInlineCheckboxStyle(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
 		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name){
 			@Override
 			public boolean checkForError() {
 				String selectedItems = checkBoxes.stream()
-				.filter(c -> c.isSelected())
-				.map(c -> c.getText())
-				.collect(Collectors.toList()).toString();
-				// Remove the '[' and ']' characters of the list
-				selectedItems = selectedItems.substring(1, selectedItems.length()-1);
-				setValue(selectedItems);
+						.filter(c -> c.isSelected())
+						.map(c -> c.getText())
+						.collect(Collectors.toList()).toString();
+				setValue(removeParentheses(selectedItems));
 				return setErrorLabel(validateConstraints(Id.MultiOpt, selectedItems, constraints));
 			}
+
 			@Override
-			public void setValueOrDefault(String value) {
-				if("".equals(value)) {
-					setCheckBoxValues(checkBoxes, defaultValues);
-//					for(JCheckBox checkBox: checkBoxes ) {
-//						if(defaultValues.contains(checkBox.getText()))
-//							checkBox.setSelected(true);
-//						else
-//							checkBox.setSelected(false);
-//					}
-				}else {
-					List<String> values = new ArrayList<String>(Arrays.asList(value.split(",")));
+			public void setValueOrDefault(String value, boolean setDefault) {
+				if(setDefault) {
+					setCheckBoxValues(checkBoxes, defValues);
+					setValue(removeParentheses(defValues.toString()));
+				}
+//				if("".equals(value)) {
+//					setCheckBoxValues(checkBoxes, defValues);
+//					setValue(removeParentheses(defValues.toString()));
+//				}
+				else {
+					List<String> values = Arrays.stream(value.split(",")).map(String::trim).collect(Collectors.toList());
 					setCheckBoxValues(checkBoxes, values);
-//					for(JCheckBox checkBox: checkBoxes ) {
-//						if(values.contains(checkBox.getText()))
-//							checkBox.setSelected(true);
-//						else
-//							checkBox.setSelected(false);
-//					}	
+					setValue(value);
 				}
 			}
 		};
+		panel.setValueOrDefault("", true);
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
@@ -305,7 +305,7 @@ public class CMultiOpt implements Component {
 		options.forEach(option -> {
 			JCheckBox checkBox = new JCheckBox(option);
 			checkBoxes.add(checkBox);
-			if(defaultValues.contains(option))
+			if(defValues.contains(option))
 				checkBox.setSelected(true);
 			gbc.gridx++;
 			panel.add(checkBox, gbc);
@@ -326,7 +326,9 @@ public class CMultiOpt implements Component {
 		}
 	}
 	
-
+	private String removeParentheses(String text) {
+		return text.substring(1, text.length()-1);
+	}
 
 	public String getName() {
 		return name;

@@ -23,12 +23,12 @@ import generated.GuiInputParser.ComponentContext;
 import ui.Visitor;
 
 public class CSlider implements Component {
-	private String name;
-	private String title;
+	private final String name;
+	private final String title;
 	private int minVal;
 	private int maxVal;
 	private int defVal;
-	private List<Constraint> constraints;
+	private final List<Constraint> constraints;
 	
 	public CSlider(String name, String title, int minVal, int maxVal, int defVal,List<Constraint> constraints) {
 		this.name=name;
@@ -39,10 +39,10 @@ public class CSlider implements Component {
 		this.constraints=constraints;
 	}
 	public CSlider(ComponentContext ctx) {
-		name = extractCompName(ctx);
-		title = extractCompTitle(ctx);
+		this.name = extractCompName(ctx);
+		this.title = extractCompTitle(ctx);
 		initDefVal(ctx);
-		constraints = extractConstraints(ctx);
+		this.constraints = extractConstraints(ctx);
 	}
 	
 	private void initDefVal(ComponentContext ctx) {
@@ -68,44 +68,6 @@ public class CSlider implements Component {
 			throw new NumberFormatException("Default value must be between or equal to the min and max values");
 		}
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public int getMinVal() {
-		return minVal;
-	}
-
-	public int getMaxVal() {
-		return maxVal;
-	}
-
-	public int getDefVal() {
-		return defVal;
-	}
-
-	public List<Constraint> getConstraints() {
-		return Collections.unmodifiableList(constraints);
-	}
-	
-	@Override
-	public Id getType() { return Id.Slider;	}
-
-	@Override
-	public String toString() {
-		return "Slider [name=" + name + ", title=" + title + ", minVal=" + minVal + ", maxVal=" + maxVal + ", defVal="
-				+ defVal + ", constraints=" + constraints + "]";
-	}
-	
-	@Override
-	public JPanelWithValue accept(Visitor v) {
-		return v.visitSlider(this);
-	}
 	
 	public JPanelWithValue make() {
 		JLabel valueLabel = new JLabel();
@@ -118,17 +80,18 @@ public class CSlider implements Component {
 				return false;
 			}
 			@Override
-			public void setValueOrDefault(String value) {
-				if("".equals(value)) {
-					valueLabel.setText(""+getDefVal());
-					jSlider.setValue(getDefVal());
-				} else {
+			public void setValueOrDefault(String value, boolean setDefault) {
+				if(setDefault) {
+					valueLabel.setText(""+defVal);
+					jSlider.setValue(defVal);
+				} 
+				else {
 					valueLabel.setText(value);
 					jSlider.setValue(Integer.valueOf(value));
 				}
 			}
 		};
-		panel.setValueOrDefault("");
+		panel.setValueOrDefault("", true);
 		panel.setValue(String.valueOf(getDefVal()));
 		panel.setLayout(new GridBagLayout());
 		jSlider.addChangeListener(new ChangeListener() {
@@ -176,7 +139,7 @@ public class CSlider implements Component {
 		gbc.gridx = 1;
 		panel.add(slider, gbc);
 		gbc.gridx = 2;
-		gbc.insets = new Insets(0, 0, 0, 32);
+		gbc.insets = new Insets(0, 0, 0, 20);
 		panel.add(value, gbc);
 		return panel;
 	}
@@ -192,9 +155,48 @@ public class CSlider implements Component {
 		gbc.gridy = 1;
 		panel.add(slider, gbc);
 		gbc.gridx = 1;
-		gbc.insets = new Insets(0, 20, 0, 32);
+		gbc.insets = new Insets(0, 0, 0, 20);
 		panel.add(value, gbc);
 		return panel;
+	}
+	
+
+	public String getName() {
+		return name;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public int getMinVal() {
+		return minVal;
+	}
+
+	public int getMaxVal() {
+		return maxVal;
+	}
+
+	public int getDefVal() {
+		return defVal;
+	}
+
+	public List<Constraint> getConstraints() {
+		return Collections.unmodifiableList(constraints);
+	}
+	
+	@Override
+	public Id getType() { return Id.Slider;	}
+
+	@Override
+	public String toString() {
+		return "Slider [name=" + name + ", title=" + title + ", minVal=" + minVal + ", maxVal=" + maxVal + ", defVal="
+				+ defVal + ", constraints=" + constraints + "]";
+	}
+	
+	@Override
+	public JPanelWithValue accept(Visitor v) {
+		return v.visitSlider(this);
 	}
 }
 

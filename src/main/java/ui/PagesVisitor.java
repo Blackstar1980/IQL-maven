@@ -1,39 +1,22 @@
 package ui;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import ast.Ast.Containable;
 import ast.Ast.Query;
 import ast.Ast.Tabable;
 import ast.Id;
 import ast.components.*;
-import ast.constraints.*;
-import ast.constraints.Constraint.HolderCon;
-import ast.constraints.Constraint.RequiredCon;
 import fields.*;
 
 public class PagesVisitor implements Visitor {
@@ -97,7 +80,7 @@ public class PagesVisitor implements Visitor {
 		cancelButton.addActionListener(l-> System.exit(0));
 		buttonsPanel.add(approveButton);
 		approveButton.addActionListener(e->{
-			var saved = saveData(panels);
+			var saved = saveAsMap(panels);
 			if(saved!=null) {
 				results.add(saved);
 				this.data.complete(results);
@@ -134,45 +117,43 @@ public class PagesVisitor implements Visitor {
 		deleteButton.setEnabled(false);
 		
 		nextButton.addActionListener(e -> {
-////			if(results.size() < currentPage) {
-//				var saved = saveData(panels);
-//				if(saved==null)
-//					return;
-//				results.set(currentPage -1, saved);
-////			}
+			var saved = saveAsMap(panels);
+			if(saved==null)
+				return;
+			updateDataList(results, saved, currentPage -1, false);
 			currentPage++;
 			if(currentPage == totalPages)
 				nextButton.setEnabled(false);
 			if(currentPage > 1)
 				prevButton.setEnabled(true);
 			pagesIndex.setText(getPageIndex());
-			updateFields(panels, results.get(currentPage -1));
+			updateUiFields(panels, results.get(currentPage-1), false);
 		});
 		
 		prevButton.addActionListener(e -> {
-////			if(results.size() < currentPage) {
-//				var saved = saveData(panels);
-//				if(saved==null)
-//					return;
-//				addOrUpdate(results, saved, currentPage -1);
-////				results.add(saved);
-////			}
+			var saved = saveAsMap(panels);
+			if(saved==null)
+				return;
+			if(results.size() < currentPage) {
+				results.add(saved);
+			}
+			updateDataList(results, saved, currentPage -1, false);
 			currentPage--;
+			
 			if(currentPage == 1)
 				prevButton.setEnabled(false);
 			if(currentPage < totalPages)
 				nextButton.setEnabled(true);
 			pagesIndex.setText(getPageIndex());
-			updateFields(panels, results.get(currentPage -1));
+			updateUiFields(panels, results.get(currentPage -1), false);
 		});
 		
 		addButton.addActionListener(e -> {
-			var saved = saveData(panels);
+			var saved = saveAsMap(panels);
 			if(saved==null)
 				return;
-			addOrUpdate(results, saved, currentPage -1);
-//			results.add(saved);
-			updateFields(panels, new HashMap<String, String>());
+			updateDataList(results, saved, currentPage -1, true);
+			updateUiFields(panels, new HashMap<String, String>(), true);
 			totalPages++;
 			deleteButton.setEnabled(true);
 			if(totalPages > 1) 
@@ -191,6 +172,8 @@ public class PagesVisitor implements Visitor {
 			if(currentPage == totalPages)
 				nextButton.setEnabled(false);
 			pagesIndex.setText(getPageIndex());
+			results.remove(currentPage);
+			updateUiFields(panels, results.get(currentPage -1), false);
 		});
 		
 		utilsPanel.add(prevButton);
@@ -202,11 +185,10 @@ public class PagesVisitor implements Visitor {
 		cancelButton.addActionListener(l-> System.exit(0));
 		buttonsPanel.add(approveButton);
 		approveButton.addActionListener(e->{
-			var saved = saveData(panels);
+			var saved = saveAsMap(panels);
 			if(saved==null) 
 				return;
-//			if(results.size() != totalPages)
-			addOrUpdate(results, saved, currentPage -1);
+			updateDataList(results, saved, currentPage -1, false);
 			this.data.complete(results);
 			dialog.dispose();
 		});
@@ -217,32 +199,32 @@ public class PagesVisitor implements Visitor {
 		dialog.add(buttonsPanel, gbc);
 	}
 	
-	private void addOrUpdate(List<Map<String, String>> map, Map<String, String> value, int index) {
-		if(map.size() > index)
-			map.set(index, value);
+	private void updateDataList(List<Map<String, String>> dataList, Map<String, String> value, int index, boolean setDefault) {
+		if(dataList.size() > index)
+			dataList.set(index, value);
 		else
-			map.add(value);
+			dataList.add(value);
 	}
 
 	private String getPageIndex() {
 		return "Page " + currentPage + " of " + totalPages;
 	}
 	
-	private void updateFields(List<JPanelContainer> panels, Map<String, String> values) {
+	private void updateUiFields(List<JPanelContainer> panels, Map<String, String> values, boolean setDefault) {
 		for(JPanelContainer panel: panels) {
 			if(panel.getId() == Id.TabsContainer)
-				updateTabFields(panel, values);
+				updateTabFields(panel, values, setDefault);
 			else if(panel.getId() == Id.Group) {
-				updateGroupFields(panel, values);
+				updateGroupFields(panel, values, setDefault);
 				} else {
 					if(panel instanceof JPanelWithValue panelWithValue) {
-						updateComponentFields(panelWithValue, values);
+						updateComponentFields(panelWithValue, values, setDefault);
 					}
 				}
 		}
 	}
 	
-	private void updateTabFields(JPanelContainer panel, Map<String, String> values) {
+	private void updateTabFields(JPanelContainer panel, Map<String, String> values, boolean setDefault) {
 		if(panel.getComponents().length == 0)
 			return;
 		JTabbedPane tabPanel = (JTabbedPane)panel.getComponents()[0];
@@ -253,30 +235,30 @@ public class PagesVisitor implements Visitor {
 			for(java.awt.Component comp: comps) 
 			{
 				if(comp instanceof JPanelWithValue panelWithValue) {
-					updateComponentFields(panelWithValue, values);
+					updateComponentFields(panelWithValue, values, setDefault);
 				} else if (comp instanceof JPanelContainer container){
-					updateGroupFields(container, values);
+					updateGroupFields(container, values, setDefault);
 				}
 			}
 		}
 	}
 	
-	private void updateGroupFields(JPanelContainer panel, Map<String, String> values) {
+	private void updateGroupFields(JPanelContainer panel, Map<String, String> values, boolean setDefault) {
 		java.awt.Component[] comps = panel.getComponents();
 		for(java.awt.Component comp: comps) {
 			if(comp instanceof JPanelWithValue panelWithValue) {
-				updateComponentFields(panelWithValue, values);
+				updateComponentFields(panelWithValue, values, setDefault);
 			}
 		}
 	}
 	
-	private void updateComponentFields(JPanelWithValue panelWithValue, Map<String, String> values) {
+	private void updateComponentFields(JPanelWithValue panelWithValue, Map<String, String> values, boolean setDefault) {
 			String fieldName = panelWithValue.getName();
 			String value = values.get(fieldName) == null? "":values.get(fieldName);
-			panelWithValue.setValueOrDefault(value);
+			panelWithValue.setValueOrDefault(value, setDefault);
 	}
 	
-	private Map<String, String> saveData(List<JPanelContainer> panels) {
+	private Map<String, String> saveAsMap(List<JPanelContainer> panels) {
 		Map<String, String> data = new HashMap<>();
 		boolean haveErrors = false;
 		for(JPanelContainer panel: panels) {
@@ -447,7 +429,8 @@ public class PagesVisitor implements Visitor {
 		};
 		tabPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		tabPanel.add(tabbedPane, gbc);
 		return tabPanel;
 	}
@@ -483,418 +466,424 @@ public class PagesVisitor implements Visitor {
 
 	@Override
 	public JPanelWithValue visitString(CString component) {
-		PlaceholderTextField textField = new PlaceholderTextField();
-		Map<ConstraintId, Constraint> constraints = getMapConstraint(component.getConstraints());
-		JPanelWithValue panel = new JPanelWithValue(Id.String, component.getName()) {
-			@Override
-			public boolean checkForError() {
-				return setErrorLabel(validateConstraints(Id.String, textField.getText(), constraints));
-			}
-
-			@Override
-			public void setValueOrDefault(String value) {
-				if("".equals(value))
-					textField.setText(component.getDefVal() == null? "": component.getDefVal());
-				else
-					textField.setText(value);
-			}
-		};
-		JLabel title = generateTitle(component.getTitle(), constraints);
-		JLabel errorMsg = panel.getErrorLabel();
-		panel.setValueOrDefault("");
-
-		StyleId style = (StyleId)constraints.get(ConstraintId.STYLE);
-		if(textField.getText().isEmpty() && constraints.containsKey(ConstraintId.HOLDER)) {
-			textField.setPlaceholder(((HolderCon)constraints.get(ConstraintId.HOLDER)).value());
-		}
-		textField.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				setPlaceHolder(textField, constraints);
-				boolean hasError = panel.setErrorLabel(validateConstraints(Id.String, textField.getText(), constraints));
-				if(!hasError)
-					panel.setValue(textField.getText());
-			}	
-			@Override
-			public void focusGained(FocusEvent e) {}
-		});
-		textField.addKeyListener(new KeyAdapter() {
-			 public void keyReleased(KeyEvent e) {
-				 String error = validateConstraints(Id.String, textField.getText(), constraints);
-				 if(" ".equals(error)) {
-					errorMsg.setText(" "); 
-					panel.setValue(textField.getText());
-				 }
-			 }
-		});
-		return setLayout(style, title, textField, errorMsg, panel);
+		return component.make();
+//		PlaceholderTextField textField = new PlaceholderTextField();
+//		Map<ConstraintId, Constraint> constraints = getMapConstraint(component.getConstraints());
+//		JPanelWithValue panel = new JPanelWithValue(Id.String, component.getName()) {
+//			@Override
+//			public boolean checkForError() {
+//				return setErrorLabel(validateConstraints(Id.String, textField.getText(), constraints));
+//			}
+//
+//			@Override
+//			public void setValueOrDefault(String value) {
+//				if("".equals(value))
+//					textField.setText(component.getDefVal() == null? "": component.getDefVal());
+//				else
+//					textField.setText(value);
+//			}
+//		};
+//		JLabel title = generateTitle(component.getTitle(), constraints);
+//		JLabel errorMsg = panel.getErrorLabel();
+//		panel.setValueOrDefault("");
+//
+//		StyleId style = (StyleId)constraints.get(ConstraintId.STYLE);
+//		if(textField.getText().isEmpty() && constraints.containsKey(ConstraintId.HOLDER)) {
+//			textField.setPlaceholder(((HolderCon)constraints.get(ConstraintId.HOLDER)).value());
+//		}
+//		textField.addFocusListener(new FocusListener() {
+//			@Override
+//			public void focusLost(FocusEvent e) {
+//				setPlaceHolder(textField, constraints);
+//				boolean hasError = panel.setErrorLabel(validateConstraints(Id.String, textField.getText(), constraints));
+//				if(!hasError)
+//					panel.setValue(textField.getText());
+//			}	
+//			@Override
+//			public void focusGained(FocusEvent e) {}
+//		});
+//		textField.addKeyListener(new KeyAdapter() {
+//			 public void keyReleased(KeyEvent e) {
+//				 String error = validateConstraints(Id.String, textField.getText(), constraints);
+//				 if(" ".equals(error)) {
+//					errorMsg.setText(" "); 
+//					panel.setValue(textField.getText());
+//				 }
+//			 }
+//		});
+//		return setLayout(style, title, textField, errorMsg, panel);
 	}
 	
-	private JPanelWithValue setLayout(StyleId style, JLabel title, JComponent textField,
-			JLabel errorMsg, JPanelWithValue panel) {
-		return switch (style) {
-			case Block -> setBlockStyle(title, textField, errorMsg, panel);
-			case Inline -> setInlineStyle(title, textField, errorMsg, panel);
-			default ->
-			throw new IllegalArgumentException("Unexpected value: " + style);
-		};
-	}
+//	private JPanelWithValue setLayout(StyleId style, JLabel title, JComponent textField,
+//			JLabel errorMsg, JPanelWithValue panel) {
+//		return switch (style) {
+//			case Block -> setBlockStyle(title, textField, errorMsg, panel);
+//			case Inline -> setInlineStyle(title, textField, errorMsg, panel);
+//			default ->
+//			throw new IllegalArgumentException("Unexpected value: " + style);
+//		};
+//	}
 	
-	private JPanelWithValue setInlineStyle(JLabel title, JComponent textField,
-			JLabel errorMsg, JPanelWithValue panel) {
-		panel.setLayout(new GridBagLayout());
-		if(!(textField instanceof JScrollPane))
-			textField.setPreferredSize(new Dimension(280, 30));
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(title, gbc);
-		gbc.gridx = 1;
-		panel.add(textField, gbc);
-		gbc.gridy = 1;
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		panel.add(errorMsg, gbc);
-		return panel;
-	}
-
-	private JPanelWithValue setBlockStyle(JLabel title, JComponent textField, JLabel errorMsg, JPanelWithValue panel) {
-		panel.setLayout(new GridBagLayout());
-		if(!(textField instanceof JScrollPane))
-			textField.setPreferredSize(new Dimension(280, 30));
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(0, 20, 0, 20);
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(title, gbc);
-		gbc.gridy = 1;
-		panel.add(textField, gbc);
-		gbc.gridy = 2;
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		panel.add(errorMsg, gbc);
-		return panel;
-	}
+//	private JPanelWithValue setInlineStyle(JLabel title, JComponent textField,
+//			JLabel errorMsg, JPanelWithValue panel) {
+//		panel.setLayout(new GridBagLayout());
+//		if(!(textField instanceof JScrollPane))
+//			textField.setPreferredSize(new Dimension(280, 30));
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.fill = GridBagConstraints.HORIZONTAL;
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		panel.add(title, gbc);
+//		gbc.gridx = 1;
+//		panel.add(textField, gbc);
+//		gbc.gridy = 1;
+//		gbc.gridwidth = GridBagConstraints.REMAINDER;
+//		panel.add(errorMsg, gbc);
+//		return panel;
+//	}
+//
+//	private JPanelWithValue setBlockStyle(JLabel title, JComponent textField, JLabel errorMsg, JPanelWithValue panel) {
+//		panel.setLayout(new GridBagLayout());
+//		if(!(textField instanceof JScrollPane))
+//			textField.setPreferredSize(new Dimension(280, 30));
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.insets = new Insets(0, 20, 0, 20);
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		panel.add(title, gbc);
+//		gbc.gridy = 1;
+//		panel.add(textField, gbc);
+//		gbc.gridy = 2;
+//		gbc.gridwidth = GridBagConstraints.REMAINDER;
+//		panel.add(errorMsg, gbc);
+//		return panel;
+//	}
 	
-	private void setTextAreaPlaceHolder(PlaceholderTextAreaField textField, Map<ConstraintId, Constraint> constraints) {
-		if(textField.getText().isEmpty() && constraints.containsKey(ConstraintId.HOLDER)) {
-			textField.setPlaceholder(((HolderCon)constraints.get(ConstraintId.HOLDER)).value());
-		}
-	}
-	
-	private void setPlaceHolder(PlaceholderTextField textField, Map<ConstraintId, Constraint> constraints) {
-		if(textField.getText().isEmpty() && constraints.containsKey(ConstraintId.HOLDER)) {
-			textField.setPlaceholder(((HolderCon)constraints.get(ConstraintId.HOLDER)).value());
-		}
-	}
-
-	private void setPasswordPlaceHolder(PlaceholderPasswordField textField, Map<ConstraintId, Constraint> constraints) {
-		if(String.valueOf(textField.getPassword()).isEmpty() && constraints.containsKey(ConstraintId.HOLDER)) {
-			textField.setPlaceholder(((HolderCon)constraints.get(ConstraintId.HOLDER)).value());
-		}
-	} 
+//	private void setTextAreaPlaceHolder(PlaceholderTextAreaField textField, Map<ConstraintId, Constraint> constraints) {
+//		if(textField.getText().isEmpty() && constraints.containsKey(ConstraintId.HOLDER)) {
+//			textField.setPlaceholder(((HolderCon)constraints.get(ConstraintId.HOLDER)).value());
+//		}
+//	}
+//	
+//	private void setPlaceHolder(PlaceholderTextField textField, Map<ConstraintId, Constraint> constraints) {
+//		if(textField.getText().isEmpty() && constraints.containsKey(ConstraintId.HOLDER)) {
+//			textField.setPlaceholder(((HolderCon)constraints.get(ConstraintId.HOLDER)).value());
+//		}
+//	}
+//
+//	private void setPasswordPlaceHolder(PlaceholderPasswordField textField, Map<ConstraintId, Constraint> constraints) {
+//		if(String.valueOf(textField.getPassword()).isEmpty() && constraints.containsKey(ConstraintId.HOLDER)) {
+//			textField.setPlaceholder(((HolderCon)constraints.get(ConstraintId.HOLDER)).value());
+//		}
+//	} 
 	
 	@Override
 	public JPanelWithValue visitTextArea(CTextArea component) {
-		PlaceholderTextAreaField textArea = new PlaceholderTextAreaField(5, 25);
-		textArea.setPreferredSize(new Dimension(250, 30));
-		Map<ConstraintId, Constraint> constraints = getMapConstraint(component.getConstraints());
-		JPanelWithValue panel = new JPanelWithValue(Id.TextArea, component.getName()){
-			@Override
-			public boolean checkForError() {
-				return setErrorLabel(validateConstraints(Id.TextArea, String.valueOf(textArea.getText()), constraints));
-			}
-			@Override
-			public void setValueOrDefault(String value) {
-				if("".equals(value))
-					textArea.setText(component.getDefVal());
-				else
-					textArea.setText(value);
-			}
-		};
-		
-		panel.setValueOrDefault("");
-		textArea.setLineWrap(true);
-		textArea.setWrapStyleWord(true);
-		JScrollPane scroll = new JScrollPane (textArea);
-		JLabel title = generateTitle(component.getTitle(), constraints);
-		JLabel errorMsg = panel.getErrorLabel();
-		StyleId style = (StyleId)constraints.get(ConstraintId.STYLE);
-		setTextAreaPlaceHolder(textArea, constraints);
-		textArea.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				setTextAreaPlaceHolder(textArea, constraints);
-				String text = String.valueOf(textArea.getText());
-				boolean hasError = panel.setErrorLabel(validateConstraints(Id.TextArea, text, constraints));
-				if(!hasError)
-					panel.setValue(text);
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {}
-		});
-		textArea.addKeyListener(new KeyAdapter() {
-			 public void keyReleased(KeyEvent e) {
-				 String text = String.valueOf(textArea.getText());
-				 String error = validateConstraints(Id.TextArea, text, constraints);
-				 if(" ".equals(error)) {
-					errorMsg.setText(" "); 
-					panel.setValue(text);
-				 }
-			 }
-		});
-		return setLayout(style, title, scroll, errorMsg, panel);
+		return component.make();
+//		PlaceholderTextAreaField textArea = new PlaceholderTextAreaField(5, 25);
+//		textArea.setPreferredSize(new Dimension(250, 30));
+//		Map<ConstraintId, Constraint> constraints = getMapConstraint(component.getConstraints());
+//		JPanelWithValue panel = new JPanelWithValue(Id.TextArea, component.getName()){
+//			@Override
+//			public boolean checkForError() {
+//				return setErrorLabel(validateConstraints(Id.TextArea, String.valueOf(textArea.getText()), constraints));
+//			}
+//			@Override
+//			public void setValueOrDefault(String value) {
+//				if("".equals(value))
+//					textArea.setText(component.getDefVal());
+//				else
+//					textArea.setText(value);
+//			}
+//		};
+//		
+//		panel.setValueOrDefault("");
+//		textArea.setLineWrap(true);
+//		textArea.setWrapStyleWord(true);
+//		JScrollPane scroll = new JScrollPane (textArea);
+//		JLabel title = generateTitle(component.getTitle(), constraints);
+//		JLabel errorMsg = panel.getErrorLabel();
+//		StyleId style = (StyleId)constraints.get(ConstraintId.STYLE);
+//		setTextAreaPlaceHolder(textArea, constraints);
+//		textArea.addFocusListener(new FocusListener() {
+//			@Override
+//			public void focusLost(FocusEvent e) {
+//				setTextAreaPlaceHolder(textArea, constraints);
+//				String text = String.valueOf(textArea.getText());
+//				boolean hasError = panel.setErrorLabel(validateConstraints(Id.TextArea, text, constraints));
+//				if(!hasError)
+//					panel.setValue(text);
+//			}
+//			
+//			@Override
+//			public void focusGained(FocusEvent e) {}
+//		});
+//		textArea.addKeyListener(new KeyAdapter() {
+//			 public void keyReleased(KeyEvent e) {
+//				 String text = String.valueOf(textArea.getText());
+//				 String error = validateConstraints(Id.TextArea, text, constraints);
+//				 if(" ".equals(error)) {
+//					errorMsg.setText(" "); 
+//					panel.setValue(text);
+//				 }
+//			 }
+//		});
+//		return setLayout(style, title, scroll, errorMsg, panel);
 	}
 
 	@Override
 	public JPanelWithValue visitPassword(CPassword component) {
-		PlaceholderPasswordField passField = new PlaceholderPasswordField();
-		Map<ConstraintId, Constraint> constraints = getMapConstraint(component.getConstraints());
-		JPanelWithValue panel = new JPanelWithValue(Id.Password, component.getName()){
-			@Override
-			public boolean checkForError() {
-				return setErrorLabel(validateConstraints(Id.Password, String.valueOf(passField.getPassword()), constraints));
-			}
-			@Override
-			public void setValueOrDefault(String value) {
-				if("".equals(value))
-					passField.setText(component.getDefVal());
-				else
-					passField.setText(value);
-			}
-		};
-		
-		panel.setValueOrDefault("");
-		JLabel title = generateTitle(component.getTitle(), constraints);
-		JLabel errorMsg = panel.getErrorLabel();
-		StyleId style = (StyleId)constraints.get(ConstraintId.STYLE);
-		setPasswordPlaceHolder(passField, constraints);
-		passField.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				setPasswordPlaceHolder(passField, constraints);
-				String passVal = String.valueOf(passField.getPassword());
-				boolean hasError = panel.setErrorLabel(validateConstraints(Id.Password, passVal, constraints));
-				if(!hasError)
-					panel.setValue(passVal);
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {}
-		});
-		passField.addKeyListener(new KeyAdapter() {
-			 public void keyReleased(KeyEvent e) {
-				 String passVal = String.valueOf(passField.getPassword());
-				 String error = validateConstraints(Id.Password, passVal, constraints);
-				 if(" ".equals(error)) {
-					errorMsg.setText(" "); 
-					panel.setValue(passVal);
-				 }
-			 }
-		});
-		return setPasswordLayout(style, title, passField, errorMsg, panel);
+		return component.make();
+//		PlaceholderPasswordField passField = new PlaceholderPasswordField();
+//		Map<ConstraintId, Constraint> constraints = getMapConstraint(component.getConstraints());
+//		JPanelWithValue panel = new JPanelWithValue(Id.Password, component.getName()){
+//			@Override
+//			public boolean checkForError() {
+//				return setErrorLabel(validateConstraints(Id.Password, String.valueOf(passField.getPassword()), constraints));
+//			}
+//			@Override
+//			public void setValueOrDefault(String value) {
+//				if("".equals(value))
+//					passField.setText(component.getDefVal());
+//				else
+//					passField.setText(value);
+//			}
+//		};
+//		
+//		panel.setValueOrDefault("");
+//		JLabel title = generateTitle(component.getTitle(), constraints);
+//		JLabel errorMsg = panel.getErrorLabel();
+//		StyleId style = (StyleId)constraints.get(ConstraintId.STYLE);
+//		setPasswordPlaceHolder(passField, constraints);
+//		passField.addFocusListener(new FocusListener() {
+//			@Override
+//			public void focusLost(FocusEvent e) {
+//				setPasswordPlaceHolder(passField, constraints);
+//				String passVal = String.valueOf(passField.getPassword());
+//				boolean hasError = panel.setErrorLabel(validateConstraints(Id.Password, passVal, constraints));
+//				if(!hasError)
+//					panel.setValue(passVal);
+//			}
+//			
+//			@Override
+//			public void focusGained(FocusEvent e) {}
+//		});
+//		passField.addKeyListener(new KeyAdapter() {
+//			 public void keyReleased(KeyEvent e) {
+//				 String passVal = String.valueOf(passField.getPassword());
+//				 String error = validateConstraints(Id.Password, passVal, constraints);
+//				 if(" ".equals(error)) {
+//					errorMsg.setText(" "); 
+//					panel.setValue(passVal);
+//				 }
+//			 }
+//		});
+//		return setPasswordLayout(style, title, passField, errorMsg, panel);
 	}
 
 	@Override
 	public JPanelWithValue visitInteger(CInteger component) {
-		PlaceholderIntegerField textField = new PlaceholderIntegerField();
-		Map<ConstraintId, Constraint> constraints = getMapConstraint(component.getConstraints());
-		JPanelWithValue panel = new JPanelWithValue(Id.Integer, component.getName()){
-			@Override
-			public boolean checkForError() {
-				return setErrorLabel(validateConstraints(Id.Integer,textField.getText(), constraints));
-			}
-			@Override
-			public void setValueOrDefault(String value) {
-				if("".equals(value))
-					textField.setText(String.valueOf(component.getDefVal()));
-				else
-					textField.setText(value);
-			}
-		};
-		panel.setValueOrDefault("");
-		JLabel title = generateTitle(component.getTitle(), constraints);
-		JLabel errorMsg = panel.getErrorLabel();
-		StyleId style = (StyleId)constraints.get(ConstraintId.STYLE);
-		setPlaceHolder(textField, constraints);
-		textField.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				setPlaceHolder(textField, constraints);
-				boolean hasError = panel.setErrorLabel(validateConstraints(Id.Integer,textField.getText(), constraints));
-				if(!hasError)
-					panel.setValue(textField.getText());
-			}
-			@Override
-			public void focusGained(FocusEvent e) {}
-		});
-		textField.addKeyListener(new KeyAdapter() {
-			 public void keyReleased(KeyEvent e) {
-				 String error = validateConstraints(Id.Integer, textField.getText(), constraints);
-				 if(" ".equals(error)) {
-					errorMsg.setText(" "); 
-					panel.setValue(textField.getText());
-				 }
-			 }
-		});
-		return setLayout(style, title, textField, errorMsg, panel);
+		return component.make();
+//		PlaceholderIntegerField textField = new PlaceholderIntegerField();
+//		Map<ConstraintId, Constraint> constraints = getMapConstraint(component.getConstraints());
+//		JPanelWithValue panel = new JPanelWithValue(Id.Integer, component.getName()){
+//			@Override
+//			public boolean checkForError() {
+//				return setErrorLabel(validateConstraints(Id.Integer,textField.getText(), constraints));
+//			}
+//			@Override
+//			public void setValueOrDefault(String value) {
+//				if("".equals(value))
+//					textField.setText(String.valueOf(component.getDefVal()));
+//				else
+//					textField.setText(value);
+//			}
+//		};
+//		panel.setValueOrDefault("");
+//		JLabel title = generateTitle(component.getTitle(), constraints);
+//		JLabel errorMsg = panel.getErrorLabel();
+//		StyleId style = (StyleId)constraints.get(ConstraintId.STYLE);
+//		setPlaceHolder(textField, constraints);
+//		textField.addFocusListener(new FocusListener() {
+//			@Override
+//			public void focusLost(FocusEvent e) {
+//				setPlaceHolder(textField, constraints);
+//				boolean hasError = panel.setErrorLabel(validateConstraints(Id.Integer,textField.getText(), constraints));
+//				if(!hasError)
+//					panel.setValue(textField.getText());
+//			}
+//			@Override
+//			public void focusGained(FocusEvent e) {}
+//		});
+//		textField.addKeyListener(new KeyAdapter() {
+//			 public void keyReleased(KeyEvent e) {
+//				 String error = validateConstraints(Id.Integer, textField.getText(), constraints);
+//				 if(" ".equals(error)) {
+//					errorMsg.setText(" "); 
+//					panel.setValue(textField.getText());
+//				 }
+//			 }
+//		});
+//		return setLayout(style, title, textField, errorMsg, panel);
 	}
 
 	@Override
 	public JPanelWithValue visitDecimal(CDecimal component) {
-		PlaceholderDecimalField textField = new PlaceholderDecimalField();
-		Map<ConstraintId, Constraint> constraints = getMapConstraint(component.getConstraints());
-		JPanelWithValue panel = new JPanelWithValue(Id.Decimal, component.getName()){
-			@Override
-			public boolean checkForError() {
-				return setErrorLabel(validateConstraints(Id.Decimal, textField.getText(), constraints));
-			}
-			@Override
-			public void setValueOrDefault(String value) {
-				if("".equals(value))
-					textField.setText(String.valueOf(component.getDefVal()));
-				else
-					textField.setText(value);
-			}
-		};
-		panel.setValueOrDefault("");
-		JLabel title = generateTitle(component.getTitle(), constraints);
-		JLabel errorMsg = panel.getErrorLabel();
-		StyleId style = (StyleId)constraints.get(ConstraintId.STYLE);
-		setHolder(textField, constraints);
-		setPlaceHolder(textField, constraints);
-		textField.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				setPlaceHolder(textField, constraints);
-				boolean hasError = panel.setErrorLabel(validateConstraints(Id.Decimal, textField.getText(), constraints));
-				if(!hasError)
-					panel.setValue(textField.getText());
-			}
-			@Override
-			public void focusGained(FocusEvent e) {}
-		});
-		textField.addKeyListener(new KeyAdapter() {
-			 public void keyReleased(KeyEvent e) {
-				 String error = validateConstraints(Id.Decimal, textField.getText(), constraints);
-				 if(" ".equals(error)) {
-					errorMsg.setText(" "); 
-					panel.setValue(textField.getText());
-				 }
-			 }
-		});
-		return setLayout(style, title, textField, errorMsg, panel);
+		return component.make();
+//		PlaceholderDecimalField textField = new PlaceholderDecimalField();
+//		Map<ConstraintId, Constraint> constraints = getMapConstraint(component.getConstraints());
+//		JPanelWithValue panel = new JPanelWithValue(Id.Decimal, component.getName()){
+//			@Override
+//			public boolean checkForError() {
+//				return setErrorLabel(validateConstraints(Id.Decimal, textField.getText(), constraints));
+//			}
+//			@Override
+//			public void setValueOrDefault(String value) {
+//				if("".equals(value))
+//					textField.setText(String.valueOf(component.getDefVal()));
+//				else
+//					textField.setText(value);
+//			}
+//		};
+//		panel.setValueOrDefault("");
+//		JLabel title = generateTitle(component.getTitle(), constraints);
+//		JLabel errorMsg = panel.getErrorLabel();
+//		StyleId style = (StyleId)constraints.get(ConstraintId.STYLE);
+//		setHolder(textField, constraints);
+//		setPlaceHolder(textField, constraints);
+//		textField.addFocusListener(new FocusListener() {
+//			@Override
+//			public void focusLost(FocusEvent e) {
+//				setPlaceHolder(textField, constraints);
+//				boolean hasError = panel.setErrorLabel(validateConstraints(Id.Decimal, textField.getText(), constraints));
+//				if(!hasError)
+//					panel.setValue(textField.getText());
+//			}
+//			@Override
+//			public void focusGained(FocusEvent e) {}
+//		});
+//		textField.addKeyListener(new KeyAdapter() {
+//			 public void keyReleased(KeyEvent e) {
+//				 String error = validateConstraints(Id.Decimal, textField.getText(), constraints);
+//				 if(" ".equals(error)) {
+//					errorMsg.setText(" "); 
+//					panel.setValue(textField.getText());
+//				 }
+//			 }
+//		});
+//		return setLayout(style, title, textField, errorMsg, panel);
 	}
 
 	@Override
 	public JPanelWithValue visitBoolean(CBoolean component) {
-		JRadioButton yesButton = new JRadioButton("Yes");
-		JRadioButton noButton = new JRadioButton("No");
-		Map<ConstraintId, Constraint> constraints = getMapConstraint(component.getConstraints());
-		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, component.getName()){
-			@Override
-			public boolean checkForError() {
-				return setErrorLabel(validateConstraints(Id.Boolean, getValue(), constraints));
-			}
-			@Override
-			public void setValueOrDefault(String value) {
-				String defValue = "".equals(value)? component.getDefVal(): value;
-				if("".contentEquals(defValue)) {
-					yesButton.setSelected(false);
-					noButton.setSelected(false);
-				}					
-				if("true".equals(defValue)) {
-					yesButton.setSelected(true);
-					noButton.setSelected(false);
-				}
-				if("false".equals(defValue)) {
-					noButton.setSelected(true);
-					yesButton.setSelected(false);
-				}
-			}
-		};
-		panel.setValueOrDefault(component.getDefVal());
-		JLabel title = generateTitle(component.getTitle(), constraints);
-
-		StyleId style = (StyleId)constraints.get(ConstraintId.STYLE);
-		yesButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				noButton.setSelected(false);
-				yesButton.setSelected(yesButton.isSelected());
-				if (yesButton.isSelected())
-					panel.setValue("true");
-				else 
-					panel.setValue("");
-			}
-		});
-		noButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				yesButton.setSelected(false);
-				noButton.setSelected(noButton.isSelected());
-				if (noButton.isSelected())
-					panel.setValue("false");
-				else 
-					panel.setValue("");
-			}
-		});
-		return setBooleanLayout(style, title, yesButton, noButton, panel);
+		return component.make();
+//		JRadioButton yesButton = new JRadioButton("Yes");
+//		JRadioButton noButton = new JRadioButton("No");
+//		Map<ConstraintId, Constraint> constraints = getMapConstraint(component.getConstraints());
+//		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, component.getName()){
+//			@Override
+//			public boolean checkForError() {
+//				return setErrorLabel(validateConstraints(Id.Boolean, getValue(), constraints));
+//			}
+//			@Override
+//			public void setValueOrDefault(String value) {
+//				String defValue = "".equals(value)? component.getDefVal(): value;
+//				if("".contentEquals(defValue)) {
+//					yesButton.setSelected(false);
+//					noButton.setSelected(false);
+//				}					
+//				if("true".equals(defValue)) {
+//					yesButton.setSelected(true);
+//					noButton.setSelected(false);
+//				}
+//				if("false".equals(defValue)) {
+//					noButton.setSelected(true);
+//					yesButton.setSelected(false);
+//				}
+//			}
+//		};
+//		panel.setValueOrDefault(component.getDefVal());
+//		JLabel title = generateTitle(component.getTitle(), constraints);
+//
+//		StyleId style = (StyleId)constraints.get(ConstraintId.STYLE);
+//		yesButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				noButton.setSelected(false);
+//				yesButton.setSelected(yesButton.isSelected());
+//				if (yesButton.isSelected())
+//					panel.setValue("true");
+//				else 
+//					panel.setValue("");
+//			}
+//		});
+//		noButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				yesButton.setSelected(false);
+//				noButton.setSelected(noButton.isSelected());
+//				if (noButton.isSelected())
+//					panel.setValue("false");
+//				else 
+//					panel.setValue("");
+//			}
+//		});
+//		return setBooleanLayout(style, title, yesButton, noButton, panel);
 	}
 	
-	private JPanelWithValue setBooleanLayout(StyleId style, JLabel title, JRadioButton yesButton,
-			JRadioButton noButton, JPanelWithValue panel) {
-		return switch (style) {
-			case Block -> setBooleanBlockStyle(title, yesButton, noButton, panel);
-			case Inline -> setBooleanInlineStyle(title, yesButton, noButton, panel);
-			default ->
-			throw new IllegalArgumentException("Unexpected value: " + style);
-		};
-	}
+//	private JPanelWithValue setBooleanLayout(StyleId style, JLabel title, JRadioButton yesButton,
+//			JRadioButton noButton, JPanelWithValue panel) {
+//		return switch (style) {
+//			case Block -> setBooleanBlockStyle(title, yesButton, noButton, panel);
+//			case Inline -> setBooleanInlineStyle(title, yesButton, noButton, panel);
+//			default ->
+//			throw new IllegalArgumentException("Unexpected value: " + style);
+//		};
+//	}
 	
-	private JPanelWithValue setBooleanInlineStyle(JLabel title, JRadioButton yesButton,
-			JRadioButton noButton, JPanelWithValue panel) {
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(0, 20, 0, 20);
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(title, gbc);
-		gbc.gridx = 1;
-		gbc.insets = new Insets(0, 0, 0, 0);
-		panel.add(yesButton, gbc);
-		gbc.gridx = 2;
-		panel.add(noButton, gbc);
-		gbc.insets = new Insets(0, 20, 0, 0);
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		panel.add(panel.getErrorLabel(), gbc);
-		return panel;
-	}
-
-	private JPanelWithValue setBooleanBlockStyle(JLabel title, JRadioButton yesButton,
-			JRadioButton noButton, JPanelWithValue panel) {
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(0, 20, 0, 20);
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(title, gbc);
-		gbc.gridy = 1;
-		panel.add(yesButton, gbc);
-		gbc.gridy = 2;
-		panel.add(noButton, gbc);
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		gbc.insets = new Insets(0, 20, 0, 0);
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		panel.add(panel.getErrorLabel(), gbc);
-		return panel;
-	}
+//	private JPanelWithValue setBooleanInlineStyle(JLabel title, JRadioButton yesButton,
+//			JRadioButton noButton, JPanelWithValue panel) {
+//		panel.setLayout(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.insets = new Insets(0, 20, 0, 20);
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		panel.add(title, gbc);
+//		gbc.gridx = 1;
+//		gbc.insets = new Insets(0, 0, 0, 0);
+//		panel.add(yesButton, gbc);
+//		gbc.gridx = 2;
+//		panel.add(noButton, gbc);
+//		gbc.insets = new Insets(0, 20, 0, 0);
+//		gbc.gridx = 0;
+//		gbc.gridy = 1;
+//		gbc.gridwidth = GridBagConstraints.REMAINDER;
+//		panel.add(panel.getErrorLabel(), gbc);
+//		return panel;
+//	}
+//
+//	private JPanelWithValue setBooleanBlockStyle(JLabel title, JRadioButton yesButton,
+//			JRadioButton noButton, JPanelWithValue panel) {
+//		panel.setLayout(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.insets = new Insets(0, 20, 0, 20);
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		panel.add(title, gbc);
+//		gbc.gridy = 1;
+//		panel.add(yesButton, gbc);
+//		gbc.gridy = 2;
+//		panel.add(noButton, gbc);
+//		gbc.gridx = 0;
+//		gbc.gridy = 3;
+//		gbc.insets = new Insets(0, 20, 0, 0);
+//		gbc.gridwidth = GridBagConstraints.REMAINDER;
+//		panel.add(panel.getErrorLabel(), gbc);
+//		return panel;
+//	}
 
 	@Override
 	public JPanelWithValue visitSlider(CSlider slider) {
@@ -940,519 +929,521 @@ public class PagesVisitor implements Visitor {
 //		};
 	}
 	
-	private JPanelWithValue setSliderInlineStyle(JLabel title, JSlider slider, JLabel value,
-			JPanelWithValue panel) {
-		GridBagConstraints gbc = new GridBagConstraints();
-		slider.setPreferredSize(new Dimension(230, 50));
-		gbc.insets = new Insets(0, 20, 0, 0);
-		gbc.anchor = GridBagConstraints.WEST;
-//		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(title, gbc);
-		gbc.gridx = 1;
-		panel.add(slider, gbc);
-//		gbc.gridx = 2;
-		gbc.anchor = GridBagConstraints.LINE_END;
-		gbc.insets = new Insets(0, 0, 0, 32);
-		panel.add(value, gbc);
-		return panel;
-	}
-
-	private JPanelWithValue setSliderBlockStyle(JLabel title, JSlider slider, JLabel value, JPanelWithValue panel) {
-		GridBagConstraints gbc = new GridBagConstraints();
-		slider.setPreferredSize(new Dimension(230, 50));
-		gbc.anchor = GridBagConstraints.WEST;
-//		gbc.fill = GridBagConstraints.NONE;
-		gbc.insets = new Insets(0, 20, 0, 0);
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(title, gbc);
-		gbc.gridy = 1;
-		panel.add(slider, gbc);
+//	private JPanelWithValue setSliderInlineStyle(JLabel title, JSlider slider, JLabel value,
+//			JPanelWithValue panel) {
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		slider.setPreferredSize(new Dimension(230, 50));
+//		gbc.insets = new Insets(0, 20, 0, 0);
+//		gbc.anchor = GridBagConstraints.WEST;
+////		gbc.fill = GridBagConstraints.HORIZONTAL;
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		panel.add(title, gbc);
 //		gbc.gridx = 1;
-		gbc.anchor = GridBagConstraints.LINE_END;
-		gbc.insets = new Insets(0, 0, 0, 32);
-		panel.add(value, gbc);
-		return panel;
-	}
-	
-	private JSlider initJSlider(CSlider slider) {
-		JSlider jSlider = new JSlider(slider.getMinVal(), slider.getMaxVal(), slider.getDefVal());
-		jSlider.setLabelTable(null);
-		Map<ConstraintId, Constraint> constraints = getMapConstraint(slider.getConstraints());
-		if(constraints.containsKey(ConstraintId.MAJORTICKS))
-			jSlider.setMajorTickSpacing(((Constraint.MajorTicksCon)constraints.get(ConstraintId.MAJORTICKS)).value());
-		else
-			jSlider.setMajorTickSpacing(slider.getMaxVal() - slider.getMinVal());
-		if(constraints.containsKey(ConstraintId.MINORTICKS))
-			jSlider.setMinorTickSpacing(((Constraint.MinorTicksCon)constraints.get(ConstraintId.MINORTICKS)).value());
-		jSlider.setPaintTicks(true);
-		jSlider.setPaintLabels(true);
-		return jSlider;
-	}
+//		panel.add(slider, gbc);
+////		gbc.gridx = 2;
+//		gbc.anchor = GridBagConstraints.LINE_END;
+//		gbc.insets = new Insets(0, 0, 0, 32);
+//		panel.add(value, gbc);
+//		return panel;
+//	}
+//
+//	private JPanelWithValue setSliderBlockStyle(JLabel title, JSlider slider, JLabel value, JPanelWithValue panel) {
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		slider.setPreferredSize(new Dimension(230, 50));
+//		gbc.anchor = GridBagConstraints.WEST;
+////		gbc.fill = GridBagConstraints.NONE;
+//		gbc.insets = new Insets(0, 20, 0, 0);
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		panel.add(title, gbc);
+//		gbc.gridy = 1;
+//		panel.add(slider, gbc);
+////		gbc.gridx = 1;
+//		gbc.anchor = GridBagConstraints.LINE_END;
+//		gbc.insets = new Insets(0, 0, 0, 32);
+//		panel.add(value, gbc);
+//		return panel;
+//	}
+//	
+//	private JSlider initJSlider(CSlider slider) {
+//		JSlider jSlider = new JSlider(slider.getMinVal(), slider.getMaxVal(), slider.getDefVal());
+//		jSlider.setLabelTable(null);
+//		Map<ConstraintId, Constraint> constraints = getMapConstraint(slider.getConstraints());
+//		if(constraints.containsKey(ConstraintId.MAJORTICKS))
+//			jSlider.setMajorTickSpacing(((Constraint.MajorTicksCon)constraints.get(ConstraintId.MAJORTICKS)).value());
+//		else
+//			jSlider.setMajorTickSpacing(slider.getMaxVal() - slider.getMinVal());
+//		if(constraints.containsKey(ConstraintId.MINORTICKS))
+//			jSlider.setMinorTickSpacing(((Constraint.MinorTicksCon)constraints.get(ConstraintId.MINORTICKS)).value());
+//		jSlider.setPaintTicks(true);
+//		jSlider.setPaintLabels(true);
+//		return jSlider;
+//	}
 
 	@Override
 	public JPanelWithValue visitSingleOpt(CSingleOpt component) {
-		Map<ConstraintId, Constraint> constraints = getMapConstraint(component.getConstraints());
-		StyleId style = (StyleId)constraints.get(ConstraintId.STYLE);
-		JLabel title = new JLabel();
-		String name = component.getName();
-		title.setText(component.getTitle());
-		List<String> options = component.getOptions();
-		String defaultValue = getSelectedOpt(constraints);
-		return switch (style) {
-			case InlineRadio -> setSingleInlineRadioStyle(name, title, options, defaultValue, constraints);
-			case InlineList -> setSingleInlineListStyle(name, title, options, defaultValue, constraints);
-			case BlockRadio -> setSingleBlockRadioStyle(name, title, options, defaultValue, constraints);
-			case BlockList -> setSingleBlockListStyle(name, title, options, defaultValue, constraints);
-			default ->
-				setSingleBlockRadioStyle(name, title, options, defaultValue, constraints);
-		};
+		return component.make();
+//		Map<ConstraintId, Constraint> constraints = getMapConstraint(component.getConstraints());
+//		StyleId style = (StyleId)constraints.get(ConstraintId.STYLE);
+//		JLabel title = new JLabel();
+//		String name = component.getName();
+//		title.setText(component.getTitle());
+//		List<String> options = component.getOptions();
+//		String defaultValue = getSelectedOpt(constraints);
+//		return switch (style) {
+//			case InlineRadio -> setSingleInlineRadioStyle(name, title, options, defaultValue, constraints);
+//			case InlineList -> setSingleInlineListStyle(name, title, options, defaultValue, constraints);
+//			case BlockRadio -> setSingleBlockRadioStyle(name, title, options, defaultValue, constraints);
+//			case BlockList -> setSingleBlockListStyle(name, title, options, defaultValue, constraints);
+//			default ->
+//				setSingleBlockRadioStyle(name, title, options, defaultValue, constraints);
+//		};
 	}
 	
-	private String getSelectedOpt(Map<ConstraintId, Constraint> constraints) {
-		Constraint.SelectedCon selected = (Constraint.SelectedCon)constraints.get(ConstraintId.SELECTED);
-		return selected == null? "" : selected.value();
-	}
+//	private String getSelectedOpt(Map<ConstraintId, Constraint> constraints) {
+//		Constraint.SelectedCon selected = (Constraint.SelectedCon)constraints.get(ConstraintId.SELECTED);
+//		return selected == null? "" : selected.value();
+//	}
 
-	private JPanelWithValue setSingleBlockListStyle(String name, JLabel title,
-			List<String> options, String defaultValue, Map<ConstraintId, Constraint> constraints) {
-		String[] optionsArray = options.toArray(String[]::new);
-		JComboBox<String> combo = new JComboBox<String>(optionsArray);
-//		if("".equals(defaultValue))
-//			combo.setSelectedIndex(-1);
-//		else
-//			combo.setSelectedItem(defaultValue);
-		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name){
-			@Override
-			public boolean checkForError() {
-				if(combo.getSelectedItem() != null)
-					setValue(combo.getSelectedItem().toString());
-				return setErrorLabel(validateConstraints(Id.SingleOpt, getValue(), constraints));
-			}
+//	private JPanelWithValue setSingleBlockListStyle(String name, JLabel title,
+//			List<String> options, String defaultValue, Map<ConstraintId, Constraint> constraints) {
+//		String[] optionsArray = options.toArray(String[]::new);
+//		JComboBox<String> combo = new JComboBox<String>(optionsArray);
+////		if("".equals(defaultValue))
+////			combo.setSelectedIndex(-1);
+////		else
+////			combo.setSelectedItem(defaultValue);
+//		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name){
+//			@Override
+//			public boolean checkForError() {
+//				if(combo.getSelectedItem() != null)
+//					setValue(combo.getSelectedItem().toString());
+//				return setErrorLabel(validateConstraints(Id.SingleOpt, getValue(), constraints));
+//			}
+//
+//			@Override
+//			public void setValueOrDefault(String value) {
+//				if("".equals(value))
+//					combo.setSelectedIndex(-1);
+//				else
+//					combo.setSelectedItem(value);
+//			}
+//		};
+//		panel.setValueOrDefault(defaultValue);
+//		panel.setLayout(new GridBagLayout());
+//		panel.setValue(defaultValue);
+//		combo.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				panel.setValue(combo.getSelectedItem().toString());
+//				panel.setErrorLabel(validateConstraints(Id.SingleOpt, panel.getValue(), constraints));
+//			}
+//		});
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.insets = new Insets(0, 20, 0, 0);
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		panel.add(title, gbc);
+//		gbc.gridy = 1;
+//		panel.add(combo, gbc);
+//		gbc.gridy = 2;
+//		gbc.gridwidth = GridBagConstraints.REMAINDER;
+//		panel.add(panel.getErrorLabel(), gbc);
+//		return panel;
+//	}
+//
+//	private JPanelWithValue setSingleInlineListStyle(String name, JLabel title,
+//			List<String> options, String defaultValue, Map<ConstraintId, Constraint> constraints) {
+//		String[] optionsArray = options.toArray(String[]::new);
+//		JComboBox<String> combo = new JComboBox<String>(optionsArray);
+////		if("".equals(defaultValue))
+////			combo.setSelectedIndex(-1);
+////		else
+////			combo.setSelectedItem(defaultValue);
+//		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name){
+//			@Override
+//			public boolean checkForError() {
+//				if(combo.getSelectedItem() != null)
+//				setValue(combo.getSelectedItem().toString());
+//			return setErrorLabel(validateConstraints(Id.SingleOpt, getValue(), constraints));
+//			}
+//			@Override
+//			public void setValueOrDefault(String value) {
+//				if("".equals(value))
+//					combo.setSelectedIndex(-1);
+//				else
+//					combo.setSelectedItem(value);
+//			}
+//		};
+//		panel.setValueOrDefault(defaultValue);
+//		panel.setLayout(new GridBagLayout());
+//		panel.setValue(defaultValue);
+//		combo.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				panel.setValue(combo.getSelectedItem().toString());
+//				panel.setErrorLabel(validateConstraints(Id.SingleOpt, panel.getValue(), constraints));
+//			}
+//		});
+//		
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.insets = new Insets(0, 20, 0, 0);
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		panel.add(title, gbc);
+//		gbc.gridx = 1;
+//		panel.add(combo, gbc);
+//		gbc.gridy = 1;
+//		gbc.gridx = 0;
+//		gbc.gridwidth = GridBagConstraints.REMAINDER;
+//		panel.add(panel.getErrorLabel(), gbc);
+//		return panel;
+//	}
 
-			@Override
-			public void setValueOrDefault(String value) {
-				if("".equals(value))
-					combo.setSelectedIndex(-1);
-				else
-					combo.setSelectedItem(value);
-			}
-		};
-		panel.setValueOrDefault(defaultValue);
-		panel.setLayout(new GridBagLayout());
-		panel.setValue(defaultValue);
-		combo.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				panel.setValue(combo.getSelectedItem().toString());
-				panel.setErrorLabel(validateConstraints(Id.SingleOpt, panel.getValue(), constraints));
-			}
-		});
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(0, 20, 0, 0);
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(title, gbc);
-		gbc.gridy = 1;
-		panel.add(combo, gbc);
-		gbc.gridy = 2;
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		panel.add(panel.getErrorLabel(), gbc);
-		return panel;
-	}
-
-	private JPanelWithValue setSingleInlineListStyle(String name, JLabel title,
-			List<String> options, String defaultValue, Map<ConstraintId, Constraint> constraints) {
-		String[] optionsArray = options.toArray(String[]::new);
-		JComboBox<String> combo = new JComboBox<String>(optionsArray);
-//		if("".equals(defaultValue))
-//			combo.setSelectedIndex(-1);
-//		else
-//			combo.setSelectedItem(defaultValue);
-		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name){
-			@Override
-			public boolean checkForError() {
-				if(combo.getSelectedItem() != null)
-				setValue(combo.getSelectedItem().toString());
-			return setErrorLabel(validateConstraints(Id.SingleOpt, getValue(), constraints));
-			}
-			@Override
-			public void setValueOrDefault(String value) {
-				if("".equals(value))
-					combo.setSelectedIndex(-1);
-				else
-					combo.setSelectedItem(value);
-			}
-		};
-		panel.setValueOrDefault(defaultValue);
-		panel.setLayout(new GridBagLayout());
-		panel.setValue(defaultValue);
-		combo.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				panel.setValue(combo.getSelectedItem().toString());
-				panel.setErrorLabel(validateConstraints(Id.SingleOpt, panel.getValue(), constraints));
-			}
-		});
-		
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(0, 20, 0, 0);
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(title, gbc);
-		gbc.gridx = 1;
-		panel.add(combo, gbc);
-		gbc.gridy = 1;
-		gbc.gridx = 0;
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		panel.add(panel.getErrorLabel(), gbc);
-		return panel;
-	}
-
-	private JPanelWithValue setSingleInlineRadioStyle(String name, JLabel title,
-			List<String> options, String defaultValue, Map<ConstraintId, Constraint> constraints) {
-		ButtonGroup buttonGroup = new ButtonGroup();
-		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name){
-			@Override
-			public boolean checkForError() {
-				return setErrorLabel(validateConstraints(Id.SingleOpt, getValue(), constraints));
-			}
-
-			@Override
-			public void setValueOrDefault(String value) {
-				if("".equals(value))
-					buttonGroup.clearSelection();
-			}
-		};
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(0, 20, 0, 0);
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(title, gbc);
+//	private JPanelWithValue setSingleInlineRadioStyle(String name, JLabel title,
+//			List<String> options, String defaultValue, Map<ConstraintId, Constraint> constraints) {
 //		ButtonGroup buttonGroup = new ButtonGroup();
-		options.forEach(option -> {
-			JRadioButton button = new JRadioButton(option);
-			if(option.equals(defaultValue)) {
-				button.setSelected(true);
-				panel.setValue(defaultValue);
-			}
-			button.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					panel.setValue(button.getText());	
-					panel.setErrorLabel(validateConstraints(Id.SingleOpt, panel.getValue(), constraints));
-				}
-			});
-			buttonGroup.add(button);
-			gbc.gridx++;
-			panel.add(button, gbc);
-		});
-		return panel;
-	}
-	
-	private JPanelWithValue setSingleBlockRadioStyle(String name, JLabel title,
-			List<String> options, String defaultValue, Map<ConstraintId, Constraint> constraints) {
-		ButtonGroup buttonGroup = new ButtonGroup();
-		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name){
-			@Override
-			public boolean checkForError() {
-				return setErrorLabel(validateConstraints(Id.SingleOpt, getValue(), constraints));
-			}
-
-			@Override
-			public void setValueOrDefault(String value) {
-				if("".equals(value))
-					buttonGroup.clearSelection();
-			}
-		};
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(0, 20, 0, 0);
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(title, gbc);
-		options.forEach(option -> {
-			JRadioButton button = new JRadioButton(option);
-			if(option.equals(defaultValue))
-				button.setSelected(true);
-			button.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					panel.setValue(button.getText());	
-					panel.setErrorLabel(validateConstraints(Id.SingleOpt, panel.getValue(), constraints));
-				}
-			});
-			panel.setValue(defaultValue);
-			buttonGroup.add(button);
-			gbc.gridy++;
-			panel.add(button, gbc);
-		});
-		gbc.gridy++;
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		panel.add(panel.getErrorLabel(), gbc);
-		return panel;
-	}
+//		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name){
+//			@Override
+//			public boolean checkForError() {
+//				return setErrorLabel(validateConstraints(Id.SingleOpt, getValue(), constraints));
+//			}
+//
+//			@Override
+//			public void setValueOrDefault(String value) {
+//				if("".equals(value))
+//					buttonGroup.clearSelection();
+//			}
+//		};
+//		panel.setLayout(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.insets = new Insets(0, 20, 0, 0);
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		panel.add(title, gbc);
+////		ButtonGroup buttonGroup = new ButtonGroup();
+//		options.forEach(option -> {
+//			JRadioButton button = new JRadioButton(option);
+//			if(option.equals(defaultValue)) {
+//				button.setSelected(true);
+//				panel.setValue(defaultValue);
+//			}
+//			button.addActionListener(new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					panel.setValue(button.getText());	
+//					panel.setErrorLabel(validateConstraints(Id.SingleOpt, panel.getValue(), constraints));
+//				}
+//			});
+//			buttonGroup.add(button);
+//			gbc.gridx++;
+//			panel.add(button, gbc);
+//		});
+//		return panel;
+//	}
+//	
+//	private JPanelWithValue setSingleBlockRadioStyle(String name, JLabel title,
+//			List<String> options, String defaultValue, Map<ConstraintId, Constraint> constraints) {
+//		ButtonGroup buttonGroup = new ButtonGroup();
+//		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name){
+//			@Override
+//			public boolean checkForError() {
+//				return setErrorLabel(validateConstraints(Id.SingleOpt, getValue(), constraints));
+//			}
+//
+//			@Override
+//			public void setValueOrDefault(String value) {
+//				if("".equals(value))
+//					buttonGroup.clearSelection();
+//			}
+//		};
+//		panel.setLayout(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.insets = new Insets(0, 20, 0, 0);
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		panel.add(title, gbc);
+//		options.forEach(option -> {
+//			JRadioButton button = new JRadioButton(option);
+//			if(option.equals(defaultValue))
+//				button.setSelected(true);
+//			button.addActionListener(new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					panel.setValue(button.getText());	
+//					panel.setErrorLabel(validateConstraints(Id.SingleOpt, panel.getValue(), constraints));
+//				}
+//			});
+//			panel.setValue(defaultValue);
+//			buttonGroup.add(button);
+//			gbc.gridy++;
+//			panel.add(button, gbc);
+//		});
+//		gbc.gridy++;
+//		gbc.gridwidth = GridBagConstraints.REMAINDER;
+//		panel.add(panel.getErrorLabel(), gbc);
+//		return panel;
+//	}
 
 	@Override
 	public JPanelWithValue visitMultiOpt(CMultiOpt component) {
-		Map<ConstraintId, Constraint> constraints = getMapConstraint(component.getConstraints());
-		StyleId style = (StyleId)constraints.get(ConstraintId.STYLE);
-		JLabel title = new JLabel();
-		String name = component.getName();
-		title.setText(component.getTitle());
-		List<String> options = component.getOptions();
-		List<String> defaultValues= Stream.of(getSelectedOpt(constraints).split("\\|"))
-			     .map(String::trim)
-			     .collect(Collectors.toList());
-		return switch (style) {
-			case InlineCheckbox -> setMultiInlineCheckboxStyle(name, title, options, defaultValues, constraints);
-			case InlineList -> setMultiInlineListStyle(name, title, options, defaultValues, constraints);
-			case BlockCheckbox -> setMultiBlockCheckboxStyle(name, title, options, defaultValues, constraints);
-			case BlockList -> setMultiBlockListStyle(name, title, options, defaultValues, constraints);
-			default ->
-			throw new IllegalArgumentException("Unexpected value: " + style);
-		};
+		return component.make();
+//		Map<ConstraintId, Constraint> constraints = getMapConstraint(component.getConstraints());
+//		StyleId style = (StyleId)constraints.get(ConstraintId.STYLE);
+//		JLabel title = new JLabel();
+//		String name = component.getName();
+//		title.setText(component.getTitle());
+//		List<String> options = component.getOptions();
+//		List<String> defaultValues= Stream.of(getSelectedOpt(constraints).split("\\|"))
+//			     .map(String::trim)
+//			     .collect(Collectors.toList());
+//		return switch (style) {
+//			case InlineCheckbox -> setMultiInlineCheckboxStyle(name, title, options, defaultValues, constraints);
+//			case InlineList -> setMultiInlineListStyle(name, title, options, defaultValues, constraints);
+//			case BlockCheckbox -> setMultiBlockCheckboxStyle(name, title, options, defaultValues, constraints);
+//			case BlockList -> setMultiBlockListStyle(name, title, options, defaultValues, constraints);
+//			default ->
+//			throw new IllegalArgumentException("Unexpected value: " + style);
+//		};
 	}
 	
-	private JPanelWithValue setMultiBlockListStyle(String name, JLabel title,
-			List<String> options, List<String> defaultValues,
-			Map<ConstraintId, Constraint> constraints) {
-		MultiOptItem[] items = new MultiOptItem[options.size()];
-		for(int i=0; i<options.size(); i++) {
-			items[i] = new MultiOptItem(options.get(i), defaultValues.contains(options.get(i)));
-		}
-		DefaultComboBoxModel<MultiOptItem> model = new DefaultComboBoxModel<>(items);
-		CheckedComboBox<MultiOptItem> ccb = new CheckedComboBox<>(model);
-		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name){
-			@Override
-			public boolean checkForError() {
-				String selectedItems = ccb.getSelectedItems();
-				setValue(selectedItems);
-				return setErrorLabel(validateConstraints(Id.MultiOpt, selectedItems, constraints));
-			}
-
-			@Override
-			public void setValueOrDefault(String value) {
-				if("".equals(value)) {
-					for(int i=0; i<options.size(); i++) {
-						items[i].setSelected(defaultValues.contains(options.get(i)));
-					}
-					ccb.updateUI();
-				} else {
-					List<String> values = new ArrayList<String>(Arrays.asList(value.split("|")));
-					for(int i=0; i<options.size(); i++) {
-						items[i].setSelected(values.contains(options.get(i)));
-					}
-					ccb.updateUI();
-				}
-			}
-		};
-		panel.setValueOrDefault("");
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(0, 20, 0, 0);
-		MultiOptComboBox comboBox = new MultiOptComboBox();
-		comboBox.setPreferredSize(new Dimension(120, 25));
-		comboBox.setEditable(true);
-		comboBox.addItems(options);
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(title, gbc);
-		gbc.gridy = 1;
-		panel.add(ccb, gbc);
-		gbc.gridy = 2;
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		panel.add(panel.getErrorLabel(), gbc);
-		return panel;
-	}
-
-	private JPanelWithValue setMultiInlineListStyle(String name, JLabel title, List<String> options,
-			List<String> defaultValues, Map<ConstraintId, Constraint> constraints) {
-		MultiOptItem[] items = new MultiOptItem[options.size()];
-		for(int i=0; i<options.size(); i++) {
-			items[i] = new MultiOptItem(options.get(i), defaultValues.contains(options.get(i)));
-		}
-		DefaultComboBoxModel<MultiOptItem> model = new DefaultComboBoxModel<>(items);
-		CheckedComboBox<MultiOptItem> ccb = new CheckedComboBox<>(model);
-		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name){
-			@Override
-			public boolean checkForError() {
-				String selectedItems = ccb.getSelectedItems();
-				setValue(selectedItems);
-				return setErrorLabel(validateConstraints(Id.MultiOpt, selectedItems, constraints));
-			}
-
-			@Override
-			public void setValueOrDefault(String value) {
-				if("".equals(value)) {
-					for(int i=0; i<options.size(); i++) {
-						items[i].setSelected(defaultValues.contains(options.get(i)));
-					}
-					ccb.updateUI();
-				} else {
-					List<String> values = new ArrayList<String>(Arrays.asList(value.split("|")));
-					for(int i=0; i<options.size(); i++) {
-						items[i].setSelected(values.contains(options.get(i)));
-					}
-					ccb.updateUI();
-				}
-			}
-		};
-		panel.setValueOrDefault("");
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(0, 20, 0, 0);
-		MultiOptComboBox comboBox = new MultiOptComboBox();
-		comboBox.setPreferredSize(new Dimension(120, 25));
-		comboBox.setEditable(true);
-		comboBox.addItems(options);
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(title, gbc);
-		gbc.gridx = 1;
-		panel.add(ccb, gbc);
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		panel.add(panel.getErrorLabel(), gbc);
-		return panel;
-	}
-
-	private JPanelWithValue setMultiBlockCheckboxStyle(String name, JLabel title,
-			List<String> options, List<String> defaultValues, Map<ConstraintId, Constraint> constraints) {
-		List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
-		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name){
-			@Override
-			public boolean checkForError() {
-				String selectedItems = checkBoxes.stream()
-						.filter(c -> c.isSelected())
-						.map(c -> c.getText())
-						.collect(Collectors.toList()).toString();
-				// Remove the '[' and ']' characters of the list
-				selectedItems = selectedItems.substring(1, selectedItems.length()-1);
-				setValue(selectedItems);
-				return setErrorLabel(validateConstraints(Id.MultiOpt, selectedItems, constraints));
-			}
-
-			@Override
-			public void setValueOrDefault(String value) {
-				if("".equals(value)) {
-					setCheckBoxValues(checkBoxes, defaultValues);
-				}else {
-					List<String> values = new ArrayList<String>(Arrays.asList(value.split(",")));
-					setCheckBoxValues(checkBoxes, values);
-				}
-			}
-		};
-		
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(0, 20, 0, 0);
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(title, gbc);
-		
-		options.forEach(option -> {
-			JCheckBox checkBox = new JCheckBox(option);
-			checkBoxes.add(checkBox);
-			if(defaultValues.contains(option))
-				checkBox.setSelected(true);
-			gbc.gridy++;
-			panel.add(checkBox, gbc);
-		});
-		gbc.gridy++;
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		panel.add(panel.getErrorLabel(), gbc);
-		return panel;
-	}
-
-	private JPanelWithValue setMultiInlineCheckboxStyle(String name, JLabel title,
-			List<String> options, List<String> defaultValues, Map<ConstraintId, Constraint> constraints) {
-		List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
-		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name){
-			@Override
-			public boolean checkForError() {
-				String selectedItems = checkBoxes.stream()
-				.filter(c -> c.isSelected())
-				.map(c -> c.getText())
-				.collect(Collectors.toList()).toString();
-				// Remove the '[' and ']' characters of the list
-				selectedItems = selectedItems.substring(1, selectedItems.length()-1);
-				setValue(selectedItems);
-				return setErrorLabel(validateConstraints(Id.MultiOpt, selectedItems, constraints));
-			}
-			@Override
-			public void setValueOrDefault(String value) {
-				if("".equals(value)) {
-					setCheckBoxValues(checkBoxes, defaultValues);
-//					for(JCheckBox checkBox: checkBoxes ) {
-//						if(defaultValues.contains(checkBox.getText()))
-//							checkBox.setSelected(true);
-//						else
-//							checkBox.setSelected(false);
+//	private JPanelWithValue setMultiBlockListStyle(String name, JLabel title,
+//			List<String> options, List<String> defaultValues,
+//			Map<ConstraintId, Constraint> constraints) {
+//		MultiOptItem[] items = new MultiOptItem[options.size()];
+//		for(int i=0; i<options.size(); i++) {
+//			items[i] = new MultiOptItem(options.get(i), defaultValues.contains(options.get(i)));
+//		}
+//		DefaultComboBoxModel<MultiOptItem> model = new DefaultComboBoxModel<>(items);
+//		CheckedComboBox<MultiOptItem> ccb = new CheckedComboBox<>(model);
+//		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name){
+//			@Override
+//			public boolean checkForError() {
+//				String selectedItems = ccb.getSelectedItems();
+//				setValue(selectedItems);
+//				return setErrorLabel(validateConstraints(Id.MultiOpt, selectedItems, constraints));
+//			}
+//
+//			@Override
+//			public void setValueOrDefault(String value) {
+//				if("".equals(value)) {
+//					for(int i=0; i<options.size(); i++) {
+//						items[i].setSelected(defaultValues.contains(options.get(i)));
 //					}
-				}else {
-					List<String> values = new ArrayList<String>(Arrays.asList(value.split(",")));
-					setCheckBoxValues(checkBoxes, values);
-//					for(JCheckBox checkBox: checkBoxes ) {
-//						if(values.contains(checkBox.getText()))
-//							checkBox.setSelected(true);
-//						else
-//							checkBox.setSelected(false);
-//					}	
-				}
-			}
-		};
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(0, 20, 0, 0);
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(title, gbc);
-		options.forEach(option -> {
-			JCheckBox checkBox = new JCheckBox(option);
-			checkBoxes.add(checkBox);
-			if(defaultValues.contains(option))
-				checkBox.setSelected(true);
-			gbc.gridx++;
-			panel.add(checkBox, gbc);
-		});
-		gbc.gridy++;
-		gbc.gridx = 0;
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		panel.add(panel.getErrorLabel(), gbc);
-		return panel;
-	}
+//					ccb.updateUI();
+//				} else {
+//					List<String> values = new ArrayList<String>(Arrays.asList(value.split("|")));
+//					for(int i=0; i<options.size(); i++) {
+//						items[i].setSelected(values.contains(options.get(i)));
+//					}
+//					ccb.updateUI();
+//				}
+//			}
+//		};
+//		panel.setValueOrDefault("");
+//		panel.setLayout(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.insets = new Insets(0, 20, 0, 0);
+//		MultiOptComboBox comboBox = new MultiOptComboBox();
+//		comboBox.setPreferredSize(new Dimension(120, 25));
+//		comboBox.setEditable(true);
+//		comboBox.addItems(options);
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		panel.add(title, gbc);
+//		gbc.gridy = 1;
+//		panel.add(ccb, gbc);
+//		gbc.gridy = 2;
+//		gbc.gridwidth = GridBagConstraints.REMAINDER;
+//		panel.add(panel.getErrorLabel(), gbc);
+//		return panel;
+//	}
+//
+//	private JPanelWithValue setMultiInlineListStyle(String name, JLabel title, List<String> options,
+//			List<String> defaultValues, Map<ConstraintId, Constraint> constraints) {
+//		MultiOptItem[] items = new MultiOptItem[options.size()];
+//		for(int i=0; i<options.size(); i++) {
+//			items[i] = new MultiOptItem(options.get(i), defaultValues.contains(options.get(i)));
+//		}
+//		DefaultComboBoxModel<MultiOptItem> model = new DefaultComboBoxModel<>(items);
+//		CheckedComboBox<MultiOptItem> ccb = new CheckedComboBox<>(model);
+//		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name){
+//			@Override
+//			public boolean checkForError() {
+//				String selectedItems = ccb.getSelectedItems();
+//				setValue(selectedItems);
+//				return setErrorLabel(validateConstraints(Id.MultiOpt, selectedItems, constraints));
+//			}
+//
+//			@Override
+//			public void setValueOrDefault(String value) {
+//				if("".equals(value)) {
+//					for(int i=0; i<options.size(); i++) {
+//						items[i].setSelected(defaultValues.contains(options.get(i)));
+//					}
+//					ccb.updateUI();
+//				} else {
+//					List<String> values = new ArrayList<String>(Arrays.asList(value.split("|")));
+//					for(int i=0; i<options.size(); i++) {
+//						items[i].setSelected(values.contains(options.get(i)));
+//					}
+//					ccb.updateUI();
+//				}
+//			}
+//		};
+//		panel.setValueOrDefault("");
+//		panel.setLayout(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.insets = new Insets(0, 20, 0, 0);
+//		MultiOptComboBox comboBox = new MultiOptComboBox();
+//		comboBox.setPreferredSize(new Dimension(120, 25));
+//		comboBox.setEditable(true);
+//		comboBox.addItems(options);
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		panel.add(title, gbc);
+//		gbc.gridx = 1;
+//		panel.add(ccb, gbc);
+//		gbc.gridx = 0;
+//		gbc.gridy = 1;
+//		gbc.gridwidth = GridBagConstraints.REMAINDER;
+//		panel.add(panel.getErrorLabel(), gbc);
+//		return panel;
+//	}
+//
+//	private JPanelWithValue setMultiBlockCheckboxStyle(String name, JLabel title,
+//			List<String> options, List<String> defaultValues, Map<ConstraintId, Constraint> constraints) {
+//		List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
+//		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name){
+//			@Override
+//			public boolean checkForError() {
+//				String selectedItems = checkBoxes.stream()
+//						.filter(c -> c.isSelected())
+//						.map(c -> c.getText())
+//						.collect(Collectors.toList()).toString();
+//				// Remove the '[' and ']' characters of the list
+//				selectedItems = selectedItems.substring(1, selectedItems.length()-1);
+//				setValue(selectedItems);
+//				return setErrorLabel(validateConstraints(Id.MultiOpt, selectedItems, constraints));
+//			}
+//
+//			@Override
+//			public void setValueOrDefault(String value) {
+//				if("".equals(value)) {
+//					setCheckBoxValues(checkBoxes, defaultValues);
+//				}else {
+//					List<String> values = new ArrayList<String>(Arrays.asList(value.split(",")));
+//					setCheckBoxValues(checkBoxes, values);
+//				}
+//			}
+//		};
+//		
+//		panel.setLayout(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.insets = new Insets(0, 20, 0, 0);
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		panel.add(title, gbc);
+//		
+//		options.forEach(option -> {
+//			JCheckBox checkBox = new JCheckBox(option);
+//			checkBoxes.add(checkBox);
+//			if(defaultValues.contains(option))
+//				checkBox.setSelected(true);
+//			gbc.gridy++;
+//			panel.add(checkBox, gbc);
+//		});
+//		gbc.gridy++;
+//		gbc.gridwidth = GridBagConstraints.REMAINDER;
+//		panel.add(panel.getErrorLabel(), gbc);
+//		return panel;
+//	}
+//
+//	private JPanelWithValue setMultiInlineCheckboxStyle(String name, JLabel title,
+//			List<String> options, List<String> defaultValues, Map<ConstraintId, Constraint> constraints) {
+//		List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
+//		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name){
+//			@Override
+//			public boolean checkForError() {
+//				String selectedItems = checkBoxes.stream()
+//				.filter(c -> c.isSelected())
+//				.map(c -> c.getText())
+//				.collect(Collectors.toList()).toString();
+//				// Remove the '[' and ']' characters of the list
+//				selectedItems = selectedItems.substring(1, selectedItems.length()-1);
+//				setValue(selectedItems);
+//				return setErrorLabel(validateConstraints(Id.MultiOpt, selectedItems, constraints));
+//			}
+//			@Override
+//			public void setValueOrDefault(String value) {
+//				if("".equals(value)) {
+//					setCheckBoxValues(checkBoxes, defaultValues);
+////					for(JCheckBox checkBox: checkBoxes ) {
+////						if(defaultValues.contains(checkBox.getText()))
+////							checkBox.setSelected(true);
+////						else
+////							checkBox.setSelected(false);
+////					}
+//				}else {
+//					List<String> values = new ArrayList<String>(Arrays.asList(value.split(",")));
+//					setCheckBoxValues(checkBoxes, values);
+////					for(JCheckBox checkBox: checkBoxes ) {
+////						if(values.contains(checkBox.getText()))
+////							checkBox.setSelected(true);
+////						else
+////							checkBox.setSelected(false);
+////					}	
+//				}
+//			}
+//		};
+//		panel.setLayout(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.insets = new Insets(0, 20, 0, 0);
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		panel.add(title, gbc);
+//		options.forEach(option -> {
+//			JCheckBox checkBox = new JCheckBox(option);
+//			checkBoxes.add(checkBox);
+//			if(defaultValues.contains(option))
+//				checkBox.setSelected(true);
+//			gbc.gridx++;
+//			panel.add(checkBox, gbc);
+//		});
+//		gbc.gridy++;
+//		gbc.gridx = 0;
+//		gbc.gridwidth = GridBagConstraints.REMAINDER;
+//		panel.add(panel.getErrorLabel(), gbc);
+//		return panel;
+//	}
 	
-	private void setCheckBoxValues(List<JCheckBox> checkBoxes , List<String> values) {
-		for(JCheckBox checkBox: checkBoxes ) {
-			if(values.contains(checkBox.getText()))
-				checkBox.setSelected(true);
-			else
-				checkBox.setSelected(false);
-		}
-	}
+//	private void setCheckBoxValues(List<JCheckBox> checkBoxes , List<String> values) {
+//		for(JCheckBox checkBox: checkBoxes ) {
+//			if(values.contains(checkBox.getText()))
+//				checkBox.setSelected(true);
+//			else
+//				checkBox.setSelected(false);
+//		}
+//	}
 
-	private JLabel generateTitle(String title, Map<ConstraintId, Constraint> constraints) {
-		JLabel label = new JLabel();
-		label.setBorder(new EmptyBorder(0, 0, 0, 10));
-		Font font = label.getFont();
-		label.setFont(font.deriveFont(font.getStyle() | Font.ITALIC));
-		label.setText(title);
-		addRequiredToLabel(label, constraints);
-		return label;
-	}
+//	private JLabel generateTitle(String title, Map<ConstraintId, Constraint> constraints) {
+//		JLabel label = new JLabel();
+//		label.setBorder(new EmptyBorder(0, 0, 0, 10));
+//		Font font = label.getFont();
+//		label.setFont(font.deriveFont(font.getStyle() | Font.ITALIC));
+//		label.setText(title);
+//		addRequiredToLabel(label, constraints);
+//		return label;
+//	}
 	
 	private JLabel generateGroupTitle(String title) {
 		JLabel label = new JLabel();
@@ -1470,181 +1461,181 @@ public class PagesVisitor implements Visitor {
 		return label;
 	}
 	
-	private void setHolder(JTextField textField, Map<ConstraintId, Constraint> constraints) {
-		if(textField.getText().isEmpty() && constraints.containsKey(ConstraintId.HOLDER)) {
-			textField.setForeground(Color.gray);
-			textField.setText(((HolderCon)constraints.get(ConstraintId.HOLDER)).value());
-		}
-	}
+//	private void setHolder(JTextField textField, Map<ConstraintId, Constraint> constraints) {
+//		if(textField.getText().isEmpty() && constraints.containsKey(ConstraintId.HOLDER)) {
+//			textField.setForeground(Color.gray);
+//			textField.setText(((HolderCon)constraints.get(ConstraintId.HOLDER)).value());
+//		}
+//	}
+//	
+//	private JPanelWithValue setPasswordLayout(StyleId style, JLabel title,
+//			JPasswordField textField, JLabel errorMsg, JPanelWithValue panel) {
+//		return switch (style) {
+//			case Block -> setPasswordBlockStyle(title, textField, errorMsg, panel);
+//			case Inline -> setPasswordInlineStyle(title, textField, errorMsg, panel);
+//			default ->
+//			throw new IllegalArgumentException("Unexpected value: " + style);
+//		};
+//	}
 	
-	private JPanelWithValue setPasswordLayout(StyleId style, JLabel title,
-			JPasswordField textField, JLabel errorMsg, JPanelWithValue panel) {
-		return switch (style) {
-			case Block -> setPasswordBlockStyle(title, textField, errorMsg, panel);
-			case Inline -> setPasswordInlineStyle(title, textField, errorMsg, panel);
-			default ->
-			throw new IllegalArgumentException("Unexpected value: " + style);
-		};
-	}
+//	private JPanelWithValue setPasswordInlineStyle(JLabel title, JPasswordField passField,
+//			JLabel errorMsg, JPanelWithValue panel) {
+//		panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+//		panel.setLayout(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		JToggleButton showButton = new JToggleButton();
+//		showButton.setPreferredSize(new Dimension(28, 28));
+//		passField.setEchoChar('\u25CF');
+//		ImageIcon hideImg = new ImageIcon(this.getClass().getResource("/images/hide.png"));
+//		Image hideDim = hideImg.getImage().getScaledInstance(28, 28, Image.SCALE_DEFAULT);
+//		ImageIcon hideImg2 = new ImageIcon(hideDim);
+//		ImageIcon showImg = new ImageIcon(this.getClass().getResource("/images/show.png"));
+//		Image showDim = showImg.getImage().getScaledInstance(28, 28, Image.SCALE_DEFAULT);
+//		ImageIcon showImg2 = new ImageIcon(showDim);
+//		showButton.setIcon(showImg2);
+//		showButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				if(showButton.isSelected()) {
+//					passField.setEchoChar((char)0);
+//					showButton.setIcon(hideImg2);
+//				}
+//				else {
+//					passField.setEchoChar('\u25CF');
+//					showButton.setIcon(showImg2);
+//				}
+//			}
+//		});
+//		
+//		gbc.fill = GridBagConstraints.HORIZONTAL;
+//		passField.setPreferredSize(new Dimension(252, 30));
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		panel.add(title, gbc);
+//		gbc.gridx = 1;
+//		panel.add(passField, gbc);
+//		gbc.gridx = 2;
+//		panel.add(showButton, gbc);
+//		gbc.gridx = 1;
+//		gbc.gridy = 1;
+//		gbc.gridwidth = GridBagConstraints.REMAINDER;
+//		panel.add(errorMsg, gbc);
+//		return panel;
+//	}
+//
+//	private JPanelWithValue setPasswordBlockStyle(JLabel title, JPasswordField passField, JLabel errorMsg, JPanelWithValue panel) {
+//		panel.setLayout(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		JToggleButton showButton = new JToggleButton();
+//		showButton.setPreferredSize(new Dimension(28, 28));
+//		passField.setEchoChar('\u25CF');
+//		ImageIcon hideImg = new ImageIcon(this.getClass().getResource("/images/hide.png"));
+//		Image hideDim = hideImg.getImage().getScaledInstance(28, 28, Image.SCALE_DEFAULT);
+//		ImageIcon hideImg2 = new ImageIcon(hideDim);
+//		ImageIcon showImg = new ImageIcon(this.getClass().getResource("/images/show.png"));
+//		Image showDim = showImg.getImage().getScaledInstance(28, 28, Image.SCALE_DEFAULT);
+//		ImageIcon showImg2 = new ImageIcon(showDim);
+//		showButton.setIcon(showImg2);
+//		showButton.addActionListener(e -> {
+//				if(showButton.isSelected()) {
+//					passField.setEchoChar((char)0);
+//					showButton.setIcon(hideImg2);
+//				}
+//				else {
+//					passField.setEchoChar('\u25CF');
+//					showButton.setIcon(showImg2);
+//				}
+//		});
+//
+//		gbc.anchor = GridBagConstraints.WEST;
+//		passField.setPreferredSize(new Dimension(252, 30));
+//		gbc.insets = new Insets(0, 20, 0, 20);
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		panel.add(title, gbc);
+//		gbc.gridy = 1;
+//		gbc.insets = new Insets(0, 20, 0, 0);
+//		panel.add(passField, gbc);
+//		gbc.gridx = 1;
+//		gbc.insets = new Insets(0, 0, 0, 0);
+//		panel.add(showButton, gbc);
+//		gbc.insets = new Insets(0, 20, 0, 20);
+//		gbc.gridx = 0;
+//		gbc.gridy = 2;
+//		gbc.gridwidth = GridBagConstraints.REMAINDER;
+//		panel.add(errorMsg, gbc);
+//		return panel;
+//	}
+//
+//	private Map<ConstraintId, Constraint> getMapConstraint(List<Constraint> constraints) {
+//		Map<ConstraintId, Constraint> constraintMap = new HashMap<>();
+//		constraints.forEach(con -> {
+//			ConstraintId id = con.getID();
+//			switch (id) {
+//				case MIN -> constraintMap.put(id,(Constraint.MinCon)con);
+//				case MAX -> constraintMap.put(id,(Constraint.MaxCon)con);
+//				case REGEX -> constraintMap.put(id,(Constraint.RegexCon)con);
+//				case HOLDER -> constraintMap.put(id,(Constraint.HolderCon)con);
+//				case REQUIRED -> constraintMap.put(id,(Constraint.RequiredCon)con);
+//				case STYLE -> constraintMap.put(id,(StyleId)con);
+//				case MINORTICKS -> constraintMap.put(id,(Constraint.MinorTicksCon)con);
+//				case MAJORTICKS -> constraintMap.put(id,(Constraint.MajorTicksCon)con);
+//				case SELECTED -> constraintMap.put(id,(Constraint.SelectedCon)con);
+//				default ->
+//					throw new IllegalArgumentException("Unexpected String constraint: " + id);
+//			}
+//		});
+//		// If not exist then apply those default setting
+//		if (!constraintMap.containsKey(ConstraintId.STYLE))
+//			constraintMap.put(ConstraintId.STYLE, StyleId.Block);
+//		if (!constraintMap.containsKey(ConstraintId.REQUIRED))
+//			constraintMap.put(ConstraintId.REQUIRED, RequiredCon.Required);
+//		return constraintMap;	
+//	}
+//	
+//	private JLabel addRequiredToLabel(JLabel label, Map<ConstraintId, Constraint> constraints) {
+//		if(constraints.get(ConstraintId.REQUIRED) == RequiredCon.Required) {
+//			label.setText(label.getText() + " (Required)" );
+//		}
+//		return label;
+//	}
 	
-	private JPanelWithValue setPasswordInlineStyle(JLabel title, JPasswordField passField,
-			JLabel errorMsg, JPanelWithValue panel) {
-		panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		JToggleButton showButton = new JToggleButton();
-		showButton.setPreferredSize(new Dimension(28, 28));
-		passField.setEchoChar('\u25CF');
-		ImageIcon hideImg = new ImageIcon(this.getClass().getResource("/images/hide.png"));
-		Image hideDim = hideImg.getImage().getScaledInstance(28, 28, Image.SCALE_DEFAULT);
-		ImageIcon hideImg2 = new ImageIcon(hideDim);
-		ImageIcon showImg = new ImageIcon(this.getClass().getResource("/images/show.png"));
-		Image showDim = showImg.getImage().getScaledInstance(28, 28, Image.SCALE_DEFAULT);
-		ImageIcon showImg2 = new ImageIcon(showDim);
-		showButton.setIcon(showImg2);
-		showButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(showButton.isSelected()) {
-					passField.setEchoChar((char)0);
-					showButton.setIcon(hideImg2);
-				}
-				else {
-					passField.setEchoChar('\u25CF');
-					showButton.setIcon(showImg2);
-				}
-			}
-		});
-		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		passField.setPreferredSize(new Dimension(252, 30));
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(title, gbc);
-		gbc.gridx = 1;
-		panel.add(passField, gbc);
-		gbc.gridx = 2;
-		panel.add(showButton, gbc);
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		panel.add(errorMsg, gbc);
-		return panel;
-	}
-
-	private JPanelWithValue setPasswordBlockStyle(JLabel title, JPasswordField passField, JLabel errorMsg, JPanelWithValue panel) {
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		JToggleButton showButton = new JToggleButton();
-		showButton.setPreferredSize(new Dimension(28, 28));
-		passField.setEchoChar('\u25CF');
-		ImageIcon hideImg = new ImageIcon(this.getClass().getResource("/images/hide.png"));
-		Image hideDim = hideImg.getImage().getScaledInstance(28, 28, Image.SCALE_DEFAULT);
-		ImageIcon hideImg2 = new ImageIcon(hideDim);
-		ImageIcon showImg = new ImageIcon(this.getClass().getResource("/images/show.png"));
-		Image showDim = showImg.getImage().getScaledInstance(28, 28, Image.SCALE_DEFAULT);
-		ImageIcon showImg2 = new ImageIcon(showDim);
-		showButton.setIcon(showImg2);
-		showButton.addActionListener(e -> {
-				if(showButton.isSelected()) {
-					passField.setEchoChar((char)0);
-					showButton.setIcon(hideImg2);
-				}
-				else {
-					passField.setEchoChar('\u25CF');
-					showButton.setIcon(showImg2);
-				}
-		});
-
-		gbc.anchor = GridBagConstraints.WEST;
-		passField.setPreferredSize(new Dimension(252, 30));
-		gbc.insets = new Insets(0, 20, 0, 20);
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(title, gbc);
-		gbc.gridy = 1;
-		gbc.insets = new Insets(0, 20, 0, 0);
-		panel.add(passField, gbc);
-		gbc.gridx = 1;
-		gbc.insets = new Insets(0, 0, 0, 0);
-		panel.add(showButton, gbc);
-		gbc.insets = new Insets(0, 20, 0, 20);
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		panel.add(errorMsg, gbc);
-		return panel;
-	}
-
-	private Map<ConstraintId, Constraint> getMapConstraint(List<Constraint> constraints) {
-		Map<ConstraintId, Constraint> constraintMap = new HashMap<>();
-		constraints.forEach(con -> {
-			ConstraintId id = con.getID();
-			switch (id) {
-				case MIN -> constraintMap.put(id,(Constraint.MinCon)con);
-				case MAX -> constraintMap.put(id,(Constraint.MaxCon)con);
-				case REGEX -> constraintMap.put(id,(Constraint.RegexCon)con);
-				case HOLDER -> constraintMap.put(id,(Constraint.HolderCon)con);
-				case REQUIRED -> constraintMap.put(id,(Constraint.RequiredCon)con);
-				case STYLE -> constraintMap.put(id,(StyleId)con);
-				case MINORTICKS -> constraintMap.put(id,(Constraint.MinorTicksCon)con);
-				case MAJORTICKS -> constraintMap.put(id,(Constraint.MajorTicksCon)con);
-				case SELECTED -> constraintMap.put(id,(Constraint.SelectedCon)con);
-				default ->
-					throw new IllegalArgumentException("Unexpected String constraint: " + id);
-			}
-		});
-		// If not exist then apply those default setting
-		if (!constraintMap.containsKey(ConstraintId.STYLE))
-			constraintMap.put(ConstraintId.STYLE, StyleId.Block);
-		if (!constraintMap.containsKey(ConstraintId.REQUIRED))
-			constraintMap.put(ConstraintId.REQUIRED, RequiredCon.Required);
-		return constraintMap;	
-	}
-	
-	private JLabel addRequiredToLabel(JLabel label, Map<ConstraintId, Constraint> constraints) {
-		if(constraints.get(ConstraintId.REQUIRED) == RequiredCon.Required) {
-			label.setText(label.getText() + " (Required)" );
-		}
-		return label;
-	}
-	
-	private String validateConstraints(Id id, String text, Map<ConstraintId, Constraint> constraints) {
-		if(constraints.get(ConstraintId.REQUIRED) == RequiredCon.Required) {
-			String requiredError = ((Constraint.RequiredCon)constraints.get(ConstraintId.REQUIRED)).validate(text);
-			if(!" ".equals(requiredError))
-				return requiredError;
-		}
-		if(!text.isEmpty() && constraints.containsKey(ConstraintId.MIN)) {
-			String minError = switch (id) {
-				case Integer ->
-					((Constraint.MinCon)constraints.get(ConstraintId.MIN)).validateInt(text);
-				case Decimal ->
-					((Constraint.MinCon)constraints.get(ConstraintId.MIN)).validateDec(text);
-				default ->
-					((Constraint.MinCon)constraints.get(ConstraintId.MIN)).validateLength(text);
-			};
-			if(!" ".equals(minError))
-				return minError;
-		}
-		if(!text.isEmpty() && constraints.containsKey(ConstraintId.MAX)) {
-			String maxError = switch (id) {
-				case Integer ->
-					((Constraint.MaxCon)constraints.get(ConstraintId.MAX)).validateInt(text);
-				case Decimal ->
-					((Constraint.MaxCon)constraints.get(ConstraintId.MAX)).validateDec(text);
-				default ->
-					((Constraint.MaxCon)constraints.get(ConstraintId.MAX)).validateLength(text);
-			};
-			if(!" ".equals(maxError))
-				return maxError;
-		}
-		if(!text.isEmpty() && constraints.containsKey(ConstraintId.REGEX)) {
-			String regexError = ((Constraint.RegexCon)constraints.get(ConstraintId.REGEX)).validate(text);
-			if(!" ".equals(regexError))
-				return regexError;
-			}
-		return " ";
-	}
+//	private String validateConstraints(Id id, String text, Map<ConstraintId, Constraint> constraints) {
+//		if(constraints.get(ConstraintId.REQUIRED) == RequiredCon.Required) {
+//			String requiredError = ((Constraint.RequiredCon)constraints.get(ConstraintId.REQUIRED)).validate(text);
+//			if(!" ".equals(requiredError))
+//				return requiredError;
+//		}
+//		if(!text.isEmpty() && constraints.containsKey(ConstraintId.MIN)) {
+//			String minError = switch (id) {
+//				case Integer ->
+//					((Constraint.MinCon)constraints.get(ConstraintId.MIN)).validateInt(text);
+//				case Decimal ->
+//					((Constraint.MinCon)constraints.get(ConstraintId.MIN)).validateDec(text);
+//				default ->
+//					((Constraint.MinCon)constraints.get(ConstraintId.MIN)).validateLength(text);
+//			};
+//			if(!" ".equals(minError))
+//				return minError;
+//		}
+//		if(!text.isEmpty() && constraints.containsKey(ConstraintId.MAX)) {
+//			String maxError = switch (id) {
+//				case Integer ->
+//					((Constraint.MaxCon)constraints.get(ConstraintId.MAX)).validateInt(text);
+//				case Decimal ->
+//					((Constraint.MaxCon)constraints.get(ConstraintId.MAX)).validateDec(text);
+//				default ->
+//					((Constraint.MaxCon)constraints.get(ConstraintId.MAX)).validateLength(text);
+//			};
+//			if(!" ".equals(maxError))
+//				return maxError;
+//		}
+//		if(!text.isEmpty() && constraints.containsKey(ConstraintId.REGEX)) {
+//			String regexError = ((Constraint.RegexCon)constraints.get(ConstraintId.REGEX)).validate(text);
+//			if(!" ".equals(regexError))
+//				return regexError;
+//			}
+//		return " ";
+//	}
 
 }

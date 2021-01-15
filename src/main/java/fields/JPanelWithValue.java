@@ -12,7 +12,7 @@ public abstract class JPanelWithValue extends JPanelContainer {
 	private String name = null;
 	private JLabel errorLabel;
 	
-	public abstract void setValueOrDefault(String value);
+	public abstract void setValueOrDefault(String value, boolean setDefault);
 	
 	public JPanelWithValue(Id id) {
 		super(id);

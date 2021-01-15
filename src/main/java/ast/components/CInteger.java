@@ -1,19 +1,36 @@
 package ast.components;
 
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
+import javax.swing.JLabel;
 
 import ast.Id;
 import ast.constraints.Constraint;
+import ast.constraints.ConstraintId;
+import ast.constraints.StyleId;
 import fields.JPanelWithValue;
+import fields.PlaceholderIntegerField;
 import generated.GuiInputParser.ComponentContext;
 import ui.Visitor;
 
-public class CInteger implements Component {
-	private String name;
-	private String title;
-	private Integer defVal;
-	private List<Constraint> constraints;
+public class CInteger implements Component, Placeholder, BasicLayout {
+	private final String name;
+	private final String title;
+	private final Integer defVal;
+	private final List<Constraint> constraints;
+	
+	public CInteger(String name, String title, Integer defVal, List<Constraint> constraints) {
+		this.name = name;
+		this.title = title;
+		this.defVal = defVal;
+		this.constraints = constraints;
+	}
 	
 	public CInteger(ComponentContext ctx) {
 		name = extractCompName(ctx);
@@ -29,6 +46,57 @@ public class CInteger implements Component {
 		} catch (NumberFormatException e) {
 			throw new NumberFormatException(value + " is not a valid integer");
 		}
+	}
+	
+	public JPanelWithValue make() {
+		PlaceholderIntegerField textField = new PlaceholderIntegerField();
+		Map<ConstraintId, Constraint> constraintMap = getMapConstraint(constraints);
+		JPanelWithValue panel = new JPanelWithValue(Id.Integer, name){
+			@Override
+			public boolean checkForError() {
+				return setErrorLabel(validateConstraints(Id.Integer,textField.getText(), constraintMap));
+			}
+			@Override
+			public void setValueOrDefault(String value, boolean setDefault) {
+				if(setDefault) {
+					textField.setText(String.valueOf(defVal));
+					setValue(String.valueOf(defVal));
+				} else {
+					try {
+						textField.setText(String.valueOf(value));
+						setValue(String.valueOf(value));
+					} catch (Exception e) {
+						throw new NumberFormatException(value + " is not a valid integer");
+					}
+				}
+			}
+		};
+		panel.setValueOrDefault("", true);
+		JLabel jTitle = generateTitle(title, constraintMap);
+		JLabel errorMsg = panel.getErrorLabel();
+		StyleId style = (StyleId)constraintMap.get(ConstraintId.STYLE);
+		setPlaceHolder(textField, constraintMap);
+		textField.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				setPlaceHolder(textField, constraintMap);
+				boolean hasError = panel.setErrorLabel(validateConstraints(Id.Integer,textField.getText(), constraintMap));
+				if(!hasError)
+					panel.setValue(textField.getText());
+			}
+			@Override
+			public void focusGained(FocusEvent e) {}
+		});
+		textField.addKeyListener(new KeyAdapter() {
+			 public void keyReleased(KeyEvent e) {
+				 String error = validateConstraints(Id.Integer, textField.getText(), constraintMap);
+				 if(" ".equals(error)) {
+					errorMsg.setText(" "); 
+					panel.setValue(textField.getText());
+				 }
+			 }
+		});
+		return setLayout(style, jTitle, textField, errorMsg, panel);
 	}
 	
 	public String getName() {
