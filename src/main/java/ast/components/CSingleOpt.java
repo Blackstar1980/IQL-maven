@@ -227,6 +227,7 @@ public class CSingleOpt implements Component {
 			button.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					System.out.println(button.isSelected());
 					panel.setValue(button.getText());
 					panel.setErrorLabel(validateConstraints(Id.SingleOpt, panel.getValue(), constraints));
 				}
