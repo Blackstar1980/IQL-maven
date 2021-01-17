@@ -12,7 +12,7 @@ import javax.swing.JLabel;
 import ast.Id;
 import ast.constraints.Constraint;
 import ast.constraints.ConstraintId;
-import ast.constraints.StyleId;
+import ast.constraints.DisplayId;
 import ast.constraints.Constraint.HolderCon;
 import fields.JPanelWithValue;
 import fields.PlaceholderTextField;
@@ -45,7 +45,10 @@ public class CString implements Component, Placeholder, BasicLayout {
 		JPanelWithValue panel = new JPanelWithValue(Id.String, name) {
 			@Override
 			public boolean checkForError() {
-				return setErrorLabel(validateConstraints(Id.String, textField.getText(), constraintMap));
+				String errorMsg = validateConstraints(Id.String, textField.getText(), constraintMap);
+				boolean haveError = setErrorLabel(errorMsg);
+				setComponentErrorIndicator(textField, errorMsg, true);
+				return haveError;
 			}
 
 			@Override
@@ -62,16 +65,21 @@ public class CString implements Component, Placeholder, BasicLayout {
 		JLabel jTitle = generateTitle(title, constraintMap);
 		JLabel errorMsg = panel.getErrorLabel();
 		panel.setValueOrDefault("", true);
-		StyleId style = (StyleId)constraintMap.get(ConstraintId.STYLE);
+		DisplayId display = (DisplayId)constraintMap.get(ConstraintId.DISPLAY);
+		if(display == DisplayId.Non) {
+			display = DisplayId.Block;
+		}
 		if(textField.getText().isEmpty() && constraintMap.containsKey(ConstraintId.HOLDER)) {
 			textField.setPlaceholder(((HolderCon)constraintMap.get(ConstraintId.HOLDER)).value());
 		}
 		textField.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {
+				String errorMsg = validateConstraints(Id.String, textField.getText(), constraintMap);
 				setPlaceHolder(textField, constraintMap);
-				boolean hasError = panel.setErrorLabel(validateConstraints(Id.String, textField.getText(), constraintMap));
-				if(!hasError)
+				boolean haveError = panel.setErrorLabel(errorMsg);
+				panel.setComponentErrorIndicator(textField, errorMsg, true);
+				if(!haveError)
 					panel.setValue(textField.getText());
 			}	
 			@Override
@@ -80,13 +88,14 @@ public class CString implements Component, Placeholder, BasicLayout {
 		textField.addKeyListener(new KeyAdapter() {
 			 public void keyReleased(KeyEvent e) {
 				 String error = validateConstraints(Id.String, textField.getText(), constraintMap);
+				 panel.setComponentErrorIndicator(textField, error, false);
 				 if(" ".equals(error)) {
 					errorMsg.setText(" "); 
 					panel.setValue(textField.getText());
 				 }
 			 }
 		});
-		return setLayout(style, jTitle, textField, errorMsg, panel);
+		return setLayout(display, jTitle, textField, errorMsg, panel);
 	}
 	
 	public String getName() {

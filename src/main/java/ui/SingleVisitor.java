@@ -21,9 +21,7 @@ import ast.Id;
 import ast.components.*;
 import fields.*;
 
-public class PagesVisitor implements Visitor {
-	private int currentPage = 1;
-	private int totalPages = 1;
+public class SingleVisitor implements Visitor {
 	private CompletableFuture<List<Map<String, String>>> data = new CompletableFuture<>();
 	private final JTabbedPane tabbedPane = new JTabbedPane();
 	
@@ -34,33 +32,16 @@ public class PagesVisitor implements Visitor {
 
 	@Override
 	public JDialog visitQuery(Query query) {
-		Id dialogId = query.dialog().getType();
 		JDialog jDialog = new JDialog();
-		if(dialogId == Id.Single) {
-			jDialog = visitSingle((DSingle)query.dialog());
-			List<Containable> containers = query.containers();
-			List<JPanelContainer> panels = new ArrayList<>();
-			for(Containable container:containers) {
-				panels.add(getPanel(container));
-			}
-			constructSingleDialog(jDialog, query.dialog().getDescription(), panels);
-		}
-		if(dialogId == Id.Multi) {
-			jDialog = visitMulti((DMulti)query.dialog());
-		}
-		if(dialogId == Id.Pages) {
-			jDialog = visitPages((DPages)query.dialog());
-			List<Containable> containers = query.containers();
-			List<JPanelContainer> panels = new ArrayList<>();
-			for(Containable container:containers) {
-				panels.add(getPanel(container));
-			}
-			constructPageDialog(jDialog, query.dialog().getDescription(), panels);
-		}
+		jDialog = visitSingle((DSingle)query.dialog());
+		List<Containable> containers = query.containers();
+		List<JPanelContainer> panels = new ArrayList<>();
+		for(Containable container:containers)
+			panels.add(getPanel(container));
+		constructSingleDialog(jDialog, panels);
 		jDialog.pack();
 		jDialog.setVisible(true);
-		System.out.println("in Pages");
-
+		System.out.println("in Single");
 		return jDialog;
 	}
 	
@@ -68,10 +49,11 @@ public class PagesVisitor implements Visitor {
 		return container.accept(this);
 	}
 	
-	private void constructSingleDialog(JDialog dialog, String description,
-			List<JPanelContainer> panels) {
+	private void constructSingleDialog(JDialog dialog, List<JPanelContainer> panels) {
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
+		gbc.anchor = GridBagConstraints.EAST;
+//		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 1.0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		for(JPanel panel : panels) {
@@ -116,188 +98,6 @@ public class PagesVisitor implements Visitor {
 		    entry.setValue(null);
 		}
 		return entries;
-	}
-
-	private void constructPageDialog(JDialog dialog, String description,
-			List<JPanelContainer> panels) {
-		List<Map<String, String>> results = new ArrayList<>();
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		for(JPanel panel : panels) {
-			gbc.gridy++;
-			dialog.add(panel, gbc);
-		}
-		JPanel buttonsPanel = new JPanel();
-		JButton cancelButton = new JButton("Cancel");
-		JButton approveButton = new JButton("Approve");
-		JButton prevButton = new JButton("<");
-		JButton nextButton = new JButton(">");
-		JButton addButton = new JButton("Add");
-		JButton deleteButton = new JButton("Delete");
-		JLabel pagesIndex = new JLabel(getPageIndex());
-		JPanel utilsPanel = new JPanel();
-		deleteButton.setEnabled(false);
-		prevButton.setEnabled(false);
-		nextButton.setEnabled(false);
-		deleteButton.setEnabled(false);
-		
-		dialog.addWindowListener(new WindowAdapter() {
-			@Override
-		    public void windowClosed(WindowEvent e) {
-				results.clear();
-				results.add(getEntries(panels));
-				data.complete(results);
-				dialog.dispose();
-		    }
-		});
-		
-		nextButton.addActionListener(e -> {
-			var saved = saveAsMap(panels);
-			if(saved==null)
-				return;
-			updateDataList(results, saved, currentPage -1, false);
-			currentPage++;
-			if(currentPage == totalPages)
-				nextButton.setEnabled(false);
-			if(currentPage > 1)
-				prevButton.setEnabled(true);
-			pagesIndex.setText(getPageIndex());
-			updateUiFields(panels, results.get(currentPage-1), false);
-		});
-		
-		prevButton.addActionListener(e -> {
-			var saved = saveAsMap(panels);
-			if(saved==null)
-				return;
-			if(results.size() < currentPage) {
-				results.add(saved);
-			}
-			updateDataList(results, saved, currentPage -1, false);
-			currentPage--;
-			
-			if(currentPage == 1)
-				prevButton.setEnabled(false);
-			if(currentPage < totalPages)
-				nextButton.setEnabled(true);
-			pagesIndex.setText(getPageIndex());
-			updateUiFields(panels, results.get(currentPage -1), false);
-		});
-		
-		addButton.addActionListener(e -> {
-			var saved = saveAsMap(panels);
-			if(saved==null)
-				return;
-			updateDataList(results, saved, currentPage -1, true);
-			updateUiFields(panels, new HashMap<String, String>(), true);
-			totalPages++;
-			deleteButton.setEnabled(true);
-			if(totalPages > 1) 
-				prevButton.setEnabled(true);
-			currentPage = totalPages;
-			pagesIndex.setText(getPageIndex());
-		});
-		
-		deleteButton.addActionListener(e -> {
-			totalPages--;
-			if(totalPages == 1)
-				deleteButton.setEnabled(false);
-			currentPage = currentPage-1>0? currentPage-1: currentPage;
-			if(currentPage == 1)
-				prevButton.setEnabled(false);
-			if(currentPage == totalPages)
-				nextButton.setEnabled(false);
-			pagesIndex.setText(getPageIndex());
-			results.remove(currentPage);
-			updateUiFields(panels, results.get(currentPage -1), false);
-		});
-		
-		utilsPanel.add(prevButton);
-		utilsPanel.add(pagesIndex);
-		utilsPanel.add(nextButton);
-		utilsPanel.add(deleteButton);
-		utilsPanel.add(addButton);
-
-		cancelButton.addActionListener(e-> {
-			results.clear();
-			results.add(getEntries(panels));
-			this.data.complete(results);
-			dialog.dispose();
-		});
-		buttonsPanel.add(approveButton);
-		approveButton.addActionListener(e->{
-			var saved = saveAsMap(panels);
-			if(saved==null) 
-				return;
-			updateDataList(results, saved, currentPage -1, false);
-			this.data.complete(results);
-			dialog.dispose();
-		});
-		buttonsPanel.add(cancelButton);
-		gbc.gridy++;
-		dialog.add(utilsPanel, gbc);
-		gbc.gridy++;
-		dialog.add(buttonsPanel, gbc);
-	}
-	
-	private void updateDataList(List<Map<String, String>> dataList, Map<String, String> value, int index, boolean setDefault) {
-		if(dataList.size() > index)
-			dataList.set(index, value);
-		else
-			dataList.add(value);
-	}
-
-	private String getPageIndex() {
-		return "Page " + currentPage + " of " + totalPages;
-	}
-	
-	private void updateUiFields(List<JPanelContainer> panels, Map<String, String> values, boolean setDefault) {
-		for(JPanelContainer panel: panels) {
-			if(panel.getId() == Id.TabsContainer)
-				updateTabFields(panel, values, setDefault);
-			else if(panel.getId() == Id.Group) {
-				updateGroupFields(panel, values, setDefault);
-				} else {
-					if(panel instanceof JPanelWithValue panelWithValue) {
-						updateComponentFields(panelWithValue, values, setDefault);
-					}
-				}
-		}
-	}
-	
-	private void updateTabFields(JPanelContainer panel, Map<String, String> values, boolean setDefault) {
-		if(panel.getComponents().length == 0)
-			return;
-		JTabbedPane tabPanel = (JTabbedPane)panel.getComponents()[0];
-		for(int i=0; i<tabPanel.getTabCount(); i++) {
-			JPanelContainer tab = (JPanelContainer)(tabPanel.getComponent(i));
-			java.awt.Component[] comps = tab.getComponents();
-		
-			for(java.awt.Component comp: comps) 
-			{
-				if(comp instanceof JPanelWithValue panelWithValue) {
-					updateComponentFields(panelWithValue, values, setDefault);
-				} else if (comp instanceof JPanelContainer container){
-					updateGroupFields(container, values, setDefault);
-				}
-			}
-		}
-	}
-	
-	private void updateGroupFields(JPanelContainer panel, Map<String, String> values, boolean setDefault) {
-		java.awt.Component[] comps = panel.getComponents();
-		for(java.awt.Component comp: comps) {
-			if(comp instanceof JPanelWithValue panelWithValue) {
-				updateComponentFields(panelWithValue, values, setDefault);
-			}
-		}
-	}
-	
-	private void updateComponentFields(JPanelWithValue panelWithValue, Map<String, String> values, boolean setDefault) {
-			String fieldName = panelWithValue.getName();
-			String value = values.get(fieldName) == null? "":values.get(fieldName);
-			panelWithValue.setValueOrDefault(value, setDefault);
 	}
 	
 	private Map<String, String> getEntries(List<JPanelContainer> panels) {
@@ -377,12 +177,16 @@ public class PagesVisitor implements Visitor {
 	public JDialog visitSingle(DSingle dialog) {
 		JDialog jDialog = new JDialog();
 		jDialog.setLayout(new GridBagLayout());
+		JPanel panel = (JPanel)jDialog.getContentPane();
+		panel.setBorder(new EmptyBorder(0, 15, 5, 15));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		jDialog.setTitle(dialog.getTitle());
-		JLabel desc = generateDesc(dialog.getDescription());
+		JTextArea desc = generateDesc(dialog.getDescription());
 		jDialog.add(desc, gbc);
 		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		jDialog.setResizable(false);
@@ -391,34 +195,34 @@ public class PagesVisitor implements Visitor {
 
 	@Override
 	public JDialog visitMulti(DMulti dialog) {
-		JDialog jDialog = new JDialog();
-		jDialog.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		jDialog.setTitle(dialog.getTitle());
-		JLabel desc = generateDesc(dialog.getDescription());
-		jDialog.add(desc, gbc);
-		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		jDialog.setResizable(false);
-		return jDialog;
+//		JDialog jDialog = new JDialog();
+//		jDialog.setLayout(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		jDialog.setTitle(dialog.getTitle());
+//		JLabel desc = generateDesc(dialog.getDescription());
+//		jDialog.add(desc, gbc);
+//		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+//		jDialog.setResizable(false);
+		return null;
 	}
 
 	@Override
 	public JDialog visitPages(DPages dialog) {
-		JDialog jDialog = new JDialog();
-		jDialog.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		jDialog.setTitle(dialog.getTitle());
-		JLabel desc = generateDesc(dialog.getDescription());
-		jDialog.add(desc, gbc);
-		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		jDialog.setResizable(false);
-		return jDialog;
+//		JDialog jDialog = new JDialog();
+//		jDialog.setLayout(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		jDialog.setTitle(dialog.getTitle());
+//		JLabel desc = generateDesc(dialog.getDescription());
+//		jDialog.add(desc, gbc);
+//		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+//		jDialog.setResizable(false);
+		return null;
 	}
 
 	@Override
@@ -448,10 +252,13 @@ public class PagesVisitor implements Visitor {
 		groupPanel.setLayout(new GridBagLayout());
 		groupPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.GRAY));
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.anchor = GridBagConstraints.WEST;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(10, 20, 5, 20);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.weightx = 1.0;
+		gbc.gridwidth = 3;
 		JLabel jTitle = generateGroupTitle(title);
 		groupPanel.add(jTitle, gbc);
 		gbc.insets.set(0, 0, 0, 0);
@@ -574,10 +381,12 @@ public class PagesVisitor implements Visitor {
 		return label;
 	}
 	
-	private JLabel generateDesc(String title) {
-		JLabel label = new JLabel();
-		label.setBorder(new EmptyBorder(10, 10, 20, 10));
+	private JTextArea generateDesc(String title) {
+		JTextArea label = new JTextArea();
+		label.setBorder(new EmptyBorder(5, 0, 10, 0));
 		label.setText(title);
+		label.setEditable(false);
+		label.setBackground(new Color(238, 238, 238));
 		return label;
 	}
 	

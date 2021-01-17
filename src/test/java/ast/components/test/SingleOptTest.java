@@ -11,15 +11,15 @@ import org.junit.Test;
 import ast.Id;
 import ast.components.CSingleOpt;
 import ast.constraints.Constraint;
-import ast.constraints.StyleId;
+import ast.constraints.DisplayId;
 import fields.JPanelWithValue;
 
 public class SingleOptTest {
 	@Test
-	public void testSingleOptBlockListStyle() {
+	public void testSingleOptBlockListDisplay() {
 		var frame = new JFrame();
 		List<String> options = List.of("option1", "option2", "option3", "option4");
-		Constraint constraint = StyleId.from(Id.SingleOpt, "blockList");
+		Constraint constraint = DisplayId.from(Id.SingleOpt, "blockList");
 		List<Constraint> constraints = List.of(constraint);
 		var cs = new CSingleOpt("name", "title", options, "option1", constraints);
 		JPanelWithValue single = cs.make();
@@ -34,10 +34,10 @@ public class SingleOptTest {
 	}
 
 	@Test
-	public void testSingleOptInlineListStyle() {
+	public void testSingleOptInlineListDisplay() {
 		var frame = new JFrame();
 		List<String> options = List.of("option1", "option2", "option3", "option4");
-		Constraint constraint = StyleId.from(Id.SingleOpt, "inlineList");
+		Constraint constraint = DisplayId.from(Id.SingleOpt, "inlineList");
 		List<Constraint> constraints = List.of(constraint);
 		var cs = new CSingleOpt("name", "title", options, "option1", constraints);
 		JPanelWithValue single = cs.make();
@@ -52,10 +52,10 @@ public class SingleOptTest {
 	}
 
 	@Test
-	public void testSingleOptBlockRadioStyle() {
+	public void testSingleOptBlockRadioDisplay() {
 		var frame = new JFrame();
 		List<String> options = List.of("option1", "option2", "option3", "option4");
-		Constraint constraint = StyleId.from(Id.SingleOpt, "blockRadio");
+		Constraint constraint = DisplayId.from(Id.SingleOpt, "blockRadio");
 		List<Constraint> constraints = List.of(constraint);
 		var cs = new CSingleOpt("name", "title", options, "option1", constraints);
 		JPanelWithValue single = cs.make();
@@ -70,10 +70,10 @@ public class SingleOptTest {
 	}
 
 	@Test
-	public void testSingleOptInlineRadioStyle() {
+	public void testSingleOptInlineRadioDisplay() {
 		var frame = new JFrame();
 		List<String> options = List.of("option1", "option2", "option3", "option4");
-		Constraint constraint = StyleId.from(Id.SingleOpt, "inlineRadio");
+		Constraint constraint = DisplayId.from(Id.SingleOpt, "inlineRadio");
 		List<Constraint> constraints = List.of(constraint);
 		var cs = new CSingleOpt("name", "title", options, "option1", constraints);
 		JPanelWithValue single = cs.make();

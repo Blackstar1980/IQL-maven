@@ -15,7 +15,7 @@ import javax.swing.JScrollPane;
 import ast.Id;
 import ast.constraints.Constraint;
 import ast.constraints.ConstraintId;
-import ast.constraints.StyleId;
+import ast.constraints.DisplayId;
 import ast.constraints.Constraint.HolderCon;
 import fields.JPanelWithValue;
 import fields.PlaceholderTextAreaField;
@@ -44,12 +44,15 @@ public class CTextArea implements Component, BasicLayout {
 	
 	public JPanelWithValue make() {
 		PlaceholderTextAreaField textArea = new PlaceholderTextAreaField(5, 25);
-		textArea.setPreferredSize(new Dimension(250, 30));
+		textArea.setPreferredSize(new Dimension(250, 22));
 		Map<ConstraintId, Constraint> constraintMap = getMapConstraint(constraints);
 		JPanelWithValue panel = new JPanelWithValue(Id.TextArea, name){
 			@Override
 			public boolean checkForError() {
-				return setErrorLabel(validateConstraints(Id.TextArea, String.valueOf(textArea.getText()), constraintMap));
+				String errorMsg = validateConstraints(Id.TextArea, String.valueOf(textArea.getText()), constraintMap);
+				boolean haveError = setErrorLabel(errorMsg);
+				setComponentErrorIndicator(textArea, errorMsg, true);
+				return haveError;
 			}
 			@Override
 			public void setValueOrDefault(String value, boolean setDefault) {
@@ -69,15 +72,20 @@ public class CTextArea implements Component, BasicLayout {
 		JScrollPane scroll = new JScrollPane(textArea);
 		JLabel jTitle = generateTitle(title, constraintMap);
 		JLabel errorMsg = panel.getErrorLabel();
-		StyleId style = (StyleId)constraintMap.get(ConstraintId.STYLE);
+		DisplayId display = (DisplayId)constraintMap.get(ConstraintId.DISPLAY);
+		if(display == DisplayId.Non) {
+			display = DisplayId.Block;
+		}
 		setTextAreaPlaceHolder(textArea, constraintMap);
 		textArea.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {
 				setTextAreaPlaceHolder(textArea, constraintMap);
 				String text = String.valueOf(textArea.getText());
-				boolean hasError = panel.setErrorLabel(validateConstraints(Id.TextArea, text, constraintMap));
-				if(!hasError)
+				String errorMsg = validateConstraints(Id.TextArea, text, constraintMap);
+				boolean haveError = panel.setErrorLabel(errorMsg);
+				panel.setComponentErrorIndicator(textArea, errorMsg, true);
+				if(!haveError)
 					panel.setValue(text);
 			}
 			
@@ -88,13 +96,14 @@ public class CTextArea implements Component, BasicLayout {
 			 public void keyReleased(KeyEvent e) {
 				 String text = String.valueOf(textArea.getText());
 				 String error = validateConstraints(Id.TextArea, text, constraintMap);
+				 panel.setComponentErrorIndicator(textArea, error, false);
 				 if(" ".equals(error)) {
 					errorMsg.setText(" "); 
 					panel.setValue(text);
 				 }
 			 }
 		});
-		return setLayout(style, jTitle, scroll, errorMsg, panel);
+		return setLayout(display, jTitle, scroll, errorMsg, panel);
 	}
 	
 	private void setTextAreaPlaceHolder(PlaceholderTextAreaField textField, Map<ConstraintId, Constraint> constraints) {

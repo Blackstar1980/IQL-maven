@@ -3,6 +3,7 @@ package fields;
 import java.awt.Color;
 import java.awt.Font;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import ast.Id;
 
@@ -40,6 +41,16 @@ public abstract class JPanelWithValue extends JPanelContainer {
 		errorLabel.setText(errorMsg);
 		hasError = !" ".equals(errorMsg);
 		return hasError;
+	}
+	
+	public void setComponentErrorIndicator(JComponent component, String errorMsg, boolean setBackground) {
+		if(" ".equals(errorMsg)) {
+			component.setBackground(new Color(238, 238, 238));
+			component.setToolTipText(null);
+		} else if(setBackground) {
+			component.setBackground(Color.pink);
+			component.setToolTipText(errorMsg);
+		}	
 	}
 
 	private JLabel generateErrorLabel(String msg) {

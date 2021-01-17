@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import ast.Id;
 import ast.constraints.Constraint;
 import ast.constraints.ConstraintId;
-import ast.constraints.StyleId;
+import ast.constraints.DisplayId;
 import fields.JPanelWithValue;
 import fields.PlaceholderIntegerField;
 import generated.GuiInputParser.ComponentContext;
@@ -54,7 +54,10 @@ public class CInteger implements Component, Placeholder, BasicLayout {
 		JPanelWithValue panel = new JPanelWithValue(Id.Integer, name){
 			@Override
 			public boolean checkForError() {
-				return setErrorLabel(validateConstraints(Id.Integer,textField.getText(), constraintMap));
+				String errorMsg = validateConstraints(Id.Integer, textField.getText(), constraintMap);
+				boolean haveError = setErrorLabel(errorMsg);
+				setComponentErrorIndicator(textField, errorMsg, true);
+				return haveError;
 			}
 			@Override
 			public void setValueOrDefault(String value, boolean setDefault) {
@@ -74,14 +77,19 @@ public class CInteger implements Component, Placeholder, BasicLayout {
 		panel.setValueOrDefault("", true);
 		JLabel jTitle = generateTitle(title, constraintMap);
 		JLabel errorMsg = panel.getErrorLabel();
-		StyleId style = (StyleId)constraintMap.get(ConstraintId.STYLE);
+		DisplayId display = (DisplayId)constraintMap.get(ConstraintId.DISPLAY);
+		if(display == DisplayId.Non) {
+			display = DisplayId.Block;
+		}
 		setPlaceHolder(textField, constraintMap);
 		textField.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {
+				String errorMsg = validateConstraints(Id.Integer, textField.getText(), constraintMap);
 				setPlaceHolder(textField, constraintMap);
-				boolean hasError = panel.setErrorLabel(validateConstraints(Id.Integer,textField.getText(), constraintMap));
-				if(!hasError)
+				boolean haveError = panel.setErrorLabel(errorMsg);
+				panel.setComponentErrorIndicator(textField, errorMsg, true);
+				if(!haveError)
 					panel.setValue(textField.getText());
 			}
 			@Override
@@ -90,13 +98,14 @@ public class CInteger implements Component, Placeholder, BasicLayout {
 		textField.addKeyListener(new KeyAdapter() {
 			 public void keyReleased(KeyEvent e) {
 				 String error = validateConstraints(Id.Integer, textField.getText(), constraintMap);
+				 panel.setComponentErrorIndicator(textField, error, false);
 				 if(" ".equals(error)) {
 					errorMsg.setText(" "); 
 					panel.setValue(textField.getText());
 				 }
 			 }
 		});
-		return setLayout(style, jTitle, textField, errorMsg, panel);
+		return setLayout(display, jTitle, textField, errorMsg, panel);
 	}
 	
 	public String getName() {

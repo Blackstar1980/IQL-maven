@@ -1,7 +1,7 @@
 grammar GuiInput;
 @header {package generated;}
 
-compCon: '{' (MaxCon | MinCon | RegexCon | RequiredCon | HolderCon | SelectedCon | MajorTicksCon | MinorTicksCon | StyleCon)* '}';
+compCon: '{' (MaxCon | MinCon | RegexCon | RequiredCon | HolderCon | SelectedCon | MajorTicksCon | MinorTicksCon | DisplayCon)* '}';
 component: NameWord QuotedCharText CompId DefaultValue? compCon?;
 group: QuotedCharText GroupId '{' component+ '}';
 groupOrcomp: group | component;
@@ -27,7 +27,7 @@ TabId: 'Tab';
 CompId: 'String' | 'Integer' | 'Decimal' 
 		| 'Boolean' | 'SingleOpt' | 'MultiOpt' 
 		| 'Password' | 'Slider' | 'TextArea';
-Styles: 'inline' | 'block' | 'inlineRadio' 
+Displays: 'inline' | 'block' | 'inlineRadio' 
 		| 'inlineList' | 'blockRadio' | 'blockList' 
 		| 'inlineCheckbox' | 'blockCheckbox';
 MinCon: 'min' Whitespace* '=' Whitespace* Decimal;
@@ -38,7 +38,7 @@ HolderCon: 'holder' Whitespace* '=' Whitespace* QuotedCharText;
 SelectedCon: 'selected' Whitespace* '=' Whitespace* QuotedCharText;
 MajorTicksCon: 'majorTicks' Whitespace* '=' Whitespace* Integer;
 MinorTicksCon: 'minorTicks' Whitespace* '=' Whitespace* Integer;
-StyleCon: 'style' Whitespace* '=' Whitespace* Styles;
+DisplayCon: 'display' Whitespace* '=' Whitespace* Displays;
 
 NameWord: LowerCaseLetter (LowerCaseLetter | UpperCaseLetter)*;
 DefaultValue: '(' QuotedCharText ')';

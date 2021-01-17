@@ -1,4 +1,4 @@
-// Generated from GuiInput.g4 by ANTLR 4.7.2
+// Generated from src/main/resources/GuiInput.g4 by ANTLR 4.9.1
 package generated;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -11,15 +11,15 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class GuiInputParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.7.2", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.9.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, Whitespace=3, DialogId=4, GroupId=5, TabId=6, CompId=7, 
-		Styles=8, MinCon=9, MaxCon=10, RegexCon=11, RequiredCon=12, HolderCon=13, 
-		SelectedCon=14, MajorTicksCon=15, MinorTicksCon=16, StyleCon=17, NameWord=18, 
+		Displays=8, MinCon=9, MaxCon=10, RegexCon=11, RequiredCon=12, HolderCon=13, 
+		SelectedCon=14, MajorTicksCon=15, MinorTicksCon=16, DisplayCon=17, NameWord=18, 
 		DefaultValue=19, QuotedCharText=20;
 	public static final int
 		RULE_compCon = 0, RULE_component = 1, RULE_group = 2, RULE_groupOrcomp = 3, 
@@ -41,8 +41,8 @@ public class GuiInputParser extends Parser {
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, null, null, "Whitespace", "DialogId", "GroupId", "TabId", "CompId", 
-			"Styles", "MinCon", "MaxCon", "RegexCon", "RequiredCon", "HolderCon", 
-			"SelectedCon", "MajorTicksCon", "MinorTicksCon", "StyleCon", "NameWord", 
+			"Displays", "MinCon", "MaxCon", "RegexCon", "RequiredCon", "HolderCon", 
+			"SelectedCon", "MajorTicksCon", "MinorTicksCon", "DisplayCon", "NameWord", 
 			"DefaultValue", "QuotedCharText"
 		};
 	}
@@ -130,9 +130,9 @@ public class GuiInputParser extends Parser {
 		public TerminalNode MinorTicksCon(int i) {
 			return getToken(GuiInputParser.MinorTicksCon, i);
 		}
-		public List<TerminalNode> StyleCon() { return getTokens(GuiInputParser.StyleCon); }
-		public TerminalNode StyleCon(int i) {
-			return getToken(GuiInputParser.StyleCon, i);
+		public List<TerminalNode> DisplayCon() { return getTokens(GuiInputParser.DisplayCon); }
+		public TerminalNode DisplayCon(int i) {
+			return getToken(GuiInputParser.DisplayCon, i);
 		}
 		public CompConContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -165,12 +165,12 @@ public class GuiInputParser extends Parser {
 			setState(20);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MinCon) | (1L << MaxCon) | (1L << RegexCon) | (1L << RequiredCon) | (1L << HolderCon) | (1L << SelectedCon) | (1L << MajorTicksCon) | (1L << MinorTicksCon) | (1L << StyleCon))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MinCon) | (1L << MaxCon) | (1L << RegexCon) | (1L << RequiredCon) | (1L << HolderCon) | (1L << SelectedCon) | (1L << MajorTicksCon) | (1L << MinorTicksCon) | (1L << DisplayCon))) != 0)) {
 				{
 				{
 				setState(17);
 				_la = _input.LA(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MinCon) | (1L << MaxCon) | (1L << RegexCon) | (1L << RequiredCon) | (1L << HolderCon) | (1L << SelectedCon) | (1L << MajorTicksCon) | (1L << MinorTicksCon) | (1L << StyleCon))) != 0)) ) {
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MinCon) | (1L << MaxCon) | (1L << RegexCon) | (1L << RequiredCon) | (1L << HolderCon) | (1L << SelectedCon) | (1L << MajorTicksCon) | (1L << MinorTicksCon) | (1L << DisplayCon))) != 0)) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {

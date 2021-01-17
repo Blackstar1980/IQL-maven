@@ -148,7 +148,7 @@ public class DialogTests {
 			'Single Dialog' Single('single my 
 			description')
 			cats 'Have cats?' Slider('2,44,7')
-			{style= inline}
+			{display= inline}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, description=single my

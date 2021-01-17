@@ -1,5 +1,9 @@
 package ui;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
 import javax.swing.JDialog;
 import ast.Ast.Query;
 import ast.components.CBoolean;
@@ -20,6 +24,7 @@ import fields.JPanelContainer;
 import fields.JPanelWithValue;
 
 public interface Visitor {
+	CompletableFuture<List<Map<String, String>>> getData();
 	JDialog visitSingle(DSingle dialog);
 	JDialog visitMulti(DMulti dialog);
 	JDialog visitPages(DPages dialog);

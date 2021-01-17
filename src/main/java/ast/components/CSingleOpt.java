@@ -1,5 +1,6 @@
 package ast.components;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -19,7 +20,7 @@ import javax.swing.JRadioButton;
 import ast.Id;
 import ast.constraints.Constraint;
 import ast.constraints.ConstraintId;
-import ast.constraints.StyleId;
+import ast.constraints.DisplayId;
 import fields.JPanelWithValue;
 import generated.GuiInputParser.ComponentContext;
 import ui.Visitor;
@@ -67,14 +68,17 @@ public class CSingleOpt implements Component {
 		if (options == null || options.size() == 0)
 			throw new IllegalArgumentException("Need to have a least one option");
 		Map<ConstraintId, Constraint> mapConstraints = getMapConstraint(constraints);
-		StyleId style = (StyleId) mapConstraints.get(ConstraintId.STYLE);
-		JLabel title = new JLabel(getTitle());
-		return switch (style) {
-			case InlineRadio -> setSingleInlineRadioStyle(title, mapConstraints);
-			case InlineList -> setSingleInlineListStyle(title, mapConstraints);
-			case BlockRadio -> setSingleBlockRadioStyle(title, mapConstraints);
-			case BlockList -> setSingleBlockListStyle(title, mapConstraints);
-			default -> setSingleBlockRadioStyle(title, mapConstraints);
+		DisplayId display = (DisplayId) mapConstraints.get(ConstraintId.DISPLAY);
+		if(display == DisplayId.Non) {
+			display = DisplayId.BlockRadio;
+		}
+		JLabel title = generateTitle(getTitle(), mapConstraints);
+		return switch (display) {
+			case InlineRadio -> setSingleInlineRadioDisplay(title, mapConstraints);
+			case InlineList -> setSingleInlineListDisplay(title, mapConstraints);
+			case BlockRadio -> setSingleBlockRadioDisplay(title, mapConstraints);
+			case BlockList -> setSingleBlockListDisplay(title, mapConstraints);
+			default -> setSingleBlockRadioDisplay(title, mapConstraints);
 		};
 	}
 
@@ -83,15 +87,19 @@ public class CSingleOpt implements Component {
 		return selected == null ? "" : selected.value();
 	}
 
-	private JPanelWithValue setSingleBlockListStyle(JLabel title, Map<ConstraintId, Constraint> constraints) {
-		String[] optionsArray = options.toArray(String[]::new);
+	private JPanelWithValue setSingleBlockListDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
+		String[] optionsArray = toArrayStartWithEmptyValue(options);
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
+		combo.setPreferredSize(new Dimension(280, 22));
 		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name) {
 			@Override
 			public boolean checkForError() {
 				if (combo.getSelectedItem() != null)
 					setValue(combo.getSelectedItem().toString());
-				return setErrorLabel(validateConstraints(Id.SingleOpt, getValue(), constraints));
+				String errorMsg = validateConstraints(Id.SingleOpt, getValue(), constraints);
+				boolean haveError = setErrorLabel(errorMsg);
+				setComponentErrorIndicator(combo, errorMsg, true);
+				return haveError;
 			}
 
 			@Override
@@ -117,32 +125,37 @@ public class CSingleOpt implements Component {
 					panel.setValue("");
 				else
 					panel.setValue(combo.getSelectedItem().toString());
-				panel.setErrorLabel(validateConstraints(Id.SingleOpt, panel.getValue(), constraints));
+				String errorMsg = validateConstraints(Id.SingleOpt, panel.getValue(), constraints);
+				panel.setComponentErrorIndicator(combo, errorMsg, true);
+				panel.setErrorLabel(errorMsg);
 			}
 		});
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(0, 20, 0, 0);
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 1.0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		panel.add(title, gbc);
 		gbc.gridy = 1;
 		panel.add(combo, gbc);
 		gbc.gridy = 2;
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		panel.add(panel.getErrorLabel(), gbc);
 		return panel;
 	}
-
-	private JPanelWithValue setSingleInlineListStyle(JLabel title, Map<ConstraintId, Constraint> constraints) {
-		String[] optionsArray = options.toArray(String[]::new);
+	
+	private JPanelWithValue setSingleInlineListDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
+		String[] optionsArray = toArrayStartWithEmptyValue(options);
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
 		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name) {
 			@Override
 			public boolean checkForError() {
 				if (combo.getSelectedItem() != null)
 					setValue(combo.getSelectedItem().toString());
-				return setErrorLabel(validateConstraints(Id.SingleOpt, getValue(), constraints));
+				String errorMsg = validateConstraints(Id.SingleOpt, getValue(), constraints);
+				boolean haveError = setErrorLabel(errorMsg);
+				setComponentErrorIndicator(combo, errorMsg, true);
+				return haveError;
 			}
 
 			@Override
@@ -168,26 +181,37 @@ public class CSingleOpt implements Component {
 					panel.setValue("");
 				else
 					panel.setValue(combo.getSelectedItem().toString());
-				panel.setErrorLabel(validateConstraints(Id.SingleOpt, panel.getValue(), constraints));
+				String errorMsg = validateConstraints(Id.SingleOpt, panel.getValue(), constraints);
+				panel.setComponentErrorIndicator(combo, errorMsg, true);
+				panel.setErrorLabel(errorMsg);
 			}
 		});
 
+		combo.setPreferredSize(new Dimension(280, 22));
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(0, 20, 0, 0);
+		gbc.anchor = GridBagConstraints.EAST;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		panel.add(title, gbc);
 		gbc.gridx = 1;
+		gbc.anchor = GridBagConstraints.WEST;
 		panel.add(combo, gbc);
 		gbc.gridy = 1;
-		gbc.gridx = 0;
+		gbc.gridx = 1;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		panel.add(panel.getErrorLabel(), gbc);
 		return panel;
 	}
+	
+	private String[] toArrayStartWithEmptyValue(List<String> array) {
+		String[] newArray = new String[array.size()+1];
+		newArray[0] = "";
+		for(int i=0; i<array.size(); i++) 
+			newArray[i+1] = array.get(i);
+		return newArray;
+	}
 
-	private JPanelWithValue setSingleInlineRadioStyle(JLabel title, Map<ConstraintId, Constraint> constraints) {
+	private JPanelWithValue setSingleInlineRadioDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		ButtonGroup buttonGroup = new ButtonGroup();
 		Map<String, JRadioButton> buttons = new HashMap<>();
 		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name) {
@@ -224,14 +248,17 @@ public class CSingleOpt implements Component {
 				button.setSelected(true);
 				panel.setValue(option);
 			}
-			button.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					System.out.println(button.isSelected());
+			button.addActionListener(e-> {
+				if(panel.getValue() == button.getText()) {
+					panel.setValue("");
+					button.setSelected(false);
+					buttonGroup.clearSelection();
+				} else {
 					panel.setValue(button.getText());
-					panel.setErrorLabel(validateConstraints(Id.SingleOpt, panel.getValue(), constraints));
-				}
-			});
+					button.setSelected(true);
+				}					
+				panel.setErrorLabel(validateConstraints(Id.SingleOpt, panel.getValue(), constraints));
+		});
 			panel.setValue(defValue);
 			buttonGroup.add(button);
 			gbc.gridx++;
@@ -240,7 +267,7 @@ public class CSingleOpt implements Component {
 		return panel;
 	}
 
-	private JPanelWithValue setSingleBlockRadioStyle(JLabel title, Map<ConstraintId, Constraint> constraints) {
+	private JPanelWithValue setSingleBlockRadioDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		ButtonGroup buttonGroup = new ButtonGroup();
 		Map<String, JRadioButton> buttons = new HashMap<>();
 		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name) {
@@ -266,7 +293,8 @@ public class CSingleOpt implements Component {
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(0, 20, 0, 0);
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 1.0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		panel.add(title, gbc);
@@ -277,12 +305,17 @@ public class CSingleOpt implements Component {
 				button.setSelected(true);
 				panel.setValue(option);
 			}
-			button.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					panel.setValue(button.getText());
+			button.addActionListener(e-> {
+					if(panel.getValue() == button.getText()) {
+						panel.setValue("");
+						button.setSelected(false);
+						buttonGroup.clearSelection();
+					} else {
+						panel.setValue(button.getText());
+						button.setSelected(true);
+					}					
 					panel.setErrorLabel(validateConstraints(Id.SingleOpt, panel.getValue(), constraints));
-				}
+				
 			});
 			panel.setValue(defValue);
 			buttonGroup.add(button);
@@ -292,6 +325,7 @@ public class CSingleOpt implements Component {
 		gbc.gridy++;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		panel.add(panel.getErrorLabel(), gbc);
+		panel.setPreferredSize(new Dimension(280, (int) panel.getPreferredSize().getHeight()));
 		return panel;
 	}
 
@@ -305,6 +339,10 @@ public class CSingleOpt implements Component {
 
 	public List<String> getOptions() {
 		return Collections.unmodifiableList(options);
+	}
+
+	public String getDefValue() {
+		return defValue;
 	}
 
 	public List<Constraint> getConstraints() {

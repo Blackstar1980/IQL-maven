@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -12,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import ast.Ast.Containable;
@@ -19,9 +22,13 @@ import ast.Ast.Query;
 import ast.Ast.Tabable;
 import ast.Id;
 import ast.components.*;
+import ast.constraints.Constraint;
+import ast.constraints.ConstraintId;
 import fields.*;
 
-public class PagesVisitor implements Visitor {
+public class MultiVisitor implements Visitor {
+	private static final String DISPLAY_BLOCK = "display=block";
+	private static final String DISPLAY_BLOCK_LIST = "display=blockList";
 	private int currentPage = 1;
 	private int totalPages = 1;
 	private CompletableFuture<List<Map<String, String>>> data = new CompletableFuture<>();
@@ -34,38 +41,83 @@ public class PagesVisitor implements Visitor {
 
 	@Override
 	public JDialog visitQuery(Query query) {
-		Id dialogId = query.dialog().getType();
 		JDialog jDialog = new JDialog();
-		if(dialogId == Id.Single) {
-			jDialog = visitSingle((DSingle)query.dialog());
-			List<Containable> containers = query.containers();
-			List<JPanelContainer> panels = new ArrayList<>();
-			for(Containable container:containers) {
-				panels.add(getPanel(container));
-			}
-			constructSingleDialog(jDialog, query.dialog().getDescription(), panels);
-		}
-		if(dialogId == Id.Multi) {
-			jDialog = visitMulti((DMulti)query.dialog());
-		}
-		if(dialogId == Id.Pages) {
-			jDialog = visitPages((DPages)query.dialog());
-			List<Containable> containers = query.containers();
-			List<JPanelContainer> panels = new ArrayList<>();
-			for(Containable container:containers) {
-				panels.add(getPanel(container));
-			}
-			constructPageDialog(jDialog, query.dialog().getDescription(), panels);
-		}
+		jDialog = visitMulti((DMulti)query.dialog());
+		List<Containable> containers = query.containers();
+		List<JPanelContainer> panels = new ArrayList<>();
+		for(Containable container:containers)
+			panels.add(getPanel(container));
+		constructMultiDialog(jDialog, query.dialog().getDescription(), panels);
 		jDialog.pack();
 		jDialog.setVisible(true);
-		System.out.println("in Pages");
-
+		System.out.println("in Multi");
 		return jDialog;
 	}
 	
 	private JPanelContainer getPanel(Containable container) {
 		return container.accept(this);
+	}
+	
+	private void constructMultiDialog(JDialog dialog, String description,
+			List<JPanelContainer> panels) {
+		GridBagConstraints gbc = new GridBagConstraints();
+		setMultiLayout(panels);
+		List<JLabel> titles = getTitles(panels);
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		for(JLabel title : titles) {
+			gbc.gridx++;
+			dialog.add(title, gbc);
+		}
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		for(JPanel panel : panels) {
+			gbc.gridx++;
+			dialog.add(panel, gbc);
+		}
+		JPanel buttonsPanel = new JPanel();
+		JButton cancelButton = new JButton("Cancel");
+		JButton approveButton = new JButton("Approve");
+		List<Map<String, String>> results = new ArrayList<>();
+		
+		dialog.addWindowListener(new WindowAdapter() {
+			@Override
+		    public void windowClosed(WindowEvent e) {
+				results.clear();
+				results.add(getEntries(panels));
+				data.complete(results);
+				dialog.dispose();
+		    }
+		});
+		cancelButton.addActionListener(e-> {
+			results.clear();
+			results.add(getEntries(panels));
+			this.data.complete(results);
+			dialog.dispose();
+		});
+		buttonsPanel.add(approveButton);
+		approveButton.addActionListener(e->{
+			var saved = saveAsMap(panels);
+			if(saved!=null) {
+				results.add(saved);
+				this.data.complete(results);
+				dialog.dispose();
+			}});
+		buttonsPanel.add(cancelButton);
+		gbc.gridy++;
+		dialog.add(buttonsPanel, gbc);
+	}
+	
+	private List<JLabel> getTitles(List<JPanelContainer> panels) {
+		Map<String, String> titleMap = getEntries(panels);
+		List<JLabel> titles = new ArrayList<>();
+		titleMap.forEach((key, value) -> {
+			JLabel label = new JLabel(key);
+			label.setBorder(new EmptyBorder(0, 20, 0 , 0));
+			titles.add(label);
+		});
+		return titles;
 	}
 	
 	private void constructSingleDialog(JDialog dialog, String description,
@@ -252,6 +304,37 @@ public class PagesVisitor implements Visitor {
 		return "Page " + currentPage + " of " + totalPages;
 	}
 	
+	private void setMultiLayout(List<JPanelContainer> panels) {
+		for(JPanelContainer panel: panels) {
+			if(panel.getId() == Id.TabsContainer)
+				setMultiTabLayout(panel);
+			else if(panel instanceof JPanelWithValue panelWithValue) {
+				setMultiComponentLayout(panelWithValue);
+			}
+		}
+	}
+	
+	private void setMultiTabLayout(JPanelContainer panel) {
+		if(panel.getComponents().length == 0)
+			return;
+		JTabbedPane tabPanel = (JTabbedPane)panel.getComponents()[0];
+		for(int i=0; i<tabPanel.getTabCount(); i++) {
+			JPanelContainer tab = (JPanelContainer)(tabPanel.getComponent(i));
+			java.awt.Component[] comps = tab.getComponents();
+			for(java.awt.Component comp: comps) {
+				if(comp instanceof JPanelWithValue panelWithValue) {
+					setMultiComponentLayout(panelWithValue);
+				}
+			}
+		}
+	}
+	
+	private void setMultiComponentLayout(JPanelWithValue panelWithValue) {
+		panelWithValue.getErrorLabel().setVisible(false);
+		panelWithValue.getComponent(0).setVisible(false);
+		panelWithValue.getComponent(1).setPreferredSize(new Dimension(100, 22));
+	}
+
 	private void updateUiFields(List<JPanelContainer> panels, Map<String, String> values, boolean setDefault) {
 		for(JPanelContainer panel: panels) {
 			if(panel.getId() == Id.TabsContainer)
@@ -375,18 +458,7 @@ public class PagesVisitor implements Visitor {
 
 	@Override
 	public JDialog visitSingle(DSingle dialog) {
-		JDialog jDialog = new JDialog();
-		jDialog.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		jDialog.setTitle(dialog.getTitle());
-		JLabel desc = generateDesc(dialog.getDescription());
-		jDialog.add(desc, gbc);
-		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		jDialog.setResizable(false);
-		return jDialog;
+		return null;
 	}
 
 	@Override
@@ -397,6 +469,7 @@ public class PagesVisitor implements Visitor {
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.gridwidth = 3;
 		jDialog.setTitle(dialog.getTitle());
 		JLabel desc = generateDesc(dialog.getDescription());
 		jDialog.add(desc, gbc);
@@ -407,30 +480,12 @@ public class PagesVisitor implements Visitor {
 
 	@Override
 	public JDialog visitPages(DPages dialog) {
-		JDialog jDialog = new JDialog();
-		jDialog.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		jDialog.setTitle(dialog.getTitle());
-		JLabel desc = generateDesc(dialog.getDescription());
-		jDialog.add(desc, gbc);
-		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		jDialog.setResizable(false);
-		return jDialog;
+		return null;
 	}
 
 	@Override
 	public JPanelContainer visitGroup(Group group) {
-		String title = group.getTitle();
-		List<Component> components = group.getComponents();
-		List<JPanelWithValue> panels = new ArrayList<>();
-		for(Component c:components) {
-			JPanelWithValue panel = (JPanelWithValue)getPanel((Containable)c);
-			panels.add(panel);
-		}
-		return addGroupPanels(title, panels);
+		throw new IllegalArgumentException("Multi dialog do not support groups");
 	}
 	
 	private JPanelContainer addGroupPanels(String title, List<JPanelWithValue> panels) {
@@ -519,50 +574,87 @@ public class PagesVisitor implements Visitor {
 		}
 		return tabPanel;
 	}
+	
+	private List<Constraint> setMultiDisplay(Id id, List<Constraint> constraints, String display) {
+		constraints = constraints.stream()
+			.filter(con -> con.getID() != ConstraintId.DISPLAY)
+			.collect(Collectors.toList());
+		Constraint constraintId = ConstraintId.from(id, display);
+		constraints.add(constraintId);
+		return constraints;
+	}
 
 	@Override
 	public JPanelWithValue visitString(CString component) {
-		return component.make();
+		Id id = component.getType();
+		List<Constraint> constraints = component.getConstraints();
+		List<Constraint> newConstraints = setMultiDisplay(id, constraints, DISPLAY_BLOCK);
+		CString cString = new CString(component.getName(), component.getTitle(), component.getDefVal() , newConstraints);
+		return cString.make();
 	}
 	
 	@Override
 	public JPanelWithValue visitTextArea(CTextArea component) {
-		return component.make();
+		throw new IllegalArgumentException("TextArea is not supported in Multi dialog");
 	}
 
 	@Override
 	public JPanelWithValue visitPassword(CPassword component) {
-		return component.make();
+		Id id = component.getType();
+		List<Constraint> constraints = component.getConstraints();
+		List<Constraint> newConstraints = setMultiDisplay(id, constraints, DISPLAY_BLOCK);
+		CPassword cPassword = new CPassword(component.getName(), component.getTitle(), component.getDefVal() , newConstraints);
+		return cPassword.make();
 	}
 
 	@Override
 	public JPanelWithValue visitInteger(CInteger component) {
-		return component.make();
+		Id id = component.getType();
+		List<Constraint> constraints = component.getConstraints();
+		List<Constraint> newConstraints = setMultiDisplay(id, constraints, DISPLAY_BLOCK);
+		CInteger cInteger = new CInteger(component.getName(), component.getTitle(), component.getDefVal() , newConstraints);
+		return cInteger.make();
 	}
 
 	@Override
 	public JPanelWithValue visitDecimal(CDecimal component) {
-		return component.make();
+		Id id = component.getType();
+		List<Constraint> constraints = component.getConstraints();
+		List<Constraint> newConstraints = setMultiDisplay(id, constraints, DISPLAY_BLOCK);
+		CDecimal cDecimal = new CDecimal(component.getName(), component.getTitle(), component.getDefVal() , newConstraints);
+		return cDecimal.make();
 	}
 
 	@Override
 	public JPanelWithValue visitBoolean(CBoolean component) {
-		return component.make();
+		Id id = component.getType();
+		List<Constraint> constraints = component.getConstraints();
+		List<Constraint> newConstraints = setMultiDisplay(id, constraints, DISPLAY_BLOCK_LIST);
+		CBoolean cBoolean = new CBoolean(component.getName(), component.getTitle(), component.getDefVal() , newConstraints);
+		return cBoolean.make();
 	}
 
 	@Override
 	public JPanelWithValue visitSlider(CSlider slider) {
-		return slider.make();
+		throw new IllegalArgumentException("Slider is not supported in Multi dialog");
 	}
 
 	@Override
 	public JPanelWithValue visitSingleOpt(CSingleOpt component) {
-		return component.make();
+		Id id = component.getType();
+		List<Constraint> constraints = component.getConstraints();
+		List<Constraint> newConstraints = setMultiDisplay(id, constraints, DISPLAY_BLOCK_LIST);
+		CSingleOpt cSingle = new CSingleOpt(component.getName(), component.getTitle(), component.getOptions(), component.getDefValue() , newConstraints);
+		return cSingle.make();
 	}
 	
 	@Override
 	public JPanelWithValue visitMultiOpt(CMultiOpt component) {
-		return component.make();
+		Id id = component.getType();
+		List<Constraint> constraints = component.getConstraints();
+		List<Constraint> newConstraints = setMultiDisplay(id, constraints, DISPLAY_BLOCK_LIST);
+		CMultiOpt cMulti = new CMultiOpt(component.getName(), component.getTitle(), component.getOptions(), component.getDefValues() , newConstraints);
+		return cMulti.make();
 	}
 	
 	private JLabel generateGroupTitle(String title) {

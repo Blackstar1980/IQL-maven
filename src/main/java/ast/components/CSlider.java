@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -17,7 +18,7 @@ import javax.swing.event.ChangeListener;
 import ast.Id;
 import ast.constraints.Constraint;
 import ast.constraints.ConstraintId;
-import ast.constraints.StyleId;
+import ast.constraints.DisplayId;
 import fields.JPanelWithValue;
 import generated.GuiInputParser.ComponentContext;
 import ui.Visitor;
@@ -103,12 +104,16 @@ public class CSlider implements Component {
 	        });
 		Map<ConstraintId, Constraint> constraints = getMapConstraint(getConstraints());
 		JLabel title = generateTitle(getTitle(), constraints);
-		StyleId style = (StyleId)constraints.get(ConstraintId.STYLE);
-		return switch (style) {
-			case Block -> setSliderBlockStyle(title, jSlider, valueLabel, panel);
-			case Inline -> setSliderInlineStyle(title, jSlider, valueLabel, panel);
+		title.setText(getTitle());
+		DisplayId display = (DisplayId)constraints.get(ConstraintId.DISPLAY);
+		if(display == DisplayId.Non) {
+			display = DisplayId.Block;
+		}
+		return switch (display) {
+			case Block -> setSliderBlockDisplay(title, jSlider, valueLabel, panel);
+			case Inline -> setSliderInlineDisplay(title, jSlider, valueLabel, panel);
 			default ->
-				throw new IllegalArgumentException("Unexpected value: " + style);
+				throw new IllegalArgumentException("Unexpected value: " + display);
 		};
 	}
 	
@@ -127,36 +132,43 @@ public class CSlider implements Component {
 		return jSlider;
 	}
 	
-	private JPanelWithValue setSliderInlineStyle(JLabel title, JSlider slider, JLabel value,
+	private JPanelWithValue setSliderInlineDisplay(JLabel title, JSlider slider, JLabel value,
 			JPanelWithValue panel) {
 		GridBagConstraints gbc = new GridBagConstraints();
 		slider.setPreferredSize(new Dimension(230, 50));
-		gbc.insets = new Insets(0, 20, 0, 0);
-		gbc.anchor = GridBagConstraints.WEST;
+		gbc.anchor = GridBagConstraints.NORTHEAST;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		panel.add(title, gbc);
+		JPanel sliderPanel = new JPanel(new GridBagLayout());
+		sliderPanel.setPreferredSize(new Dimension(280, 50));
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		sliderPanel.add(slider, gbc);
 		gbc.gridx = 1;
-		panel.add(slider, gbc);
-		gbc.gridx = 2;
-		gbc.insets = new Insets(0, 0, 0, 20);
-		panel.add(value, gbc);
+		gbc.insets = new Insets(0, 15, 0, 0);
+		sliderPanel.add(value, gbc);
+		gbc.insets = new Insets(0, 0, 0, 0);
+		gbc.gridx = 1;
+		panel.add(sliderPanel, gbc);
 		return panel;
 	}
 
-	private JPanelWithValue setSliderBlockStyle(JLabel title, JSlider slider, JLabel value, JPanelWithValue panel) {
+	private JPanelWithValue setSliderBlockDisplay(JLabel title, JSlider slider, JLabel value, JPanelWithValue panel) {
 		GridBagConstraints gbc = new GridBagConstraints();
 		slider.setPreferredSize(new Dimension(230, 50));
 		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(0, 20, 0, 0);
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 1.0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		panel.add(title, gbc);
 		gbc.gridy = 1;
 		panel.add(slider, gbc);
 		gbc.gridx = 1;
-		gbc.insets = new Insets(0, 0, 0, 20);
+		gbc.insets = new Insets(0, 10, 0, 0);
 		panel.add(value, gbc);
+		panel.setPreferredSize(new Dimension(280, (int) panel.getPreferredSize().getHeight()));
 		return panel;
 	}
 	

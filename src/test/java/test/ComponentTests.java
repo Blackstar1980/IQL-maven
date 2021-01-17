@@ -145,7 +145,7 @@ public class ComponentTests {
 	@Test public void comp05() {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
-			name 'Name:' String('John') {min=1 max=6 style=inline}
+			name 'Name:' String('John') {min=1 max=6 display=inline}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
@@ -197,7 +197,7 @@ public class ComponentTests {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
 			cats 'Have cats?' String('My default value')
-			{max=4 min=2 required= true holder='my holder' style= inline}
+			{max=4 min=2 required= true holder='my holder' display= inline}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
@@ -212,7 +212,7 @@ public class ComponentTests {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
 			cats 'Have cats?' TextArea('My default value')
-			{max=4 min=2 required= true holder='my holder' style= inline}
+			{max=4 min=2 required= true holder='my holder' display= inline}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
@@ -227,7 +227,7 @@ public class ComponentTests {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
 			password 'Password:' Password('My default value')
-			{max=8 min=2 required= true holder='my holder' style= inline}
+			{max=8 min=2 required= true holder='my holder' display= inline}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
@@ -238,12 +238,11 @@ public class ComponentTests {
 			""");
 	}
 
-	// TODO change style by removing the style key word
 	@Test public void comp12() { 
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
 			phone 'Phone:' Integer('988643')
-			{max=8 min=2 required= true holder='87654' style= inline}
+			{max=8 min=2 required= true holder='87654' display= inline}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
@@ -258,7 +257,7 @@ public class ComponentTests {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
 			height 'Height:' Decimal('1.45')
-			{max=8 min=2 required= true holder='enter your height' style= inline}
+			{max=8 min=2 required= true holder='enter your height' display= inline}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
@@ -273,7 +272,7 @@ public class ComponentTests {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
 			height 'Height:' Slider('-5, 5')
-			{majorTicks=3 minorTicks=1 style= inline}
+			{majorTicks=3 minorTicks=1 display= inline}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
@@ -289,7 +288,7 @@ public class ComponentTests {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
 			height 'Height:' Slider('0, 5, 1')
-			{majorTicks=3 minorTicks=1 style= inline}
+			{majorTicks=3 minorTicks=1 display= inline}
 			""","""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
@@ -304,7 +303,7 @@ public class ComponentTests {
 		TestHelper.numberException("""
 			'Single Dialog' Single('single my description')
 			height 'Height:' Slider('0.1, 5, 1')
-			{majorTicks=3 minorTicks=1 style= inline}
+			{majorTicks=3 minorTicks=1 display= inline}
 			""",
 			"Invalid Slider default values");
 	}
@@ -313,7 +312,7 @@ public class ComponentTests {
 		TestHelper.checkParseError("""
 			'Single Dialog' Single('single my description')
 			height 'Height:' Slider('1, 5, 1')
-			{majorTicks=3 minorTicks=1.3 style= inline}
+			{majorTicks=3 minorTicks=1.3 display= inline}
 			""");
 	}
 	
@@ -321,7 +320,7 @@ public class ComponentTests {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
 			height 'Height:' SingleOpt('Red|Blue|Green')
-			{selected='Red' required=true style= inlineList}
+			{selected='Red' required=true display= inlineList}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
@@ -335,7 +334,7 @@ public class ComponentTests {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
 			height 'Height:' MultiOpt('Red|Blue|Green')
-			{selected='Red|Blue' style= inlineList}
+			{selected='Red|Blue' display= inlineList}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \

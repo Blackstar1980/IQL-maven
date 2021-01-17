@@ -11,14 +11,14 @@ import org.junit.Test;
 import ast.Id;
 import ast.components.CPassword;
 import ast.constraints.Constraint;
-import ast.constraints.StyleId;
+import ast.constraints.DisplayId;
 import fields.JPanelWithValue;
 
 public class PasswordTest {
 	@Test
-	public void testPasswordBlockStyle() {
+	public void testPasswordBlockDisplay() {
 		var frame = new JFrame();
-		Constraint constraint = StyleId.from(Id.Password, "block");
+		Constraint constraint = DisplayId.from(Id.Password, "block");
 		List<Constraint> constraints = List.of(constraint);
 		var cp = new CPassword("name", "title", "Pass1", constraints);
 		JPanelWithValue password = cp.make();
@@ -33,9 +33,9 @@ public class PasswordTest {
 	}
 	
 	@Test
-	public void testPasswordInlineStyle() {
+	public void testPasswordInlineDisplay() {
 		var frame = new JFrame();
-		Constraint constraint = StyleId.from(Id.Password, "inline");
+		Constraint constraint = DisplayId.from(Id.Password, "inline");
 		List<Constraint> constraints = List.of(constraint);
 		var cp = new CPassword("name", "title", "Pass1", constraints);
 		JPanelWithValue password = cp.make();

@@ -13,15 +13,16 @@ public class Test {
 					age 'Age:' Integer{min=1 max=120 required=false}
 					middle 'Middle Name' String{required=false min=5}
 					'Family details' Group{
-						marry 'Are you marry?' Boolean('false'){required=false}
+						marry 'Are you marry?' Boolean('false'){required=false display=blockList}
 						children 'How many children do you have?' Slider('0,12,0'){majorTicks=3 minorTicks=1}
+						aaa 'aaaa' SingleOpt('Red1|Red2|Red3') {required=false display=blockList}
 					}
 				}
 				'Account Details' Tab{
 				password 'Password:' Password{holder='Password'}
 				comments 'Comments:' TextArea{min=4 max=20 holder='We would like to here from you'}
 				work 'Working Field' MultiOpt('Computers|Building|Teaching|Non of the above'){
-				style=blockList required=false selected='Computers|Building'}
+				display=blockList required=false selected='Computers|Building'}
 				}
 				""";
 //		var query = """
@@ -34,8 +35,8 @@ public class Test {
 //				height 'Height:' Decimal{min=4.5 max=99.7 holder='Decimal only!!' required=false}
 //				comments 'Comments:' TextArea{min=4 max=20 holder='textarea only!'}
 //				slider 'My Slider!' Slider('0,30,11'){majorTicks=5 minorTicks=2}
-//				color 'Select color:' SingleOpt('Red|Blue|Green'){style=inlineList }
-//				car 'Car?' MultiOpt('Big|Small|Van | Mini') {style=blockList selected='Van | Mini'}
+//				color 'Select color:' SingleOpt('Red|Blue|Green'){display=inlineList }
+//				car 'Car?' MultiOpt('Big|Small|Van | Mini') {display=blockList selected='Van | Mini'}
 //				big 'Are you big?' Boolean
 //				}
 //				""";
@@ -44,15 +45,15 @@ public class Test {
 //				'my dialog title' Single('title description with a loot of\
 //				lines is it work?')
 //				name 'Name:' String{min=5 max =6 holder='my holder' regex='ddfgfd' required=false}
-//				password 'Password:' Password{style=inline min=2 max =9 holder='password' required=false}
+//				password 'Password:' Password{display=inline min=2 max =9 holder='password' required=false}
 //				age 'Age:' Integer{min=4 max=99 holder='integer only!'}
 //				'My Super Group' Group{
 //				height 'Height:' Decimal{min=4.5 max=99.7 holder='Decimal only!!' required=false}
 //				comments 'Comments:' TextArea{min=4 max=20 holder='textarea only!'}
-//				slider 'My Slider!' Slider('0,30,11'){majorTicks=5 minorTicks=2 style=inline}
-//				color 'Select color:' SingleOpt('Red|Blue|Green'){style=blockRadio selected='Green'}
-//				car 'Car?' MultiOpt('Big|Small|Van | Mini') {style=inlineList selected='Van | Mini'}
-//				big 'Are you big?' Boolean{style=inline}
+//				slider 'My Slider!' Slider('0,30,11'){majorTicks=5 minorTicks=2 display=inline}
+//				color 'Select color:' SingleOpt('Red|Blue|Green'){display=blockRadio selected='Green'}
+//				car 'Car?' MultiOpt('Big|Small|Van | Mini') {display=inlineList selected='Van | Mini'}
+//				big 'Are you big?' Boolean{display=inline}
 //				}
 //				""";
 		Ast.Query a = Parser.parse(query);

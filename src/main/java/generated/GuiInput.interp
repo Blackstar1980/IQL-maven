@@ -30,7 +30,7 @@ DialogId
 GroupId
 TabId
 CompId
-Styles
+Displays
 MinCon
 MaxCon
 RegexCon
@@ -39,7 +39,7 @@ HolderCon
 SelectedCon
 MajorTicksCon
 MinorTicksCon
-StyleCon
+DisplayCon
 NameWord
 DefaultValue
 QuotedCharText

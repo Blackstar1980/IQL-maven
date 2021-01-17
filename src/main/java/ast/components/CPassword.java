@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -15,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
@@ -24,7 +22,7 @@ import javax.swing.JToggleButton;
 import ast.Id;
 import ast.constraints.Constraint;
 import ast.constraints.ConstraintId;
-import ast.constraints.StyleId;
+import ast.constraints.DisplayId;
 import ast.constraints.Constraint.HolderCon;
 import fields.JPanelWithValue;
 import fields.PlaceholderPasswordField;
@@ -57,7 +55,10 @@ public class CPassword implements Component {
 		JPanelWithValue panel = new JPanelWithValue(Id.Password, name){
 			@Override
 			public boolean checkForError() {
-				return setErrorLabel(validateConstraints(Id.Password, String.valueOf(passField.getPassword()), constraintMap));
+				String errorMsg = validateConstraints(Id.Password, String.valueOf(passField.getPassword()), constraintMap);
+				boolean haveError = setErrorLabel(errorMsg);
+				setComponentErrorIndicator(passField, errorMsg, true);
+				return haveError;
 			}
 			@Override
 			public void setValueOrDefault(String value, boolean setDefault) {
@@ -74,15 +75,20 @@ public class CPassword implements Component {
 		panel.setValueOrDefault("", true);
 		JLabel jTitle = generateTitle(title, constraintMap);
 		JLabel errorMsg = panel.getErrorLabel();
-		StyleId style = (StyleId)constraintMap.get(ConstraintId.STYLE);
+		DisplayId display = (DisplayId)constraintMap.get(ConstraintId.DISPLAY);
+		if(display == DisplayId.Non) {
+			display = DisplayId.Block;
+		}
 		setPasswordPlaceHolder(passField, constraintMap);
 		passField.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {
 				setPasswordPlaceHolder(passField, constraintMap);
 				String passVal = String.valueOf(passField.getPassword());
-				boolean hasError = panel.setErrorLabel(validateConstraints(Id.Password, passVal, constraintMap));
-				if(!hasError)
+				String errorMsg = validateConstraints(Id.Password, passVal, constraintMap);
+				boolean haveError = panel.setErrorLabel(errorMsg);
+				panel.setComponentErrorIndicator(passField, errorMsg, true);
+				if(!haveError)
 					panel.setValue(passVal);
 			}
 			
@@ -93,13 +99,14 @@ public class CPassword implements Component {
 			 public void keyReleased(KeyEvent e) {
 				 String passVal = String.valueOf(passField.getPassword());
 				 String error = validateConstraints(Id.Password, passVal, constraintMap);
+				 panel.setComponentErrorIndicator(passField, error, false);
 				 if(" ".equals(error)) {
 					errorMsg.setText(" "); 
 					panel.setValue(passVal);
 				 }
 			 }
 		});
-		return setPasswordLayout(style, jTitle, passField, errorMsg, panel);
+		return setPasswordLayout(display, jTitle, passField, errorMsg, panel);
 	}
 	
 	private void setPasswordPlaceHolder(PlaceholderPasswordField textField, Map<ConstraintId, Constraint> constraints) {
@@ -108,29 +115,29 @@ public class CPassword implements Component {
 		}
 	}
 	
-	private JPanelWithValue setPasswordLayout(StyleId style, JLabel title,
+	private JPanelWithValue setPasswordLayout(DisplayId display, JLabel title,
 			JPasswordField textField, JLabel errorMsg, JPanelWithValue panel) {
-		return switch (style) {
-			case Block -> setPasswordBlockStyle(title, textField, errorMsg, panel);
-			case Inline -> setPasswordInlineStyle(title, textField, errorMsg, panel);
+		return switch (display) {
+			case Block -> setPasswordBlockDisplay(title, textField, errorMsg, panel);
+			case Inline -> setPasswordInlineDisplay(title, textField, errorMsg, panel);
 			default ->
-			throw new IllegalArgumentException("Unexpected value: " + style);
+			throw new IllegalArgumentException("Unexpected value: " + display);
 		};
 	}
 	
-	private JPanelWithValue setPasswordInlineStyle(JLabel title, JPasswordField passField,
+	private JPanelWithValue setPasswordInlineDisplay(JLabel title, JPasswordField passField,
 			JLabel errorMsg, JPanelWithValue panel) {
-		panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+//		panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		JToggleButton showButton = new JToggleButton();
-		showButton.setPreferredSize(new Dimension(28, 28));
+		showButton.setPreferredSize(new Dimension(22, 22));
 		passField.setEchoChar('\u25CF');
 		ImageIcon hideImg = new ImageIcon(this.getClass().getResource("/images/hide.png"));
-		Image hideDim = hideImg.getImage().getScaledInstance(28, 28, Image.SCALE_DEFAULT);
+		Image hideDim = hideImg.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT);
 		ImageIcon hideImg2 = new ImageIcon(hideDim);
 		ImageIcon showImg = new ImageIcon(this.getClass().getResource("/images/show.png"));
-		Image showDim = showImg.getImage().getScaledInstance(28, 28, Image.SCALE_DEFAULT);
+		Image showDim = showImg.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT);
 		ImageIcon showImg2 = new ImageIcon(showDim);
 		showButton.setIcon(showImg2);
 		showButton.addActionListener(new ActionListener() {
@@ -148,7 +155,7 @@ public class CPassword implements Component {
 		});
 		
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		passField.setPreferredSize(new Dimension(252, 30));
+		passField.setPreferredSize(new Dimension(258, 22));
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		panel.add(title, gbc);
@@ -163,17 +170,17 @@ public class CPassword implements Component {
 		return panel;
 	}
 
-	private JPanelWithValue setPasswordBlockStyle(JLabel title, JPasswordField passField, JLabel errorMsg, JPanelWithValue panel) {
+	private JPanelWithValue setPasswordBlockDisplay(JLabel title, JPasswordField passField, JLabel errorMsg, JPanelWithValue panel) {
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		JToggleButton showButton = new JToggleButton();
-		showButton.setPreferredSize(new Dimension(28, 28));
+		showButton.setPreferredSize(new Dimension(22, 22));
 		passField.setEchoChar('\u25CF');
 		ImageIcon hideImg = new ImageIcon(this.getClass().getResource("/images/hide.png"));
-		Image hideDim = hideImg.getImage().getScaledInstance(28, 28, Image.SCALE_DEFAULT);
+		Image hideDim = hideImg.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT);
 		ImageIcon hideImg2 = new ImageIcon(hideDim);
 		ImageIcon showImg = new ImageIcon(this.getClass().getResource("/images/show.png"));
-		Image showDim = showImg.getImage().getScaledInstance(28, 28, Image.SCALE_DEFAULT);
+		Image showDim = showImg.getImage().getScaledInstance(22, 22, Image.SCALE_DEFAULT);
 		ImageIcon showImg2 = new ImageIcon(showDim);
 		showButton.setIcon(showImg2);
 		showButton.addActionListener(e -> {
@@ -188,21 +195,21 @@ public class CPassword implements Component {
 		});
 
 		gbc.anchor = GridBagConstraints.WEST;
-		passField.setPreferredSize(new Dimension(252, 30));
-		gbc.insets = new Insets(0, 20, 0, 20);
+		passField.setPreferredSize(new Dimension(258, 22));
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 1.0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		panel.add(title, gbc);
 		gbc.gridy = 1;
-		gbc.insets = new Insets(0, 20, 0, 0);
 		panel.add(passField, gbc);
 		gbc.gridx = 1;
-		gbc.insets = new Insets(0, 0, 0, 0);
+		gbc.fill = GridBagConstraints.NONE;
 		panel.add(showButton, gbc);
-		gbc.insets = new Insets(0, 20, 0, 20);
 		gbc.gridx = 0;
 		gbc.gridy = 2;
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		panel.add(errorMsg, gbc);
 		return panel;
 	}

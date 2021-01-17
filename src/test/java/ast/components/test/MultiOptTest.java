@@ -11,17 +11,17 @@ import org.junit.Test;
 import ast.Id;
 import ast.components.CMultiOpt;
 import ast.constraints.Constraint;
-import ast.constraints.StyleId;
+import ast.constraints.DisplayId;
 import fields.JPanelWithValue;
 
 public class MultiOptTest {	
 	
 	@Test
-	public void testMultiOptBlockListStyle() {
+	public void testMultiOptBlockListDisplay() {
 		  var frame=new JFrame();
 		  List<String> options = List.of("option1", "option2", "option3", "option4");
 		  List<String> defValues = List.of("option1", "option2");
-		  Constraint constraint = StyleId.from(Id.MultiOpt, "blockList");
+		  Constraint constraint = DisplayId.from(Id.MultiOpt, "blockList");
 		  List<Constraint> constraints = List.of(constraint);
 		  var cmulti=new CMultiOpt("name","title",options,defValues, constraints);
 		  JPanelWithValue multi=cmulti.make();
@@ -36,11 +36,11 @@ public class MultiOptTest {
 	  }
 	
 	@Test 
-	public void testMultiOptInlineListStyle() {
+	public void testMultiOptInlineListDisplay() {
 		  var frame=new JFrame();
 		  List<String> options = List.of("option1", "option2", "option3", "option4");
 		  List<String> defValues = List.of("option1", "option2");
-		  Constraint constraint = StyleId.from(Id.MultiOpt, "inlineList");
+		  Constraint constraint = DisplayId.from(Id.MultiOpt, "inlineList");
 		  List<Constraint> constraints = List.of(constraint);
 		  var cmulti=new CMultiOpt("name","title",options,defValues, constraints);
 		  JPanelWithValue multi=cmulti.make();
@@ -56,11 +56,11 @@ public class MultiOptTest {
 	  }
 
 	@Test
-	public void testMultiOptBlockCheckboxStyle() {
+	public void testMultiOptBlockCheckboxDisplay() {
 		var frame=new JFrame();
 		List<String> options = List.of("option1", "option2", "option3", "option4");
 		List<String> defValues = List.of("option1", "option2");
-		Constraint constraint = StyleId.from(Id.MultiOpt, "blockCheckbox");
+		Constraint constraint = DisplayId.from(Id.MultiOpt, "blockCheckbox");
 		List<Constraint> constraints = List.of(constraint);
 		var cmulti=new CMultiOpt("name","title",options,defValues, constraints);
 		JPanelWithValue multi=cmulti.make();
@@ -75,11 +75,11 @@ public class MultiOptTest {
 	}
 	
 	@Test
-	public void testMultiOptInlineCheckboxStyle() {
+	public void testMultiOptInlineCheckboxDisplay() {
 		var frame=new JFrame();
 		List<String> options = List.of("option1", "option2", "option3", "option4");
 		List<String> defValues = List.of("option1", "option2");
-		Constraint constraint = StyleId.from(Id.MultiOpt, "inlineCheckbox");
+		Constraint constraint = DisplayId.from(Id.MultiOpt, "inlineCheckbox");
 		List<Constraint> constraints = List.of(constraint);
 		var cmulti=new CMultiOpt("name","title",options,defValues, constraints);
 		JPanelWithValue multi=cmulti.make();

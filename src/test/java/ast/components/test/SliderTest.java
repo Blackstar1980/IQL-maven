@@ -11,13 +11,13 @@ import org.junit.Test;
 import ast.Id;
 import ast.components.CSlider;
 import ast.constraints.Constraint;
-import ast.constraints.StyleId;
+import ast.constraints.DisplayId;
 import fields.JPanelWithValue;
 
 public class SliderTest {
-	@Test public void testSliderBlockStyle() {
+	@Test public void testSliderBlockDisplay() {
 		  var frame=new JFrame();
-		  Constraint constraint = StyleId.from(Id.String, "block");
+		  Constraint constraint = DisplayId.from(Id.String, "block");
 		  List<Constraint> constraints = List.of(constraint);
 		  var cs=new CSlider("name","title",2,9,5,constraints);
 		  JPanelWithValue slider=cs.make();
@@ -26,12 +26,12 @@ public class SliderTest {
 		  assertEquals("3", slider.getValue());
 		  slider.setValueOrDefault("3", true);
 		  assertEquals("5", slider.getValue());
-		  TestHelper.withGui(frame, slider, true);
+		  TestHelper.withGui(frame, slider, false);
 	  }
 	
-	@Test public void testSliderinlineStyle() {
+	@Test public void testSliderinlineDisplay() {
 		  var frame=new JFrame();
-		  Constraint constraint = StyleId.from(Id.String, "inline");
+		  Constraint constraint = DisplayId.from(Id.String, "inline");
 		  List<Constraint> constraints = List.of(constraint);
 		  var cs=new CSlider("name","title",2,9,5,constraints);
 		  JPanelWithValue slider=cs.make();

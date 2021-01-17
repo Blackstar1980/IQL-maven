@@ -12,7 +12,7 @@ import ast.Ast;
 import ast.Id;
 import ast.constraints.Constraint;
 import ast.constraints.ConstraintId;
-import ast.constraints.StyleId;
+import ast.constraints.DisplayId;
 import ast.constraints.Constraint.RequiredCon;
 import fields.JPanelContainer;
 import generated.GuiInputParser.ComponentContext;
@@ -50,7 +50,7 @@ public interface Component extends Attributable<JPanelContainer>, Ast.Tabable {
 				case REGEX -> constraintMap.put(id,(Constraint.RegexCon)con);
 				case HOLDER -> constraintMap.put(id,(Constraint.HolderCon)con);
 				case REQUIRED -> constraintMap.put(id,(Constraint.RequiredCon)con);
-				case STYLE -> constraintMap.put(id,(StyleId)con);
+				case DISPLAY -> constraintMap.put(id,(DisplayId)con);
 				case MINORTICKS -> constraintMap.put(id,(Constraint.MinorTicksCon)con);
 				case MAJORTICKS -> constraintMap.put(id,(Constraint.MajorTicksCon)con);
 				case SELECTED -> constraintMap.put(id,(Constraint.SelectedCon)con);
@@ -59,8 +59,8 @@ public interface Component extends Attributable<JPanelContainer>, Ast.Tabable {
 			}
 		});
 		// If not exist then apply those default setting
-		if (!constraintMap.containsKey(ConstraintId.STYLE))
-			constraintMap.put(ConstraintId.STYLE, StyleId.Block);
+		if (!constraintMap.containsKey(ConstraintId.DISPLAY))
+			constraintMap.put(ConstraintId.DISPLAY, DisplayId.Non);
 		if (!constraintMap.containsKey(ConstraintId.REQUIRED))
 			constraintMap.put(ConstraintId.REQUIRED, RequiredCon.Required);
 		return constraintMap;	
@@ -73,6 +73,7 @@ public interface Component extends Attributable<JPanelContainer>, Ast.Tabable {
 		Font font = label.getFont();
 		label.setFont(font.deriveFont(font.getStyle() | Font.ITALIC));
 		label.setText(title);
+		label.setToolTipText(title);
 		addRequiredToLabel(label, constraints);
 		return label;
 	}

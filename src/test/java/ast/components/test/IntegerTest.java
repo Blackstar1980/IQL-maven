@@ -11,14 +11,14 @@ import org.junit.Test;
 import ast.Id;
 import ast.components.CInteger;
 import ast.constraints.Constraint;
-import ast.constraints.StyleId;
+import ast.constraints.DisplayId;
 import fields.JPanelWithValue;
 
 public class IntegerTest {
 	@Test
-	public void testIntegerBlockStyle() {
+	public void testIntegerBlockDisplay() {
 		var frame = new JFrame();
-		Constraint constraint = StyleId.from(Id.Integer, "block");
+		Constraint constraint = DisplayId.from(Id.Integer, "block");
 		List<Constraint> constraints = List.of(constraint);
 		var ci = new CInteger("name", "title", 3, constraints);
 		JPanelWithValue integerPanel = ci.make();
@@ -33,9 +33,9 @@ public class IntegerTest {
 	}
 	
 	@Test
-	public void testIntegerInlineStyle() {
+	public void testIntegerInlineDisplay() {
 		var frame = new JFrame();
-		Constraint constraint = StyleId.from(Id.Integer, "inline");
+		Constraint constraint = DisplayId.from(Id.Integer, "inline");
 		List<Constraint> constraints = List.of(constraint);
 		var ci = new CInteger("name", "title", 3, constraints);
 		JPanelWithValue integerPanel = ci.make();

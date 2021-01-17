@@ -11,7 +11,7 @@ import ast.constraints.Constraint.RequiredCon;
 import ast.constraints.Constraint.SelectedCon;
 
 public enum ConstraintId {
-	MIN, MAX, REGEX, STYLE, HOLDER, REQUIRED, SELECTED,
+	MIN, MAX, REGEX, DISPLAY, HOLDER, REQUIRED, SELECTED,
 	MAJORTICKS, MINORTICKS;
 	
 	public static Constraint from(Id id, String input){	
@@ -23,7 +23,7 @@ public enum ConstraintId {
 		case "required" -> getRequiredCon(id, value);
 		case "holder" -> getHolderCon(id, value);
 		case "selected" -> getSelectedCon(id, value);
-		case "style" -> getStyleCon(id, value);
+		case "display" -> getDisplayCon(id, value);
 		case "majorTicks" -> getMajorTicksCon(id, value);
 		case "minorTicks" -> getMinorTicksCon(id, value);
 		case "regex" -> getRegexCon(id, value);
@@ -65,8 +65,8 @@ public enum ConstraintId {
 		throw new IllegalArgumentException(id + " is not support Ticks constraint");
 	}
 	
-	private static StyleId getStyleCon(Id id, String value) {
-		return StyleId.from(id, value);
+	private static DisplayId getDisplayCon(Id id, String value) {
+		return DisplayId.from(id, value);
 	}
 	
 	private static RegexCon getRegexCon(Id id, String value) {

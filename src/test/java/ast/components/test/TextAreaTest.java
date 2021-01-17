@@ -11,14 +11,14 @@ import org.junit.Test;
 import ast.Id;
 import ast.components.CTextArea;
 import ast.constraints.Constraint;
-import ast.constraints.StyleId;
+import ast.constraints.DisplayId;
 import fields.JPanelWithValue;
 
 public class TextAreaTest {
 	@Test
-	public void testStringBlockStyle() {
+	public void testStringBlockDisplay() {
 		var frame = new JFrame();
-		Constraint constraint = StyleId.from(Id.TextArea, "block");
+		Constraint constraint = DisplayId.from(Id.TextArea, "block");
 		List<Constraint> constraints = List.of(constraint);
 		var cta = new CTextArea("name", "title", "defVal1", constraints);
 		JPanelWithValue textArea = cta.make();
@@ -33,9 +33,9 @@ public class TextAreaTest {
 	}
 	
 	@Test
-	public void testStringInlineStyle() {
+	public void testStringInlineDisplay() {
 		var frame = new JFrame();
-		Constraint constraint = StyleId.from(Id.TextArea, "inline");
+		Constraint constraint = DisplayId.from(Id.TextArea, "inline");
 		List<Constraint> constraints = List.of(constraint);
 		var cta = new CTextArea("name", "title", "defVal1", constraints);
 		JPanelWithValue textArea = cta.make();
@@ -46,6 +46,6 @@ public class TextAreaTest {
 		assertEquals("", textArea.getValue());
 		textArea.setValueOrDefault("defVal2", true);
 		assertEquals("defVal1", textArea.getValue());
-		TestHelper.withGui(frame, textArea, true);
+		TestHelper.withGui(frame, textArea, false);
 	}
 }

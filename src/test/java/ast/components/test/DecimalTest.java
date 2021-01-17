@@ -11,14 +11,14 @@ import org.junit.Test;
 import ast.Id;
 import ast.components.CDecimal;
 import ast.constraints.Constraint;
-import ast.constraints.StyleId;
+import ast.constraints.DisplayId;
 import fields.JPanelWithValue;
 
 public class DecimalTest {
 	@Test
-	public void testDecimalBlockStyle() {
+	public void testDecimalBlockDisplay() {
 		var frame = new JFrame();
-		Constraint constraint = StyleId.from(Id.Decimal, "block");
+		Constraint constraint = DisplayId.from(Id.Decimal, "block");
 		List<Constraint> constraints = List.of(constraint);
 		var cd = new CDecimal("name", "title", 3.0, constraints);
 		JPanelWithValue decimalPanel = cd.make();
@@ -33,9 +33,9 @@ public class DecimalTest {
 	}
 	
 	@Test
-	public void testDecimalInlineStyle() {
+	public void testDecimalInlineDisplay() {
 		var frame = new JFrame();
-		Constraint constraint = StyleId.from(Id.Decimal, "inline");
+		Constraint constraint = DisplayId.from(Id.Decimal, "inline");
 		List<Constraint> constraints = List.of(constraint);
 		var cd = new CDecimal("name", "title", 3.0, constraints);
 		JPanelWithValue decimalPanel = cd.make();
