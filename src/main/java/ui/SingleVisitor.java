@@ -52,6 +52,7 @@ public class SingleVisitor implements Visitor {
 	private void constructSingleDialog(JDialog dialog, List<JPanelContainer> panels) {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.EAST;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -59,12 +60,15 @@ public class SingleVisitor implements Visitor {
 			gbc.gridy++;
 			dialog.add(panel, gbc);
 		}
+		gbc.fill = GridBagConstraints.NONE;
 		JPanel buttonsPanel = new JPanel(new GridBagLayout());
 		JButton cancelButton = new JButton("Cancel");
 		JButton approveButton = new JButton("Approve");
 		buttonsPanel.add(approveButton, gbc);
 		gbc.gridx = 1;
+		gbc.insets = new Insets(0, 5, 0, 0);
 		buttonsPanel.add(cancelButton, gbc);
+		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.gridx = 0;
 		List<Map<String, String>> results = new ArrayList<>();
 		
@@ -184,7 +188,7 @@ public class SingleVisitor implements Visitor {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0;
+//		gbc.weightx = 0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		jDialog.setTitle(dialog.getTitle());
@@ -254,9 +258,9 @@ public class SingleVisitor implements Visitor {
 		groupPanel.setLayout(new GridBagLayout());
 		groupPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.GRAY));
 		GridBagConstraints gbc = new GridBagConstraints();
-//		gbc.anchor = GridBagConstraints.WEST;
+		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.insets = new Insets(10, 20, 5, 20);
+		gbc.insets = new Insets(10, 0, 5, 0);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.weightx = 1.0;
@@ -294,6 +298,9 @@ public class SingleVisitor implements Visitor {
 		};
 		tabPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.weightx = 1.0;
+//		gbc.insets = new Insets(10, 10, 10, 10);
+//		tabPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		tabPanel.add(tabbedPane, gbc);
@@ -315,14 +322,16 @@ public class SingleVisitor implements Visitor {
 		tabPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.weightx = 1;
+		gbc.insets = new Insets(0, 10, 0, 10);
+		gbc.weightx = 1.0;
 		
 		// Align all the component in the tab to the top right corner
 		for(int i=0; i<panels.size(); i++) {
 			if(i == panels.size()-1)
-				gbc.weighty = 1;
+				gbc.weighty = 1.0;
 			gbc.gridy++;
 			tabPanel.add(panels.get(i), gbc);
 		}

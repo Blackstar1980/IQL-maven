@@ -1,4 +1,5 @@
-//package ui;
+package ui;
+public class UiVisitor{}
 //
 //import java.awt.Color;
 //import java.awt.Dimension;
@@ -45,7 +46,7 @@
 //
 //	@Override
 //	public JDialog visitQuery(Query query) {
-//		Id dialogId = query.dialog().getType();
+//		Id dialogId = query.Fw: Fwd:dialog().getType();
 //		JDialog jDialog = new JDialog();
 //		if(dialogId == Id.Single) {
 //			jDialog = visitSingle((DSingle)query.dialog());

@@ -68,22 +68,4 @@ public class SingleOptTest {
 		assertEquals("", single.getValue());
 		TestHelper.withGui(frame, single, false);
 	}
-
-	@Test
-	public void testSingleOptInlineRadioDisplay() {
-		var frame = new JFrame();
-		List<String> options = List.of("option1", "option2", "option3", "option4");
-		Constraint constraint = DisplayId.from(Id.SingleOpt, "inlineRadio");
-		List<Constraint> constraints = List.of(constraint);
-		var cs = new CSingleOpt("name", "title", options, "option1", constraints);
-		JPanelWithValue single = cs.make();
-		assertEquals("option1", single.getValue());
-		single.setValueOrDefault("option4", false);
-		assertEquals("option4", single.getValue());
-		single.setValueOrDefault("", true);
-		assertEquals("option1", single.getValue());
-		single.setValueOrDefault("", false);
-		assertEquals("", single.getValue());
-		TestHelper.withGui(frame, single, false);
-	}
 }

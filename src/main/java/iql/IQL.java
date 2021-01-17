@@ -25,23 +25,23 @@ public class IQL {
 	}
 	
 	public static void main(String[] args) {
-//		var query = """
-//				'User Registration Form' Single('please provide a accurate details about yourself')
-//				'Personal Details' Tab{
-//					name 'Full Name:' String{min=2}
-//					age 'Age:' Integer{min=1 max=120 required=false}
-//					middle 'Middle Name' String{required=false min=5}
-//					'Family details' Group{
-//						marry 'Are you marry?' Boolean('false'){required=false}
-//					}
-//				}
-//				'Account Details' Tab{
-//				password 'Password:' Password{holder='Password'}
-//				comments 'Comments:' TextArea{min=4 max=20 holder='We would like to here from you'}
-//				work 'Working Field' MultiOpt('Computers|Building|Teaching|Non of the above'){
-//				display=blockList required=false selected='Computers|Building'}
-//				}
-//				""";
+		var query = """
+				'User Registration Form' Single('please provide a accurate details about yourself')
+				'Personal Details' Tab{
+					name 'Full Name:' String{min=2}
+					age 'Age:' Integer{min=1 max=120 required=false}
+					middle 'Middle Name' String{required=false min=5}
+					'Family details' Group{
+						marry 'Are you marry?' Boolean('false'){required=false}
+					}
+				}
+				'Account Details' Tab{
+				password 'Password:' Password{holder='Password'}
+				comments 'Comments:' TextArea{min=4 max=20 holder='We would like to here from you'}
+				work 'Working Field' MultiOpt('Computers|Building|Teaching|Non of the above'){
+				display=blockList required=false selected='Computers|Building'}
+				}
+				""";
 //		var query = """
 //		'User Registration Form' Single('please provide a accurate details about yourself')
 //		'Personal Details' Tab{
@@ -137,8 +137,9 @@ public class IQL {
 					name 'First Name:' String{required=false min=2 max=12 holder='Enter you name here' display=inline regex='[a-zA-Z]+'}
 				""";
 		
-		run(exampleString03);
-//		run(queryBlock);
+//		run(exampleString03);
+		run(queryBlock);
+//		run(query);
 	}
 
 }

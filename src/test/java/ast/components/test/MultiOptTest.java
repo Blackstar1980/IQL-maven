@@ -74,23 +74,4 @@ public class MultiOptTest {
 		TestHelper.withGui(frame, multi, false);
 	}
 	
-	@Test
-	public void testMultiOptInlineCheckboxDisplay() {
-		var frame=new JFrame();
-		List<String> options = List.of("option1", "option2", "option3", "option4");
-		List<String> defValues = List.of("option1", "option2");
-		Constraint constraint = DisplayId.from(Id.MultiOpt, "inlineCheckbox");
-		List<Constraint> constraints = List.of(constraint);
-		var cmulti=new CMultiOpt("name","title",options,defValues, constraints);
-		JPanelWithValue multi=cmulti.make();
-		assertEquals("option1, option2", multi.getValue());
-		multi.setValueOrDefault("option3, option4", false);
-		assertEquals("option3, option4", multi.getValue());
-		multi.setValueOrDefault("", true);
-		assertEquals("option1, option2", multi.getValue());
-		multi.setValueOrDefault("", false);
-		  assertEquals("", multi.getValue());
-		TestHelper.withGui(frame, multi, false);
-	}
-	
 }
