@@ -52,7 +52,7 @@ public class SingleVisitor implements Visitor {
 	private void constructSingleDialog(JDialog dialog, List<JPanelContainer> panels) {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.EAST;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+//		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -62,6 +62,7 @@ public class SingleVisitor implements Visitor {
 		}
 		gbc.fill = GridBagConstraints.NONE;
 		JPanel buttonsPanel = new JPanel(new GridBagLayout());
+		buttonsPanel.setBorder(new EmptyBorder(5, 0, 0, 0));
 		JButton cancelButton = new JButton("Cancel");
 		JButton approveButton = new JButton("Approve");
 		buttonsPanel.add(approveButton, gbc);

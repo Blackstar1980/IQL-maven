@@ -138,7 +138,8 @@ public class IQL {
 				""";
 		
 //		run(exampleString03);
-		run(queryBlock);
+//		run(queryBlock);
+		run(queryInline);
 //		run(query);
 	}
 
