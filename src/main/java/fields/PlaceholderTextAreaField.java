@@ -29,7 +29,7 @@ private String placeholder;
             RenderingHints.VALUE_ANTIALIAS_ON);
         g.setColor(Color.gray);
         g.drawString(placeholder, getInsets().left, 
-        	pG.getFontMetrics().getMaxAscent() + getInsets().top + getInsets().bottom+1);
+        	pG.getFontMetrics().getMaxAscent() + getInsets().top + getInsets().bottom-2);
     }
 
     public String getPlaceholder() {

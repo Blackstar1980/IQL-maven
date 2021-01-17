@@ -66,9 +66,7 @@ public interface Constraint {
 		}
 
 		public String validate(String text) {
-			Pattern pattern = Pattern.compile(value);
-			Matcher matcher = pattern.matcher(text);
-			return matcher.find()? " ": "Input don't match to the pattern '" + value +"'";
+			return text.matches(value)? " ": "Input don't match to the pattern '" + value +"'";
 		}};
 	enum RequiredCon implements Constraint{
 		Required,NotRequired;

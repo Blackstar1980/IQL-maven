@@ -121,7 +121,24 @@ public class IQL {
 //		display=blockList required=false selected='Computers|Building'}
 //		""";
 //		run(query);
-		run(queryBlock);
+		
+		
+		var exampleString01 = """
+				'User Details' Single('Please provide your details below')
+					name 'Full Name:' String
+				""";
+		
+		var exampleString02 = """
+				'User Details' Single('Please provide your details below')
+					name 'First Name:' String('Jack')
+				""";
+		var exampleString03 = """
+				'User Details' Single('Please provide your details below')
+					name 'First Name:' String{required=false min=2 max=12 holder='Enter you name here' display=inline regex='[a-zA-Z]+'}
+				""";
+		
+		run(exampleString03);
+//		run(queryBlock);
 	}
 
 }

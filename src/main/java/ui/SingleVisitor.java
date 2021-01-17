@@ -52,7 +52,6 @@ public class SingleVisitor implements Visitor {
 	private void constructSingleDialog(JDialog dialog, List<JPanelContainer> panels) {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.EAST;
-//		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -60,9 +59,13 @@ public class SingleVisitor implements Visitor {
 			gbc.gridy++;
 			dialog.add(panel, gbc);
 		}
-		JPanel buttonsPanel = new JPanel();
+		JPanel buttonsPanel = new JPanel(new GridBagLayout());
 		JButton cancelButton = new JButton("Cancel");
 		JButton approveButton = new JButton("Approve");
+		buttonsPanel.add(approveButton, gbc);
+		gbc.gridx = 1;
+		buttonsPanel.add(cancelButton, gbc);
+		gbc.gridx = 0;
 		List<Map<String, String>> results = new ArrayList<>();
 		
 		dialog.addWindowListener(new WindowAdapter() {
@@ -80,7 +83,6 @@ public class SingleVisitor implements Visitor {
 			this.data.complete(results);
 			dialog.dispose();
 		});
-		buttonsPanel.add(approveButton);
 		approveButton.addActionListener(e->{
 			var saved = saveAsMap(panels);
 			if(saved!=null) {
@@ -88,8 +90,8 @@ public class SingleVisitor implements Visitor {
 				this.data.complete(results);
 				dialog.dispose();
 			}});
-		buttonsPanel.add(cancelButton);
 		gbc.gridy++;
+		gbc.anchor = GridBagConstraints.WEST;
 		dialog.add(buttonsPanel, gbc);
 	}
 	
