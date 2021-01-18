@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import ast.Ast.Containable;
@@ -27,6 +29,10 @@ public class PagesVisitor implements Visitor {
 	private CompletableFuture<List<Map<String, String>>> data = new CompletableFuture<>();
 	private final JTabbedPane tabbedPane = new JTabbedPane();
 	
+	private void commitData(List<Map<String, String>> res){
+	  res=res.stream().map(m->new HashMap<>(m)).collect(Collectors.toList());
+      data.complete(res);  
+	  }
 	@Override
 	public CompletableFuture<List<Map<String, String>>> getData() {
 		return data;
@@ -150,7 +156,8 @@ public class PagesVisitor implements Visitor {
 		    public void windowClosed(WindowEvent e) {
 				results.clear();
 				results.add(getEntries(panels));
-				data.complete(results);
+				commitData(results);
+//				data.complete(results);
 				dialog.dispose();
 		    }
 		});
@@ -228,11 +235,12 @@ public class PagesVisitor implements Visitor {
 		gbc.gridx++;
 		utilsPanel.add(addButton, gbc);
 		gbc.gridx = 0;
-
+		
 		cancelButton.addActionListener(e-> {
 			results.clear();
 			results.add(getEntries(panels));
-			this.data.complete(results);
+			commitData(results);
+//			this.data.complete(results);
 			dialog.dispose();
 		});
 		buttonsPanel.add(approveButton);
@@ -241,7 +249,8 @@ public class PagesVisitor implements Visitor {
 			if(saved==null) 
 				return;
 			updateDataList(results, saved, currentPage -1, false);
-			this.data.complete(results);
+			commitData(results);
+//			this.data.complete(results);
 			dialog.dispose();
 		});
 		buttonsPanel.add(cancelButton);
