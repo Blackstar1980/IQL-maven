@@ -1,8 +1,5 @@
 package ast.constraints;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public interface Constraint {
 	public ConstraintId getID();
 	
@@ -68,16 +65,35 @@ public interface Constraint {
 		public String validate(String text) {
 			return text.matches(value)? " ": "Input don't match to the pattern '" + value +"'";
 		}};
-	enum RequiredCon implements Constraint{
-		Required,NotRequired;
-		public static RequiredCon from(String value) {
-			if("true".contentEquals(value)) return RequiredCon.Required;
-			if("false".contentEquals(value)) return RequiredCon.NotRequired;
-			throw new IllegalArgumentException("Illigal constraint value: " + value);	
+//	enum RequiredCon implements Constraint{
+//		Required,NotRequired;
+//		public static RequiredCon from(String value) {
+//			if("true".contentEquals(value)) return RequiredCon.Required;
+//			if("false".contentEquals(value)) return RequiredCon.NotRequired;
+//			throw new IllegalArgumentException("Illigal constraint value: " + value);	
+//		}
+//		@Override
+//		public ConstraintId getID() {
+//			return ConstraintId.REQUIRED;
+//		}
+//		public String validate(String text) {
+//			return text == null || text.isEmpty()? "This field is required": " ";
+//		}
+//	}
+	
+	enum OptionalCon implements Constraint{
+		Required,Optional;
+		public static OptionalCon from(String value) {
+			if("optional".contentEquals(value))
+				return OptionalCon.Optional;
+			else
+				return OptionalCon.Required;
+//			if("false".contentEquals(value)) return RequiredCon.NotRequired;
+//			throw new IllegalArgumentException("Illigal constraint value: " + value);	
 		}
 		@Override
 		public ConstraintId getID() {
-			return ConstraintId.REQUIRED;
+			return ConstraintId.OPTIONAL;
 		}
 		public String validate(String text) {
 			return text == null || text.isEmpty()? "This field is required": " ";

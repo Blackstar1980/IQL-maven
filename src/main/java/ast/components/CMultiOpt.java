@@ -87,13 +87,13 @@ public class CMultiOpt implements Component {
 		if(display == DisplayId.Non) {
 			display = DisplayId.BlockCheckbox;
 		}
-		JLabel title = new JLabel(getTitle());
+		JLabel jTitle = generateTitle(title, mapConstraints);
 
 		return switch (display) {
-			case InlineCheckbox -> setMultiInlineCheckboxDisplay(title, mapConstraints);
-			case BlockCheckbox -> setMultiBlockCheckboxDisplay(title, mapConstraints);
-			case InlineList -> setMultiInlineListDisplay(title, mapConstraints);
-			case BlockList -> setMultiBlockListDisplay(title, mapConstraints);
+			case InlineCheckbox -> setMultiInlineCheckboxDisplay(jTitle, mapConstraints);
+			case BlockCheckbox -> setMultiBlockCheckboxDisplay(jTitle, mapConstraints);
+			case InlineList -> setMultiInlineListDisplay(jTitle, mapConstraints);
+			case BlockList -> setMultiBlockListDisplay(jTitle, mapConstraints);
 			default ->
 			throw new IllegalArgumentException("Unexpected value: " + display);
 		};
@@ -234,9 +234,9 @@ public class CMultiOpt implements Component {
 		comboBox.addItems(options);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.insets = new Insets(0, 0, 0, 10);
+//		gbc.insets = new Insets(0, 0, 0, 10);
 		panel.add(title, gbc);
-		gbc.insets = new Insets(0, 0, 0, 0);
+//		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.gridx = 1;
 		gbc.weightx = 1.0;

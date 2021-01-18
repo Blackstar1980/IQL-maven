@@ -41,7 +41,7 @@ public class ConstraintTests {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' String('My default value')
-				{display= inlineRadio}
+				{ inlineRadio}
 				""",
 				"inlineRadio is not a valide component display");
 	}

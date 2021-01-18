@@ -20,16 +20,16 @@ public interface Attributable<T> extends Ast<T> {
 	
 	default List<Constraint> extractConstraints(Id id, List<ParseTree> children) {
 		if(children == null) return List.of();
-		Set<String> stringconsts = new HashSet<String>();
+		Set<ConstraintId> stringconsts = new HashSet<ConstraintId>();
 		List<Constraint> constraints = children.stream()
 		.filter(c-> !("{".equals(c.getText()) || "}".equals(c.getText())))
 		.map(c -> {
-			String constraint = c.getText();
-			String constraintName = constraint.substring(0, constraint.indexOf('=')).trim();
-			if(stringconsts.contains(constraintName))
-				throw new IllegalArgumentException("'"+ constraintName + "' constraint repeat more then once");
-			stringconsts.add(constraintName);
-			return ConstraintId.from(id, constraint);
+			String constraintText = c.getText();
+			Constraint constraint = ConstraintId.from(id, constraintText);
+			if(stringconsts.contains(constraint.getID()))
+				throw new IllegalArgumentException("'"+ constraint.getID() + "' constraint repeat more then once");
+			stringconsts.add(constraint.getID());
+			return constraint;
 			})
 		.collect(Collectors.toList());
 		return constraints;

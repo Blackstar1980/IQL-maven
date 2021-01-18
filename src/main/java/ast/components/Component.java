@@ -13,7 +13,7 @@ import ast.Id;
 import ast.constraints.Constraint;
 import ast.constraints.ConstraintId;
 import ast.constraints.DisplayId;
-import ast.constraints.Constraint.RequiredCon;
+import ast.constraints.Constraint.OptionalCon;
 import fields.JPanelContainer;
 import generated.GuiInputParser.ComponentContext;
 
@@ -49,7 +49,7 @@ public interface Component extends Attributable<JPanelContainer>, Ast.Tabable {
 				case MAX -> constraintMap.put(id,(Constraint.MaxCon)con);
 				case REGEX -> constraintMap.put(id,(Constraint.RegexCon)con);
 				case HOLDER -> constraintMap.put(id,(Constraint.HolderCon)con);
-				case REQUIRED -> constraintMap.put(id,(Constraint.RequiredCon)con);
+				case OPTIONAL -> constraintMap.put(id,(Constraint.OptionalCon)con);
 				case DISPLAY -> constraintMap.put(id,(DisplayId)con);
 				case MINORTICKS -> constraintMap.put(id,(Constraint.MinorTicksCon)con);
 				case MAJORTICKS -> constraintMap.put(id,(Constraint.MajorTicksCon)con);
@@ -61,8 +61,8 @@ public interface Component extends Attributable<JPanelContainer>, Ast.Tabable {
 		// If not exist then apply those default setting
 		if (!constraintMap.containsKey(ConstraintId.DISPLAY))
 			constraintMap.put(ConstraintId.DISPLAY, DisplayId.Non);
-		if (!constraintMap.containsKey(ConstraintId.REQUIRED))
-			constraintMap.put(ConstraintId.REQUIRED, RequiredCon.Required);
+		if (!constraintMap.containsKey(ConstraintId.OPTIONAL))
+			constraintMap.put(ConstraintId.OPTIONAL, OptionalCon.Required);
 		return constraintMap;	
 	}
 	
@@ -80,15 +80,16 @@ public interface Component extends Attributable<JPanelContainer>, Ast.Tabable {
 	
 	/*Share to all components*/
 	default JLabel addRequiredToLabel(JLabel label, Map<ConstraintId, Constraint> constraints) {
-		if(constraints.get(ConstraintId.REQUIRED) == RequiredCon.Required) {
-			label.setText(label.getText() + " (Required)" );
+		if(constraints.get(ConstraintId.OPTIONAL) == OptionalCon.Required) {
+			label.setText("<html>" + label.getText() + "<span  color='red'> *</span ></html>" );
 		}
+//		("<html>Text color: <font color='red'>red</font></html>"
 		return label;
 	}
 	
 	default String validateConstraints(Id id, String text, Map<ConstraintId, Constraint> constraints) {
-		if(constraints.get(ConstraintId.REQUIRED) == RequiredCon.Required) {
-			String requiredError = ((Constraint.RequiredCon)constraints.get(ConstraintId.REQUIRED)).validate(text);
+		if(constraints.get(ConstraintId.OPTIONAL) == OptionalCon.Required) {
+			String requiredError = ((Constraint.OptionalCon)constraints.get(ConstraintId.OPTIONAL)).validate(text);
 			if(!" ".equals(requiredError))
 				return requiredError;
 		}

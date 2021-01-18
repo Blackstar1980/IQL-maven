@@ -1,7 +1,7 @@
 grammar GuiInput;
 @header {package generated;}
 
-compCon: '{' (MaxCon | MinCon | RegexCon | RequiredCon | HolderCon | SelectedCon | MajorTicksCon | MinorTicksCon | DisplayCon)* '}';
+compCon: '{' (MaxCon | MinCon | RegexCon | OptionalCon | HolderCon | SelectedCon | MajorTicksCon | MinorTicksCon | DisplayCon)* '}';
 component: NameWord QuotedCharText CompId DefaultValue? compCon?;
 group: QuotedCharText GroupId '{' component+ '}';
 groupOrcomp: group | component;
@@ -27,18 +27,21 @@ TabId: 'Tab';
 CompId: 'String' | 'Integer' | 'Decimal' 
 		| 'Boolean' | 'SingleOpt' | 'MultiOpt' 
 		| 'Password' | 'Slider' | 'TextArea';
-Displays: 'inline' | 'block' | 'inlineRadio' 
-		| 'inlineList' | 'blockRadio' | 'blockList' 
-		| 'inlineCheckbox' | 'blockCheckbox';
+//Displays: 'inline' | 'block' | 'inlineRadio' 
+//		| 'inlineList' | 'blockRadio' | 'blockList' 
+//		| 'inlineCheckbox' | 'blockCheckbox';
 MinCon: 'min' Whitespace* '=' Whitespace* Decimal;
 MaxCon: 'max' Whitespace* '=' Whitespace* Decimal;
 RegexCon: 'regex' Whitespace* '=' Whitespace* QuotedCharText;
-RequiredCon: 'required' Whitespace* '=' Whitespace* Bool;
+//RequiredCon: 'required' Whitespace* '=' Whitespace* Bool;
+OptionalCon: Whitespace* 'optional' Whitespace*;
+//DisplayCon: 'display' Whitespace* '=' Whitespace* Displays;
+DisplayCon: Whitespace* ('inline' | 'block' | 'inlineList' | 'blockList' | 'blockRadio' | 'blockCheckbox') Whitespace*;
 HolderCon: 'holder' Whitespace* '=' Whitespace* QuotedCharText;
 SelectedCon: 'selected' Whitespace* '=' Whitespace* QuotedCharText;
 MajorTicksCon: 'majorTicks' Whitespace* '=' Whitespace* Integer;
 MinorTicksCon: 'minorTicks' Whitespace* '=' Whitespace* Integer;
-DisplayCon: 'display' Whitespace* '=' Whitespace* Displays;
+
 
 NameWord: LowerCaseLetter (LowerCaseLetter | UpperCaseLetter)*;
 DefaultValue: '(' QuotedCharText ')';
