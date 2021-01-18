@@ -26,7 +26,7 @@ public class IQL {
 	
 	public static void main(String[] args) {
 		var query = """
-				'User Registration Form' Pages('please provide a accurate details about yourself')
+				'User Registration Form' Single('please provide some details')
 				'Personal Details' Tab{
 					name 'Full Name:' String{min=2}
 					age 'Age:' Integer{min=1 max=120 required=false}

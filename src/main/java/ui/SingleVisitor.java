@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import ast.Ast.Containable;
@@ -24,6 +26,11 @@ import fields.*;
 public class SingleVisitor implements Visitor {
 	private CompletableFuture<List<Map<String, String>>> data = new CompletableFuture<>();
 	private final JTabbedPane tabbedPane = new JTabbedPane();
+	
+	private void commitData(List<Map<String, String>> res){
+		res=res.stream().map(m->new HashMap<>(m)).collect(Collectors.toList());
+	    data.complete(res);  
+	}
 	
 	@Override
 	public CompletableFuture<List<Map<String, String>>> getData() {
@@ -78,21 +85,24 @@ public class SingleVisitor implements Visitor {
 		    public void windowClosed(WindowEvent e) {
 				results.clear();
 				results.add(getEntries(panels));
-				data.complete(results);
+//				data.complete(results);
+				commitData(results);
 				dialog.dispose();
 		    }
 		});
 		cancelButton.addActionListener(e-> {
 			results.clear();
 			results.add(getEntries(panels));
-			this.data.complete(results);
+//			this.data.complete(results);
+			commitData(results);
 			dialog.dispose();
 		});
 		approveButton.addActionListener(e->{
 			var saved = saveAsMap(panels);
 			if(saved!=null) {
 				results.add(saved);
-				this.data.complete(results);
+//				this.data.complete(results);
+				commitData(results);
 				dialog.dispose();
 			}});
 		gbc.gridy++;
@@ -189,7 +199,6 @@ public class SingleVisitor implements Visitor {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-//		gbc.weightx = 0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		jDialog.setTitle(dialog.getTitle());
@@ -202,33 +211,11 @@ public class SingleVisitor implements Visitor {
 
 	@Override
 	public JDialog visitMulti(DMulti dialog) {
-//		JDialog jDialog = new JDialog();
-//		jDialog.setLayout(new GridBagLayout());
-//		GridBagConstraints gbc = new GridBagConstraints();
-//		gbc.anchor = GridBagConstraints.WEST;
-//		gbc.gridx = 0;
-//		gbc.gridy = 0;
-//		jDialog.setTitle(dialog.getTitle());
-//		JLabel desc = generateDesc(dialog.getDescription());
-//		jDialog.add(desc, gbc);
-//		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//		jDialog.setResizable(false);
 		return null;
 	}
 
 	@Override
 	public JDialog visitPages(DPages dialog) {
-//		JDialog jDialog = new JDialog();
-//		jDialog.setLayout(new GridBagLayout());
-//		GridBagConstraints gbc = new GridBagConstraints();
-//		gbc.anchor = GridBagConstraints.WEST;
-//		gbc.gridx = 0;
-//		gbc.gridy = 0;
-//		jDialog.setTitle(dialog.getTitle());
-//		JLabel desc = generateDesc(dialog.getDescription());
-//		jDialog.add(desc, gbc);
-//		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//		jDialog.setResizable(false);
 		return null;
 	}
 
@@ -302,9 +289,11 @@ public class SingleVisitor implements Visitor {
 		gbc.weightx = 1.0;
 //		gbc.insets = new Insets(10, 10, 10, 10);
 //		tabPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
-		gbc.anchor = GridBagConstraints.CENTER;
+//		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		tabPanel.add(tabbedPane, gbc);
+//		tabPanel.setBackground(Color.green);
+//		tabPanel.setOpaque(true);
 		return tabPanel;
 	}
 
@@ -322,7 +311,7 @@ public class SingleVisitor implements Visitor {
 		};
 		tabPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.anchor = GridBagConstraints.EAST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -336,6 +325,8 @@ public class SingleVisitor implements Visitor {
 			gbc.gridy++;
 			tabPanel.add(panels.get(i), gbc);
 		}
+//		tabPanel.setBackground(Color.blue);
+//		tabPanel.setOpaque(true);
 		return tabPanel;
 	}
 

@@ -40,29 +40,14 @@ public class PagesVisitor implements Visitor {
 
 	@Override
 	public JDialog visitQuery(Query query) {
-//		Id dialogId = query.dialog().getType();
 		JDialog jDialog = new JDialog();
-//		if(dialogId == Id.Single) {
-//			jDialog = visitSingle((DSingle)query.dialog());
-//			List<Containable> containers = query.containers();
-//			List<JPanelContainer> panels = new ArrayList<>();
-//			for(Containable container:containers) {
-//				panels.add(getPanel(container));
-//			}
-//			constructSingleDialog(jDialog, query.dialog().getDescription(), panels);
-//		}
-//		if(dialogId == Id.Multi) {
-//			jDialog = visitMulti((DMulti)query.dialog());
-//		}
-//		if(dialogId == Id.Pages) {
-			jDialog = visitPages((DPages)query.dialog());
-			List<Containable> containers = query.containers();
-			List<JPanelContainer> panels = new ArrayList<>();
-			for(Containable container:containers) {
-				panels.add(getPanel(container));
-			}
-			constructPageDialog(jDialog, panels);
-//		}
+		jDialog = visitPages((DPages)query.dialog());
+		List<Containable> containers = query.containers();
+		List<JPanelContainer> panels = new ArrayList<>();
+		for(Containable container:containers) {
+			panels.add(getPanel(container));
+		}
+		constructPageDialog(jDialog, panels);
 		jDialog.pack();
 		jDialog.setVisible(true);
 		System.out.println("in Pages");
@@ -73,49 +58,6 @@ public class PagesVisitor implements Visitor {
 	private JPanelContainer getPanel(Containable container) {
 		return container.accept(this);
 	}
-	
-//	private void constructSingleDialog(JDialog dialog, String description,
-//			List<JPanelContainer> panels) {
-//		GridBagConstraints gbc = new GridBagConstraints();
-//		gbc.anchor = GridBagConstraints.WEST;
-//		gbc.gridx = 0;
-//		gbc.gridy = 0;
-//		for(JPanel panel : panels) {
-//			gbc.gridy++;
-//			dialog.add(panel, gbc);
-//		}
-//		JPanel buttonsPanel = new JPanel();
-//		JButton cancelButton = new JButton("Cancel");
-//		JButton approveButton = new JButton("Approve");
-//		List<Map<String, String>> results = new ArrayList<>();
-//		
-//		dialog.addWindowListener(new WindowAdapter() {
-//			@Override
-//		    public void windowClosed(WindowEvent e) {
-//				results.clear();
-//				results.add(getEntries(panels));
-//				data.complete(results);
-//				dialog.dispose();
-//		    }
-//		});
-//		cancelButton.addActionListener(e-> {
-//			results.clear();
-//			results.add(getEntries(panels));
-//			this.data.complete(results);
-//			dialog.dispose();
-//		});
-//		buttonsPanel.add(approveButton);
-//		approveButton.addActionListener(e->{
-//			var saved = saveAsMap(panels);
-//			if(saved!=null) {
-//				results.add(saved);
-//				this.data.complete(results);
-//				dialog.dispose();
-//			}});
-//		buttonsPanel.add(cancelButton);
-//		gbc.gridy++;
-//		dialog.add(buttonsPanel, gbc);
-//	}
 	
 	private Map<String, String> setNullValues(Map<String, String> entries) {
 		for (Map.Entry<String, String> entry : entries.entrySet()) {
@@ -157,7 +99,6 @@ public class PagesVisitor implements Visitor {
 				results.clear();
 				results.add(getEntries(panels));
 				commitData(results);
-//				data.complete(results);
 				dialog.dispose();
 		    }
 		});
@@ -394,34 +335,11 @@ public class PagesVisitor implements Visitor {
 
 	@Override
 	public JDialog visitSingle(DSingle dialog) {
-//		JDialog jDialog = new JDialog();
-//		jDialog.setLayout(new GridBagLayout());
-//		GridBagConstraints gbc = new GridBagConstraints();
-//		gbc.anchor = GridBagConstraints.WEST;
-//		gbc.fill = GridBagConstraints.HORIZONTAL;
-//		gbc.gridx = 0;
-//		gbc.gridy = 0;
-//		jDialog.setTitle(dialog.getTitle());
-//		JLabel desc = generateDesc(dialog.getDescription());
-//		jDialog.add(desc, gbc);
-//		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//		jDialog.setResizable(false);
 		return null;
 	}
 
 	@Override
 	public JDialog visitMulti(DMulti dialog) {
-//		JDialog jDialog = new JDialog();
-//		jDialog.setLayout(new GridBagLayout());
-//		GridBagConstraints gbc = new GridBagConstraints();
-//		gbc.anchor = GridBagConstraints.WEST;
-//		gbc.gridx = 0;
-//		gbc.gridy = 0;
-//		jDialog.setTitle(dialog.getTitle());
-//		JLabel desc = generateDesc(dialog.getDescription());
-//		jDialog.add(desc, gbc);
-//		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//		jDialog.setResizable(false);
 		return null;
 	}
 
@@ -435,6 +353,7 @@ public class PagesVisitor implements Visitor {
 		gbc.gridy = 0;
 		jDialog.setTitle(dialog.getTitle());
 		JTextArea desc = generateDesc(dialog.getDescription());
+		gbc.insets = new Insets(0, 15, 0, 15);
 		jDialog.add(desc, gbc);
 		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		jDialog.setResizable(false);
@@ -615,11 +534,5 @@ public class PagesVisitor implements Visitor {
 		label.setBackground(new Color(238, 238, 238));
 		return label;
 	}
-//	private JLabel generateDesc(String title) {
-//		JLabel label = new JLabel();
-//		label.setBorder(new EmptyBorder(10, 10, 20, 10));
-//		label.setText(title);
-//		return label;
-//	}
 	
 }
