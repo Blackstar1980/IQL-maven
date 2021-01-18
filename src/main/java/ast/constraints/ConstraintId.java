@@ -14,17 +14,17 @@ public enum ConstraintId {
 	MIN, MAX, REGEX, DISPLAY, HOLDER, SELECTED, MAJORTICKS, MINORTICKS, OPTIONAL;
 
 	public static Constraint from(Id id, String input) {
-		if(isDisplay(input))
-			return getDisplayCon(id, input);
+		if(isDisplay(input.trim()))
+			return getDisplayCon(id, input.trim());
 		if("optional".equals(input.trim()))
-			return getOptionalCon(id, input);
+			return getOptionalCon(id, input.trim());
 		String constrient = input.substring(0, input.indexOf('=')).trim();
 		String value = input.substring(input.indexOf('=') + 1).trim();
 		return switch (constrient) {
 		case "max" -> getMaxCon(id, value);
 		case "min" -> getMinCon(id, value);
 //		case "required" -> getRequiredCon(id, value);
-		case "optional" -> getOptionalCon(id, value);
+//		case "optional" -> getOptionalCon(id, value);
 		case "holder" -> getHolderCon(id, value);
 		case "selected" -> getSelectedCon(id, value);
 //		case "display" -> getDisplayCon(id, value);

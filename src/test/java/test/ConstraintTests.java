@@ -41,34 +41,34 @@ public class ConstraintTests {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' String('My default value')
-				{ inlineRadio}
+				{ blockCheckbox }
 				""",
-				"inlineRadio is not a valide component display");
+				"blockCheckbox is not a valide component display");
 	}
 	
 	@Test public void con06() {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' SingleOpt('Yes|No |Maybe |Yes no')
-				{display= inlineCheckbox}
+				{blockCheckbox}
 				""",
-				"inlineCheckbox is not a valide component display");
+				"blockCheckbox is not a valide component display");
 	}
 	
 	@Test public void con07() {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' MultiOpt('Yes|No |Maybe |Yes no')
-				{display= inlineRadio}
+				{ blockRadio}
 				""",
-				"inlineRadio is not a valide component display");
+				"blockRadio is not a valide component display");
 	}
 	
 	@Test public void con08() {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' MultiOpt('Yes|No |Maybe |Yes no|')
-				{display= inlineCheckbox}
+				{blockCheckbox}
 				""",
 				"'Yes|No |Maybe |Yes no|' are not a valid options");
 	}
@@ -77,7 +77,7 @@ public class ConstraintTests {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' MultiOpt('Yes| |Maybe |Yes no')
-				{display= inlineCheckbox}
+				{blockCheckbox}
 				""",
 				"Empty value is not a valid option");
 	}
@@ -86,7 +86,7 @@ public class ConstraintTests {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' Slider('My default value')
-				{display= inline}
+				{inline}
 				""",
 				"My default value must contain 2 or 3 numbers seperated by comma");
 	}
@@ -95,7 +95,7 @@ public class ConstraintTests {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' Slider('23,2,5')
-				{display= inline}
+				{inline}
 				""",
 				"Slider max value must be bigger than the min value");
 	}
@@ -104,7 +104,7 @@ public class ConstraintTests {
 		TestHelper.arrgumentException("""
 				'Single Dialog' Single('single my description')
 				cats 'Have cats?' Slider('2,4,5')
-				{display= inline}
+				{inline}
 				""",
 				"Default value must be between or equal to the min and max values");
 	}
@@ -113,7 +113,7 @@ public class ConstraintTests {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
 			cats 'Have cats?' Slider('2,4')
-			{display= inline}
+			{inline}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
@@ -127,7 +127,7 @@ public class ConstraintTests {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
 			cats 'Have cats?' Slider('2,44,7')
-			{display= inline}
+			{inline}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
@@ -141,7 +141,7 @@ public class ConstraintTests {
 		TestHelper.arrgumentException("""
 			'Single Dialog' Single('single my description')
 			cats 'Have\ncats?' Slider('2,44,7')
-			{display= inline}
+			{inline}
 			""",
 			"""
 			Have		
@@ -154,7 +154,7 @@ public class ConstraintTests {
 			'Single Dialog' Single('single my description')
 			cats 'Have
 			cats?' Slider('2,44,7')
-			{display= inline}
+			{inline}
 			""",
 			"""
 			Have		
@@ -165,8 +165,8 @@ public class ConstraintTests {
 	@Test public void con17() {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
-			cats 'Have cats?' Boolean('true') {display=inline}
-			dogs 'Have dogs?' Boolean('false'){display=block}
+			cats 'Have cats?' Boolean('true') {inline}
+			dogs 'Have dogs?' Boolean('false'){block}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \

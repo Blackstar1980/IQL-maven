@@ -36,7 +36,7 @@ RegexCon: 'regex' Whitespace* '=' Whitespace* QuotedCharText;
 //RequiredCon: 'required' Whitespace* '=' Whitespace* Bool;
 OptionalCon: Whitespace* 'optional' Whitespace*;
 //DisplayCon: 'display' Whitespace* '=' Whitespace* Displays;
-DisplayCon: Whitespace* ('inline' | 'block' | 'inlineList' | 'blockList' | 'blockRadio' | 'blockCheckbox') Whitespace*;
+DisplayCon: 'inline' | 'block' | 'inlineList' | 'blockList' | 'blockRadio' | 'blockCheckbox';
 HolderCon: 'holder' Whitespace* '=' Whitespace* QuotedCharText;
 SelectedCon: 'selected' Whitespace* '=' Whitespace* QuotedCharText;
 MajorTicksCon: 'majorTicks' Whitespace* '=' Whitespace* Integer;
