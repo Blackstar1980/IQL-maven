@@ -147,7 +147,7 @@ public class DialogTests {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my 
 			description')
-			cats 'Have cats?' Slider('2,44,7')
+			cats 'Have cats?' Slider[2,44]('7')
 			{ inline}
 			""",
 			"""

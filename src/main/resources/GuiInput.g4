@@ -16,17 +16,24 @@ fragment Bool: 'true' | 'false';
 fragment Digit: [0-9];
 fragment Integer: '-'?Digit+;
 fragment Decimal: Integer ('.'Digit+)?;
-fragment CharText: (LowerCaseLetter | UpperCaseLetter | Digit | '[' | ']' 
+fragment MultiOpt: 'MultiOpt[' QuotedCharText ']';
+fragment SingleOpt: 'SingleOpt[' QuotedCharText ']';
+fragment Slider: 'Slider[' CharText ']';
+fragment CharText: (LowerCaseLetter | UpperCaseLetter | Digit 
   | '<' | '>' | '&' | '|' | '*' | '+' | '-' | '=' | '!' | '%' 
   | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' 
   | '`' | '^' | '_' | '"' | '\\' | '\n' )*;
 Whitespace: [ \t\r\n]-> channel(HIDDEN);
 DialogId: 'Single' | 'Multi' | 'Pages';
+//work 'Working Field' MultiOpt('Computers|Building|Teaching'){selected='Building|Teaching'}
+//to:
+//work 'Working Field' MultiOpt[omputers|Building|Teaching]('Building|Teaching')
+//MultiOpt: 'MultiOpt[' QuotedCharText ']';
 GroupId: 'Group';
 TabId: 'Tab';
 CompId: 'String' | 'Integer' | 'Decimal' 
-		| 'Boolean' | 'SingleOpt' | 'MultiOpt' 
-		| 'Password' | 'Slider' | 'TextArea';
+		| 'Boolean' | SingleOpt | MultiOpt 
+		| 'Password' | Slider | 'TextArea';
 //Displays: 'inline' | 'block' | 'inlineRadio' 
 //		| 'inlineList' | 'blockRadio' | 'blockList' 
 //		| 'inlineCheckbox' | 'blockCheckbox';

@@ -271,7 +271,7 @@ public class ComponentTests {
 	@Test public void comp14() {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
-			height 'Height:' Slider('-5, 5')
+			height 'Height:' Slider[-5, 5]
 			{majorTicks=3 minorTicks=1 inline}
 			""",
 			"""
@@ -287,7 +287,7 @@ public class ComponentTests {
 	@Test public void comp15() {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
-			height 'Height:' Slider('0, 5, 1')
+			height 'Height:' Slider[0, 5]('1')
 			{majorTicks=3 minorTicks=1 inline}
 			""","""
 			Query[dialog=Single[title=Single Dialog, \
@@ -302,7 +302,7 @@ public class ComponentTests {
 	@Test public void comp16() {
 		TestHelper.numberException("""
 			'Single Dialog' Single('single my description')
-			height 'Height:' Slider('0.1, 5, 1')
+			height 'Height:' Slider[0.1, 5]('1')
 			{majorTicks=3 minorTicks=1 inline}
 			""",
 			"Invalid Slider default values");
@@ -319,28 +319,51 @@ public class ComponentTests {
 	@Test public void comp18() {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
-			height 'Height:' SingleOpt('Red|Blue|Green')
+			height 'Height:' SingleOpt['Red|Blue|Green']
 			{selected='Red' inlineList}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
 			containers=[SingleOpt [name=height, title=Height:, options=[Red, Blue, Green], \
-			constraints=[SelectedCon[value=Red], InlineList]]]]\
+			defValue=, constraints=[SelectedCon[value=Red], InlineList]]]]\
 			""");
 	}
 	
 	@Test public void comp19() {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description')
-			height 'Height:' MultiOpt('Red|Blue|Green')
-			{selected='Red|Blue' inlineList}
+			height 'Height:' MultiOpt['Red|Blue|Green']('Red|Blue')
+			{ inlineList}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
 			containers=[MultiOpt [name=height, title=Height:, \
-			options=[Red, Blue, Green], constraints=[SelectedCon[value=Red|Blue], InlineList]]]]\
+			options=[Red, Blue, Green], defValues=[Red, Blue], constraints=[InlineList]]]]\
 			""");
+	}
+	
+	@Test public void comp20() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single my description')
+			height 'Height:' SingleOpt['Red|Blue|Green']('Green')
+			{selected='Red' inlineList}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single my description, constraints=[]], \
+			containers=[SingleOpt [name=height, title=Height:, options=[Red, Blue, Green], \
+			defValue=Green, constraints=[SelectedCon[value=Red], InlineList]]]]\
+			""");
+	}
+	
+	@Test public void comp21() {
+		TestHelper.arrgumentException("""
+			'Single Dialog' Single('single my description')
+			height 'Height:' SingleOpt['Red|Blue|Green']('Green|Blue')
+			{selected='Red' inlineList}
+			""",
+			"'Green|Blue' is not a valid option");
 	}
 }

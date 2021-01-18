@@ -1,9 +1,9 @@
 package ast.components;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -49,24 +49,23 @@ public class CMultiOpt implements Component {
 	public CMultiOpt(ComponentContext ctx) {
 		this.name = extractCompName(ctx);
 		this.title = extractCompTitle(ctx);
-		this.options = initOpts(ctx);
+		this.options = setOptions(ctx);
+		this.defValues = setDefaultValues(ctx);
 		this.constraints = extractConstraints(ctx);
-		this.defValues = setDefaultValues(constraints);
 	}
 	
-	private List<String> setDefaultValues(List<Constraint> constraints) {
-		String selected =  constraints.stream()
-			.filter(con -> ConstraintId.SELECTED == con.getID())
-			.map(c -> ((Constraint.SelectedCon)c).value())
-			.findFirst()
-			.orElse("");
-		return Stream.of(selected.split("\\|"))
-			.map(String::trim)
-		    .collect(Collectors.toList());
+	private List<String> setOptions(ComponentContext ctx) {
+		String idText = ctx.CompId().getText();
+		String options = idText.substring(idText.indexOf("['")+2, idText.indexOf("']")).trim();
+		return extractOptions(options);
 	}
 	
-	private List<String> initOpts(ComponentContext ctx) {
+	private List<String> setDefaultValues(ComponentContext ctx) {
 		String input = extractCompDefVal(ctx);
+		return "".equals(input)? List.of():extractOptions(input);
+	}
+
+	private List<String> extractOptions(String input) {
 		if(input == null || input.isEmpty() || input.endsWith("|") || input.startsWith("|"))
 			throw new IllegalArgumentException("'"+input + "' are not a valid options");
 		List<String> values= Stream.of(input.split("\\|"))
@@ -148,7 +147,7 @@ public class CMultiOpt implements Component {
 				panel.setErrorLabel(errorMsg);
 			}
 		});
-		
+		ccb.setBackground(Color.white);
 		panel.setValueOrDefault("", true);
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -207,6 +206,7 @@ public class CMultiOpt implements Component {
 			}
 		};
 		
+		ccb.setBackground(Color.white);
 		ccb.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -386,14 +386,21 @@ public class CMultiOpt implements Component {
 	@Override
 	public Id getType() { return Id.MultiOpt; }
 
-	@Override
-	public String toString() {
-		return "MultiOpt [name=" + name + ", title=" + title + ", options=" + options + ", constraints=" + constraints
-				+ "]";
-	}
+//	@Override
+//	public String toString() {
+//		return "MultiOpt [name=" + name + ", title=" + title + ", options=" + options + ", constraints=" + constraints
+//				+ "]";
+//	}
 
 	@Override
 	public JPanelWithValue accept(Visitor v) {
 		return v.visitMultiOpt(this);
 	}
+
+	@Override
+	public String toString() {
+		return "MultiOpt [name=" + name + ", title=" + title + ", options=" + options + ", defValues=" + defValues
+				+ ", constraints=" + constraints + "]";
+	}
+	
 }

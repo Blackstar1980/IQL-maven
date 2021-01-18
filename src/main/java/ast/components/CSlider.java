@@ -42,9 +42,46 @@ public class CSlider implements Component {
 	public CSlider(ComponentContext ctx) {
 		this.name = extractCompName(ctx);
 		this.title = extractCompTitle(ctx);
-		initDefVal(ctx);
+		setMinMaxValues(ctx);
+		setDefaultVal(ctx);
 		this.constraints = extractConstraints(ctx);
 	}
+	
+	private void setMinMaxValues(ComponentContext ctx) {
+		String idText = ctx.CompId().getText();
+		String valueText = idText.substring(idText.indexOf("[")+1, idText.indexOf("]"));
+		if(valueText == null || valueText.isEmpty() || valueText.endsWith(",") || valueText.startsWith(","))
+			throw new IllegalArgumentException("'"+valueText + "' is not a valid option for slider");
+		String[] values = valueText.trim().split(",");
+		if(values.length != 2)
+			throw new IllegalArgumentException(valueText + " must contain 2 numbers seperated by comma");
+		try {
+			minVal = Integer.valueOf(values[0].trim());
+			maxVal = Integer.valueOf(values[1].trim());
+		} catch (NumberFormatException e) {
+			throw new NumberFormatException("Invalid Slider default values");
+		}
+		if(minVal >= maxVal) {
+			throw new NumberFormatException("Slider max value must be bigger than the min value");
+		}
+	}
+	
+	private void setDefaultVal(ComponentContext ctx) {
+		String value = extractCompDefVal(ctx);
+		if("".equals(value))
+			defVal = minVal;
+		else {
+			try {
+				defVal = Integer.valueOf(value);
+			} catch (NumberFormatException e) {
+				throw new NumberFormatException("Invalid Slider default values");
+			}
+		}
+		if(minVal > defVal || maxVal < defVal) {
+			throw new NumberFormatException("Default value must be between or equal to the min and max values");
+		}
+	}
+	
 	
 	private void initDefVal(ComponentContext ctx) {
 		String input = extractCompDefVal(ctx);

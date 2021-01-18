@@ -29,7 +29,9 @@ public enum ComponentFactory {
 	public static Component from(ComponentContext ctx) {
 		if(ctx == null || ctx.CompId() == null)
 			throw new IllegalArgumentException("ComponentContext and Id cannot be null");
-		Id id = Id.from(ctx.CompId().getText());
+		String idText = ctx.CompId().getText();
+		Id id = idText.indexOf("[") == -1? Id.from(idText) : Id.from(idText.substring(0, idText.indexOf("[")));
+//		Id id = Id.from(idText.substring(0, idText.indexOf("[")));
 		return switch(id){
 		case String -> String.createComp.apply(ctx);
 		case Integer -> Integer.createComp.apply(ctx);

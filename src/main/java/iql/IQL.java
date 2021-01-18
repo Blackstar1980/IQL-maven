@@ -76,21 +76,30 @@ public class IQL {
 //		works 'Working Field2' MultiOpt('Computers|Building'){display=blockList selected='Computers|Building'}
 //		""";
 		
+//		var queryInline = """
+//		'User Registration Form' Single('please provide a accurate details about yourself
+//		and your family in order to be able to do something... or not')
+//		name 'Full Name:' String{min=2 inline}
+//		age 'Age:' Integer{min=1 max=120 inline}
+//		middle 'Middle Name' String{ min=5 inline}
+//		marry 'Are you marry?' Boolean('false'){ inline optional}
+//		mar 'Are you marry?' Boolean{ inlineList }
+//		height 'Height:' Decimal{ inline optional }
+//		password 'Password:' Password{optional holder='Password' inline}
+//		comments 'Comments:' TextArea{min=4 max=20 optional holder='We would like to here from you' inline}
+//		slider 'Slider' Slider('0,10,5'){inline optional  }
+//		singles 'Single2' SingleOpt('Computers|Building'){inlineList}
+//		works 'Working Field2' MultiOpt('Computers|Building'){inlineList selected='Computers|Building'
+//		}
+//		""";
+		
 		var queryInline = """
 		'User Registration Form' Single('please provide a accurate details about yourself
 		and your family in order to be able to do something... or not')
 		name 'Full Name:' String{min=2 inline}
-		age 'Age:' Integer{min=1 max=120 inline}
-		middle 'Middle Name' String{ min=5 inline}
-		marry 'Are you marry?' Boolean('false'){ inline optional}
-		mar 'Are you marry?' Boolean{ inlineList }
-		height 'Height:' Decimal{ inline optional }
-		password 'Password:' Password{optional holder='Password' inline}
-		comments 'Comments:' TextArea{min=4 max=20 optional holder='We would like to here from you' inline}
-		slider 'Slider' Slider('0,10,5'){inline optional  }
-		singles 'Single2' SingleOpt('Computers|Building'){inlineList}
-		works 'Working Field2' MultiOpt('Computers|Building'){inlineList selected='Computers|Building'
-		}
+		works 'Working Field2' MultiOpt['Computers|Building|Food']('Computers|Building'){inlineList}
+		worky 'Working Field2' SingleOpt['Computers|Building|Food']('Building'){inlineList}
+		slider 'my SliDer' Slider[0,12]('6'){inline}
 		""";
 		
 //		var queryBlock2 = """

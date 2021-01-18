@@ -1,16 +1,18 @@
 package ast.components;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
@@ -43,22 +45,32 @@ public class CSingleOpt implements Component {
 	public CSingleOpt(ComponentContext ctx) {
 		name = extractCompName(ctx);
 		title = extractCompTitle(ctx);
-		options = initOpts(ctx);
+		options = setOptions(ctx);
 		defValue = extractDefValue(ctx);
 		constraints = extractConstraints(ctx);
 	}
-
+	
+	private List<String> setOptions(ComponentContext ctx) {
+		String idText = ctx.CompId().getText();
+		String options = idText.substring(idText.indexOf("['")+2, idText.indexOf("']")).trim();
+		return extractOptions(options);
+	}
+	
 	private String extractDefValue(ComponentContext ctx) {
-		return getSelectedOpt(getMapConstraint(constraints));
+		String defaultVal = extractCompDefVal(ctx);
+		if("".equals(defaultVal) || options.contains(defaultVal))
+			return defaultVal;
+		throw new IllegalArgumentException("'"+defaultVal + "' is not a valid option");
 	}
 
-	private List<String> initOpts(ComponentContext ctx) {
-		String input = extractCompDefVal(ctx);
-		if (input == null || input.isEmpty() || input.endsWith("|") || input.startsWith("|"))
-			throw new IllegalArgumentException("'" + input + "' are not a valid options");
-		List<String> values = Arrays.asList(input.trim().split("\\|"));
-		for (String value : values) {
-			if (value.isBlank())
+	private List<String> extractOptions(String input) {
+		if(input == null || input.isEmpty() || input.endsWith("|") || input.startsWith("|"))
+			throw new IllegalArgumentException("'"+input + "' are not a valid options");
+		List<String> values= Stream.of(input.split("\\|"))
+			     .map(String::trim)
+			     .collect(Collectors.toList());
+		for(String value : values) {
+			if(value.isBlank())
 				throw new IllegalArgumentException("Empty value is not a valid option");
 		}
 		return values;
@@ -82,15 +94,11 @@ public class CSingleOpt implements Component {
 		};
 	}
 
-	private String getSelectedOpt(Map<ConstraintId, Constraint> constraints) {
-		Constraint.SelectedCon selected = (Constraint.SelectedCon) constraints.get(ConstraintId.SELECTED);
-		return selected == null ? "" : selected.value();
-	}
-
 	private JPanelWithValue setSingleBlockListDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		String[] optionsArray = toArrayStartWithEmptyValue(options);
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
 		combo.setPreferredSize(new Dimension(280, 22));
+		combo.setBackground(Color.white);
 		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name) {
 			@Override
 			public boolean checkForError() {
@@ -147,6 +155,7 @@ public class CSingleOpt implements Component {
 	private JPanelWithValue setSingleInlineListDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		String[] optionsArray = toArrayStartWithEmptyValue(options);
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
+		combo.setBackground(Color.white);
 		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name) {
 			@Override
 			public boolean checkForError() {
@@ -355,13 +364,14 @@ public class CSingleOpt implements Component {
 	}
 
 	@Override
-	public String toString() {
-		return "SingleOpt [name=" + name + ", title=" + title + ", options=" + options + ", constraints=" + constraints
-				+ "]";
-	}
-
-	@Override
 	public JPanelWithValue accept(Visitor v) {
 		return v.visitSingleOpt(this);
 	}
+
+	@Override
+	public String toString() {
+		return "SingleOpt [name=" + name + ", title=" + title + ", options=" + options + ", defValue=" + defValue
+				+ ", constraints=" + constraints + "]";
+	}
+	
 }
