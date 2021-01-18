@@ -45,7 +45,8 @@ public abstract class JPanelWithValue extends JPanelContainer {
 	
 	public void setComponentErrorIndicator(JComponent component, String errorMsg, boolean setBackground) {
 		if(" ".equals(errorMsg)) {
-			component.setBackground(new Color(238, 238, 238));
+//			component.setBackground(new Color(238, 238, 238));
+			component.setBackground(Color.WHITE);
 			component.setToolTipText(null);
 		} else if(setBackground) {
 			component.setBackground(Color.pink);

@@ -26,7 +26,7 @@ public class IQL {
 	
 	public static void main(String[] args) {
 		var query = """
-				'User Registration Form' Single('please provide a accurate details about yourself')
+				'User Registration Form' Pages('please provide a accurate details about yourself')
 				'Personal Details' Tab{
 					name 'Full Name:' String{min=2}
 					age 'Age:' Integer{min=1 max=120 required=false}
@@ -139,8 +139,10 @@ public class IQL {
 		
 //		run(exampleString03);
 //		run(queryBlock);
-		run(queryInline);
-//		run(query);
+//		run(queryInline);
+//		List<Map<String, String>> results = run(queryBlock);
+		List<Map<String, String>> results = run(queryInline);
+		System.out.println(results);
 	}
 
 }

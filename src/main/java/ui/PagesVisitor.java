@@ -34,33 +34,33 @@ public class PagesVisitor implements Visitor {
 
 	@Override
 	public JDialog visitQuery(Query query) {
-		Id dialogId = query.dialog().getType();
+//		Id dialogId = query.dialog().getType();
 		JDialog jDialog = new JDialog();
-		if(dialogId == Id.Single) {
-			jDialog = visitSingle((DSingle)query.dialog());
-			List<Containable> containers = query.containers();
-			List<JPanelContainer> panels = new ArrayList<>();
-			for(Containable container:containers) {
-				panels.add(getPanel(container));
-			}
-			constructSingleDialog(jDialog, query.dialog().getDescription(), panels);
-		}
-		if(dialogId == Id.Multi) {
-			jDialog = visitMulti((DMulti)query.dialog());
-		}
-		if(dialogId == Id.Pages) {
+//		if(dialogId == Id.Single) {
+//			jDialog = visitSingle((DSingle)query.dialog());
+//			List<Containable> containers = query.containers();
+//			List<JPanelContainer> panels = new ArrayList<>();
+//			for(Containable container:containers) {
+//				panels.add(getPanel(container));
+//			}
+//			constructSingleDialog(jDialog, query.dialog().getDescription(), panels);
+//		}
+//		if(dialogId == Id.Multi) {
+//			jDialog = visitMulti((DMulti)query.dialog());
+//		}
+//		if(dialogId == Id.Pages) {
 			jDialog = visitPages((DPages)query.dialog());
 			List<Containable> containers = query.containers();
 			List<JPanelContainer> panels = new ArrayList<>();
 			for(Containable container:containers) {
 				panels.add(getPanel(container));
 			}
-			constructPageDialog(jDialog, query.dialog().getDescription(), panels);
-		}
+			constructPageDialog(jDialog, panels);
+//		}
 		jDialog.pack();
 		jDialog.setVisible(true);
 		System.out.println("in Pages");
-
+		jDialog.setModal(true);
 		return jDialog;
 	}
 	
@@ -68,48 +68,48 @@ public class PagesVisitor implements Visitor {
 		return container.accept(this);
 	}
 	
-	private void constructSingleDialog(JDialog dialog, String description,
-			List<JPanelContainer> panels) {
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		for(JPanel panel : panels) {
-			gbc.gridy++;
-			dialog.add(panel, gbc);
-		}
-		JPanel buttonsPanel = new JPanel();
-		JButton cancelButton = new JButton("Cancel");
-		JButton approveButton = new JButton("Approve");
-		List<Map<String, String>> results = new ArrayList<>();
-		
-		dialog.addWindowListener(new WindowAdapter() {
-			@Override
-		    public void windowClosed(WindowEvent e) {
-				results.clear();
-				results.add(getEntries(panels));
-				data.complete(results);
-				dialog.dispose();
-		    }
-		});
-		cancelButton.addActionListener(e-> {
-			results.clear();
-			results.add(getEntries(panels));
-			this.data.complete(results);
-			dialog.dispose();
-		});
-		buttonsPanel.add(approveButton);
-		approveButton.addActionListener(e->{
-			var saved = saveAsMap(panels);
-			if(saved!=null) {
-				results.add(saved);
-				this.data.complete(results);
-				dialog.dispose();
-			}});
-		buttonsPanel.add(cancelButton);
-		gbc.gridy++;
-		dialog.add(buttonsPanel, gbc);
-	}
+//	private void constructSingleDialog(JDialog dialog, String description,
+//			List<JPanelContainer> panels) {
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		for(JPanel panel : panels) {
+//			gbc.gridy++;
+//			dialog.add(panel, gbc);
+//		}
+//		JPanel buttonsPanel = new JPanel();
+//		JButton cancelButton = new JButton("Cancel");
+//		JButton approveButton = new JButton("Approve");
+//		List<Map<String, String>> results = new ArrayList<>();
+//		
+//		dialog.addWindowListener(new WindowAdapter() {
+//			@Override
+//		    public void windowClosed(WindowEvent e) {
+//				results.clear();
+//				results.add(getEntries(panels));
+//				data.complete(results);
+//				dialog.dispose();
+//		    }
+//		});
+//		cancelButton.addActionListener(e-> {
+//			results.clear();
+//			results.add(getEntries(panels));
+//			this.data.complete(results);
+//			dialog.dispose();
+//		});
+//		buttonsPanel.add(approveButton);
+//		approveButton.addActionListener(e->{
+//			var saved = saveAsMap(panels);
+//			if(saved!=null) {
+//				results.add(saved);
+//				this.data.complete(results);
+//				dialog.dispose();
+//			}});
+//		buttonsPanel.add(cancelButton);
+//		gbc.gridy++;
+//		dialog.add(buttonsPanel, gbc);
+//	}
 	
 	private Map<String, String> setNullValues(Map<String, String> entries) {
 		for (Map.Entry<String, String> entry : entries.entrySet()) {
@@ -118,17 +118,19 @@ public class PagesVisitor implements Visitor {
 		return entries;
 	}
 
-	private void constructPageDialog(JDialog dialog, String description,
-			List<JPanelContainer> panels) {
+	private void constructPageDialog(JDialog dialog, List<JPanelContainer> panels) {
 		List<Map<String, String>> results = new ArrayList<>();
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
+		gbc.anchor = GridBagConstraints.EAST;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 1.0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		for(JPanel panel : panels) {
 			gbc.gridy++;
 			dialog.add(panel, gbc);
 		}
+		gbc.fill = GridBagConstraints.NONE;
 		JPanel buttonsPanel = new JPanel();
 		JButton cancelButton = new JButton("Cancel");
 		JButton approveButton = new JButton("Approve");
@@ -137,7 +139,7 @@ public class PagesVisitor implements Visitor {
 		JButton addButton = new JButton("Add");
 		JButton deleteButton = new JButton("Delete");
 		JLabel pagesIndex = new JLabel(getPageIndex());
-		JPanel utilsPanel = new JPanel();
+		JPanel utilsPanel = new JPanel(new GridBagLayout());
 		deleteButton.setEnabled(false);
 		prevButton.setEnabled(false);
 		nextButton.setEnabled(false);
@@ -213,11 +215,19 @@ public class PagesVisitor implements Visitor {
 			updateUiFields(panels, results.get(currentPage -1), false);
 		});
 		
-		utilsPanel.add(prevButton);
-		utilsPanel.add(pagesIndex);
-		utilsPanel.add(nextButton);
-		utilsPanel.add(deleteButton);
-		utilsPanel.add(addButton);
+		utilsPanel.setBorder(new EmptyBorder(5, 5, 0, 5));
+//		gbc.fill = GridBagConstraints.HORIZONTAL;
+//		gbc.weightx = 1.0;
+		utilsPanel.add(prevButton, gbc);
+		gbc.gridx++;
+		utilsPanel.add(pagesIndex, gbc);
+		gbc.gridx++;
+		utilsPanel.add(nextButton, gbc);
+		gbc.gridx++;
+		utilsPanel.add(deleteButton, gbc);
+		gbc.gridx++;
+		utilsPanel.add(addButton, gbc);
+		gbc.gridx = 0;
 
 		cancelButton.addActionListener(e-> {
 			results.clear();
@@ -375,34 +385,35 @@ public class PagesVisitor implements Visitor {
 
 	@Override
 	public JDialog visitSingle(DSingle dialog) {
-		JDialog jDialog = new JDialog();
-		jDialog.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		jDialog.setTitle(dialog.getTitle());
-		JLabel desc = generateDesc(dialog.getDescription());
-		jDialog.add(desc, gbc);
-		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		jDialog.setResizable(false);
-		return jDialog;
+//		JDialog jDialog = new JDialog();
+//		jDialog.setLayout(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.fill = GridBagConstraints.HORIZONTAL;
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		jDialog.setTitle(dialog.getTitle());
+//		JLabel desc = generateDesc(dialog.getDescription());
+//		jDialog.add(desc, gbc);
+//		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+//		jDialog.setResizable(false);
+		return null;
 	}
 
 	@Override
 	public JDialog visitMulti(DMulti dialog) {
-		JDialog jDialog = new JDialog();
-		jDialog.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		jDialog.setTitle(dialog.getTitle());
-		JLabel desc = generateDesc(dialog.getDescription());
-		jDialog.add(desc, gbc);
-		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		jDialog.setResizable(false);
-		return jDialog;
+//		JDialog jDialog = new JDialog();
+//		jDialog.setLayout(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		jDialog.setTitle(dialog.getTitle());
+//		JLabel desc = generateDesc(dialog.getDescription());
+//		jDialog.add(desc, gbc);
+//		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+//		jDialog.setResizable(false);
+		return null;
 	}
 
 	@Override
@@ -414,7 +425,7 @@ public class PagesVisitor implements Visitor {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		jDialog.setTitle(dialog.getTitle());
-		JLabel desc = generateDesc(dialog.getDescription());
+		JTextArea desc = generateDesc(dialog.getDescription());
 		jDialog.add(desc, gbc);
 		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		jDialog.setResizable(false);
@@ -449,9 +460,13 @@ public class PagesVisitor implements Visitor {
 		groupPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.GRAY));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
-		gbc.insets = new Insets(10, 20, 5, 20);
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+//		gbc.insets = new Insets(10, 20, 5, 20);
+		gbc.insets = new Insets(10, 0, 5, 0);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.weightx = 1.0;
+		gbc.gridwidth = 3;
 		JLabel jTitle = generateGroupTitle(title);
 		groupPanel.add(jTitle, gbc);
 		gbc.insets.set(0, 0, 0, 0);
@@ -485,9 +500,13 @@ public class PagesVisitor implements Visitor {
 		};
 		tabPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.CENTER;
+//		gbc.anchor = GridBagConstraints.EAST;
+		gbc.weightx = 1.0;
+//		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		tabPanel.add(tabbedPane, gbc);
+//		tabPanel.setBackground(Color.green);
+//		tabPanel.setOpaque(true);
 		return tabPanel;
 	}
 
@@ -505,18 +524,23 @@ public class PagesVisitor implements Visitor {
 		};
 		tabPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.NORTHWEST;
+//		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.anchor = GridBagConstraints.EAST;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.weightx = 1;
+		gbc.insets = new Insets(0, 10, 0, 10);
+		gbc.weightx = 1.0;
 		
 		// Align all the component in the tab to the top right corner
 		for(int i=0; i<panels.size(); i++) {
 			if(i == panels.size()-1)
-				gbc.weighty = 1;
+				gbc.weighty = 1.0;
 			gbc.gridy++;
 			tabPanel.add(panels.get(i), gbc);
 		}
+//		tabPanel.setBackground(Color.blue);
+//		tabPanel.setOpaque(true);
 		return tabPanel;
 	}
 
@@ -573,12 +597,20 @@ public class PagesVisitor implements Visitor {
 		label.setText(title);
 		return label;
 	}
-	
-	private JLabel generateDesc(String title) {
-		JLabel label = new JLabel();
-		label.setBorder(new EmptyBorder(10, 10, 20, 10));
+
+	private JTextArea generateDesc(String title) {
+		JTextArea label = new JTextArea();
+		label.setBorder(new EmptyBorder(5, 0, 10, 0));
 		label.setText(title);
+		label.setEditable(false);
+		label.setBackground(new Color(238, 238, 238));
 		return label;
 	}
+//	private JLabel generateDesc(String title) {
+//		JLabel label = new JLabel();
+//		label.setBorder(new EmptyBorder(10, 10, 20, 10));
+//		label.setText(title);
+//		return label;
+//	}
 	
 }
