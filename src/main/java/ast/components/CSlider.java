@@ -83,29 +83,29 @@ public class CSlider implements Component {
 	}
 	
 	
-	private void initDefVal(ComponentContext ctx) {
-		String input = extractCompDefVal(ctx);
-		if(input == null || input.isEmpty() || input.endsWith(",") || input.startsWith(","))
-			throw new IllegalArgumentException("'"+input + "' is not a valid option for slider");
-		String[] values = input.trim().split(",");
-		if(values.length != 2 && values.length != 3)
-			throw new IllegalArgumentException(input + " must contain 2 or 3 numbers seperated by comma");
-		try {
-			minVal = Integer.valueOf(values[0].trim());
-			maxVal = Integer.valueOf(values[1].trim());
-			defVal = values.length == 3 ? Integer.valueOf(values[2].trim()): minVal;
-		} catch (NumberFormatException e) {
-			throw new NumberFormatException("Invalid Slider default values");
-		}
-		
-		if(minVal >= maxVal) {
-			throw new NumberFormatException("Slider max value must be bigger than the min value");
-		}
-		
-		if(minVal > defVal || maxVal < defVal) {
-			throw new NumberFormatException("Default value must be between or equal to the min and max values");
-		}
-	}
+//	private void initDefVal(ComponentContext ctx) {
+//		String input = extractCompDefVal(ctx);
+//		if(input == null || input.isEmpty() || input.endsWith(",") || input.startsWith(","))
+//			throw new IllegalArgumentException("'"+input + "' is not a valid option for slider");
+//		String[] values = input.trim().split(",");
+//		if(values.length != 2 && values.length != 3)
+//			throw new IllegalArgumentException(input + " must contain 2 or 3 numbers seperated by comma");
+//		try {
+//			minVal = Integer.valueOf(values[0].trim());
+//			maxVal = Integer.valueOf(values[1].trim());
+//			defVal = values.length == 3 ? Integer.valueOf(values[2].trim()): minVal;
+//		} catch (NumberFormatException e) {
+//			throw new NumberFormatException("Invalid Slider default values");
+//		}
+//		
+//		if(minVal >= maxVal) {
+//			throw new NumberFormatException("Slider max value must be bigger than the min value");
+//		}
+//		
+//		if(minVal > defVal || maxVal < defVal) {
+//			throw new NumberFormatException("Default value must be between or equal to the min and max values");
+//		}
+//	}
 	
 	public JPanelWithValue make() {
 		JLabel valueLabel = new JLabel();
@@ -140,7 +140,7 @@ public class CSlider implements Component {
 	            }
 	        });
 		Map<ConstraintId, Constraint> constraints = getMapConstraint(getConstraints());
-		JLabel title = generateTitle(getTitle(), constraints);
+		JLabel title = generateTitle(getTitle(), Map.of());
 //		title.setText(getTitle());
 		DisplayId display = (DisplayId)constraints.get(ConstraintId.DISPLAY);
 		if(display == DisplayId.Non) {

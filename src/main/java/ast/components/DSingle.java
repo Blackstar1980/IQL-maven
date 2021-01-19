@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JDialog;
+import javax.swing.JFrame;
+
 import ast.Ast.Dialog;
 import ast.constraints.Constraint;
 import ast.Id;
@@ -37,7 +39,7 @@ public class DSingle implements Dialog {
 	}
 
 	@Override
-	public JDialog accept(Visitor v) {
+	public JFrame accept(Visitor v) {
 		return v.visitSingle(this);
 	}}
 

@@ -40,8 +40,8 @@ public class MultiVisitor implements Visitor {
 	}
 
 	@Override
-	public JDialog visitQuery(Query query) {
-		JDialog jDialog = new JDialog();
+	public JFrame visitQuery(Query query) {
+		JFrame jDialog = new JFrame();
 		jDialog = visitMulti((DMulti)query.dialog());
 		List<Containable> containers = query.containers();
 		List<JPanelContainer> panels = new ArrayList<>();
@@ -58,7 +58,7 @@ public class MultiVisitor implements Visitor {
 		return container.accept(this);
 	}
 	
-	private void constructMultiDialog(JDialog dialog, String description,
+	private void constructMultiDialog(JFrame dialog, String description,
 			List<JPanelContainer> panels) {
 		GridBagConstraints gbc = new GridBagConstraints();
 		setMultiLayout(panels);
@@ -457,13 +457,13 @@ public class MultiVisitor implements Visitor {
 	
 
 	@Override
-	public JDialog visitSingle(DSingle dialog) {
+	public JFrame visitSingle(DSingle dialog) {
 		return null;
 	}
 
 	@Override
-	public JDialog visitMulti(DMulti dialog) {
-		JDialog jDialog = new JDialog();
+	public JFrame visitMulti(DMulti dialog) {
+		JFrame jDialog = new JFrame();
 		jDialog.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
@@ -479,7 +479,7 @@ public class MultiVisitor implements Visitor {
 	}
 
 	@Override
-	public JDialog visitPages(DPages dialog) {
+	public JFrame visitPages(DPages dialog) {
 		return null;
 	}
 

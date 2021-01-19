@@ -11,21 +11,21 @@ import ast.constraints.DisplayId;
 import fields.JPanelWithValue;
 
 public interface BasicLayout {
-	default JPanelWithValue setLayout(DisplayId display, JLabel title, JComponent textField,
+	default JPanelWithValue setLayout(DisplayId display, JLabel title, JComponent component,
 			JLabel errorMsg, JPanelWithValue panel) {
 		return switch (display) {
-			case Block -> setBlockDisplay(title, textField, errorMsg, panel);
-			case Inline -> setInlineDisplay(title, textField, errorMsg, panel);
+			case Block -> setBlockDisplay(title, component, errorMsg, panel);
+			case Inline -> setInlineDisplay(title, component, errorMsg, panel);
 			default ->
 			throw new IllegalArgumentException("Unexpected value: " + display);
 		};
 	}
 	
-	private JPanelWithValue setInlineDisplay(JLabel title, JComponent textField,
+	private JPanelWithValue setInlineDisplay(JLabel title, JComponent component,
 			JLabel errorMsg, JPanelWithValue panel) {
 		panel.setLayout(new GridBagLayout());
-		if(!(textField instanceof JScrollPane))
-			textField.setPreferredSize(new Dimension(280, 22));
+		if(!(component instanceof JScrollPane))
+			component.setPreferredSize(new Dimension(280, 22));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.anchor = GridBagConstraints.NORTHEAST;
@@ -37,16 +37,16 @@ public interface BasicLayout {
 //		gbc.weightx = 0;
 		gbc.anchor = GridBagConstraints.WEST;
 //		gbc.fill = GridBagConstraints.NONE;
-		panel.add(textField, gbc);
+		panel.add(component, gbc);
 		gbc.gridy = 1;
 //		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		panel.add(errorMsg, gbc);
 		return panel;
 	}
 
-	private JPanelWithValue setBlockDisplay(JLabel title, JComponent textField, JLabel errorMsg, JPanelWithValue panel) {
-		if(!(textField instanceof JScrollPane))
-			textField.setPreferredSize(new Dimension(280, 22));
+	private JPanelWithValue setBlockDisplay(JLabel title, JComponent component, JLabel errorMsg, JPanelWithValue panel) {
+		if(!(component instanceof JScrollPane))
+			component.setPreferredSize(new Dimension(280, 22));
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
@@ -56,7 +56,7 @@ public interface BasicLayout {
 		gbc.gridy = 0;
 		panel.add(title, gbc);
 		gbc.gridy = 1;
-		panel.add(textField, gbc);
+		panel.add(component, gbc);
 		gbc.gridy = 2;
 		panel.add(errorMsg, gbc);
 		return panel;

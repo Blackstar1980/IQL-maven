@@ -3,6 +3,8 @@ package ast;
 import java.util.List;
 
 import javax.swing.JDialog;
+import javax.swing.JFrame;
+
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import ast.components.Attributable;
@@ -30,18 +32,18 @@ public interface Ast<T> {
 		return text.substring(offsetBegining, text.length()-offsetEnd);
 	}
 
-	record Query (Dialog dialog, List<Containable> containers) implements Ast<JDialog>{
+	record Query (Dialog dialog, List<Containable> containers) implements Ast<JFrame>{
 		@Override
 		public Id getType() {
 			return Id.Query;
 		}
 
 		@Override
-		public JDialog accept(Visitor v) {
+		public JFrame accept(Visitor v) {
 			return v.visitQuery(this);
 		}
 	}
-	interface Dialog extends Attributable<JDialog> {
+	interface Dialog extends Attributable<JFrame> {
 		public String getTitle();
 		public String getDescription();
 		public List<Constraint> getConstraints();

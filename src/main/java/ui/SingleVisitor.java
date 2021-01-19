@@ -16,6 +16,9 @@ import java.util.stream.Collectors;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+
 import ast.Ast.Containable;
 import ast.Ast.Query;
 import ast.Ast.Tabable;
@@ -38,25 +41,25 @@ public class SingleVisitor implements Visitor {
 	}
 
 	@Override
-	public JDialog visitQuery(Query query) {
-		JDialog jDialog = new JDialog();
-		jDialog = visitSingle((DSingle)query.dialog());
+	public JFrame visitQuery(Query query) {
+		JFrame jFrame = new JFrame();
+		jFrame = visitSingle((DSingle)query.dialog());
 		List<Containable> containers = query.containers();
 		List<JPanelContainer> panels = new ArrayList<>();
 		for(Containable container:containers)
 			panels.add(getPanel(container));
-		constructSingleDialog(jDialog, panels);
-		jDialog.pack();
-		jDialog.setVisible(true);
+		constructSingleDialog(jFrame, panels);
+		jFrame.pack();
+		jFrame.setVisible(true);
 		System.out.println("in Single");
-		return jDialog;
+		return jFrame;
 	}
 	
 	private JPanelContainer getPanel(Containable container) {
 		return container.accept(this);
 	}
 	
-	private void constructSingleDialog(JDialog dialog, List<JPanelContainer> panels) {
+	private void constructSingleDialog(JFrame frame, List<JPanelContainer> panels) {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.EAST;
 //		gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -65,7 +68,7 @@ public class SingleVisitor implements Visitor {
 		gbc.gridy = 0;
 		for(JPanel panel : panels) {
 			gbc.gridy++;
-			dialog.add(panel, gbc);
+			frame.add(panel, gbc);
 		}
 		gbc.fill = GridBagConstraints.NONE;
 		JPanel buttonsPanel = new JPanel(new GridBagLayout());
@@ -80,14 +83,14 @@ public class SingleVisitor implements Visitor {
 		gbc.gridx = 0;
 		List<Map<String, String>> results = new ArrayList<>();
 		
-		dialog.addWindowListener(new WindowAdapter() {
+		frame.addWindowListener(new WindowAdapter() {
 			@Override
 		    public void windowClosed(WindowEvent e) {
 				results.clear();
 				results.add(getEntries(panels));
 //				data.complete(results);
 				commitData(results);
-				dialog.dispose();
+				frame.dispose();
 		    }
 		});
 		cancelButton.addActionListener(e-> {
@@ -95,7 +98,7 @@ public class SingleVisitor implements Visitor {
 			results.add(getEntries(panels));
 //			this.data.complete(results);
 			commitData(results);
-			dialog.dispose();
+			frame.dispose();
 		});
 		approveButton.addActionListener(e->{
 			var saved = saveAsMap(panels);
@@ -103,11 +106,11 @@ public class SingleVisitor implements Visitor {
 				results.add(saved);
 //				this.data.complete(results);
 				commitData(results);
-				dialog.dispose();
+				frame.dispose();
 			}});
 		gbc.gridy++;
 		gbc.anchor = GridBagConstraints.WEST;
-		dialog.add(buttonsPanel, gbc);
+		frame.add(buttonsPanel, gbc);
 	}
 	
 	private Map<String, String> setNullValues(Map<String, String> entries) {
@@ -191,31 +194,31 @@ public class SingleVisitor implements Visitor {
 	
 
 	@Override
-	public JDialog visitSingle(DSingle dialog) {
-		JDialog jDialog = new JDialog();
-		jDialog.setLayout(new GridBagLayout());
-		JPanel panel = (JPanel)jDialog.getContentPane();
+	public JFrame visitSingle(DSingle frame) {
+		JFrame jFrame = new JFrame();
+		jFrame.setLayout(new GridBagLayout());
+		JPanel panel = (JPanel)jFrame.getContentPane();
 		panel.setBorder(new EmptyBorder(0, 15, 5, 15));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		jDialog.setTitle(dialog.getTitle());
-		JTextArea desc = generateDesc(dialog.getDescription());
-		jDialog.add(desc, gbc);
-		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		jDialog.setResizable(false);
-		return jDialog;
+		jFrame.setTitle(frame.getTitle());
+		JTextArea desc = generateDesc(frame.getDescription());
+		jFrame.add(desc, gbc);
+		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		jFrame.setResizable(false);
+		return jFrame;
 	}
 
 	@Override
-	public JDialog visitMulti(DMulti dialog) {
+	public JFrame visitMulti(DMulti frame) {
 		return null;
 	}
 
 	@Override
-	public JDialog visitPages(DPages dialog) {
+	public JFrame visitPages(DPages frame) {
 		return null;
 	}
 
@@ -243,19 +246,20 @@ public class SingleVisitor implements Visitor {
 				return haveErrors;
 			}
 		};
+		groupPanel.setBorder( new TitledBorder ( new EtchedBorder (), title ) );
 		groupPanel.setLayout(new GridBagLayout());
-		groupPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.GRAY));
+//		groupPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.GRAY));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.insets = new Insets(10, 0, 5, 0);
+//		gbc.insets = new Insets(10, 0, 5, 0);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.weightx = 1.0;
 		gbc.gridwidth = 3;
-		JLabel jTitle = generateGroupTitle(title);
-		groupPanel.add(jTitle, gbc);
-		gbc.insets.set(0, 0, 0, 0);
+//		JLabel jTitle = generateGroupTitle(title);
+//		groupPanel.add(jTitle, gbc);
+//		gbc.insets.set(0, 0, 0, 0);
 		for(JPanelWithValue panel : panels) {
 			gbc.gridy++;
 			groupPanel.add(panel, gbc);
@@ -320,8 +324,8 @@ public class SingleVisitor implements Visitor {
 		
 		// Align all the component in the tab to the top right corner
 		for(int i=0; i<panels.size(); i++) {
-			if(i == panels.size()-1)
-				gbc.weighty = 1.0;
+//			if(i == panels.size()-1)
+//				gbc.weighty = 1.0;
 			gbc.gridy++;
 			tabPanel.add(panels.get(i), gbc);
 		}

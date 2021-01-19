@@ -39,8 +39,8 @@ public class PagesVisitor implements Visitor {
 	}
 
 	@Override
-	public JDialog visitQuery(Query query) {
-		JDialog jDialog = new JDialog();
+	public JFrame visitQuery(Query query) {
+		JFrame jDialog = new JFrame();
 		jDialog = visitPages((DPages)query.dialog());
 		List<Containable> containers = query.containers();
 		List<JPanelContainer> panels = new ArrayList<>();
@@ -51,7 +51,7 @@ public class PagesVisitor implements Visitor {
 		jDialog.pack();
 		jDialog.setVisible(true);
 		System.out.println("in Pages");
-		jDialog.setModal(true);
+//		jDialog.setModal(true);
 		return jDialog;
 	}
 	
@@ -66,7 +66,7 @@ public class PagesVisitor implements Visitor {
 		return entries;
 	}
 
-	private void constructPageDialog(JDialog dialog, List<JPanelContainer> panels) {
+	private void constructPageDialog(JFrame dialog, List<JPanelContainer> panels) {
 		List<Map<String, String>> results = new ArrayList<>();
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.EAST;
@@ -334,30 +334,32 @@ public class PagesVisitor implements Visitor {
 	
 
 	@Override
-	public JDialog visitSingle(DSingle dialog) {
+	public JFrame visitSingle(DSingle dialog) {
 		return null;
 	}
 
 	@Override
-	public JDialog visitMulti(DMulti dialog) {
+	public JFrame visitMulti(DMulti dialog) {
 		return null;
 	}
 
 	@Override
-	public JDialog visitPages(DPages dialog) {
-		JDialog jDialog = new JDialog();
-		jDialog.setLayout(new GridBagLayout());
+	public JFrame visitPages(DPages frame) {
+		JFrame jFrame = new JFrame();
+		jFrame.setLayout(new GridBagLayout());
+		JPanel panel = (JPanel)jFrame.getContentPane();
+		panel.setBorder(new EmptyBorder(0, 15, 5, 15));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		jDialog.setTitle(dialog.getTitle());
-		JTextArea desc = generateDesc(dialog.getDescription());
-		gbc.insets = new Insets(0, 15, 0, 15);
-		jDialog.add(desc, gbc);
-		jDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		jDialog.setResizable(false);
-		return jDialog;
+		jFrame.setTitle(frame.getTitle());
+		JTextArea desc = generateDesc(frame.getDescription());
+		jFrame.add(desc, gbc);
+		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		jFrame.setResizable(false);
+		return jFrame;
 	}
 
 	@Override

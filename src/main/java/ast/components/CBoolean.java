@@ -228,6 +228,8 @@ public class CBoolean implements Component {
 					panel.setValue("true");
 				else
 					panel.setValue("");
+				String errorMsg = validateConstraints(Id.Boolean, panel.getValue(), constraintMap);
+				panel.setErrorLabel(errorMsg);
 			}
 		});
 		noButton.addActionListener(new ActionListener() {
@@ -239,6 +241,8 @@ public class CBoolean implements Component {
 					panel.setValue("false");
 				else
 					panel.setValue("");
+				String errorMsg = validateConstraints(Id.Boolean, panel.getValue(), constraintMap);
+				panel.setErrorLabel(errorMsg);
 			}
 		});
 		panel.setLayout(new GridBagLayout());
@@ -304,6 +308,8 @@ public class CBoolean implements Component {
 					panel.setValue("true");
 				else
 					panel.setValue("");
+				String errorMsg = validateConstraints(Id.Boolean, panel.getValue(), constraintMap);
+				panel.setErrorLabel(errorMsg);
 			}
 		});
 		noButton.addActionListener(new ActionListener() {
@@ -315,6 +321,8 @@ public class CBoolean implements Component {
 					panel.setValue("false");
 				else
 					panel.setValue("");
+				String errorMsg = validateConstraints(Id.Boolean, panel.getValue(), constraintMap);
+				panel.setErrorLabel(errorMsg);
 			}
 		});
 		panel.setLayout(new GridBagLayout());

@@ -56,10 +56,10 @@ public class Test {
 //				big 'Are you big?' Boolean{display=inline}
 //				}
 //				""";
-		Ast.Query a = Parser.parse(query);
-		var visitor = new PagesVisitor();
-		a.accept(visitor);
-		System.out.println(visitor.getData().join());
+//		Ast.Query a = Parser.parse(query);
+//		var visitor = new PagesVisitor();
+//		a.accept(visitor);
+//		System.out.println(visitor.getData().join());
 	}	
 		
 //	{slider=27, big=false, password=dfg, comments=sdfgfsd, color=Blue, car=, name=ddfgfd, age=23, height=33}
