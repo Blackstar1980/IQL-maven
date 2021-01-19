@@ -82,6 +82,8 @@ public interface Component extends Attributable<JPanelContainer>, Ast.Tabable {
 	default JLabel addRequiredToLabel(JLabel label, Map<ConstraintId, Constraint> constraints) {
 		if(constraints.get(ConstraintId.OPTIONAL) == OptionalCon.Required) {
 			label.setText("<html>" + label.getText() + "<span  color='red'> *</span ></html>" );
+		} else {
+			label.setText(label.getText() + "  ");
 		}
 //		("<html>Text color: <font color='red'>red</font></html>"
 		return label;

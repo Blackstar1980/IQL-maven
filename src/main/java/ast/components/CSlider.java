@@ -141,7 +141,7 @@ public class CSlider implements Component {
 	        });
 		Map<ConstraintId, Constraint> constraints = getMapConstraint(getConstraints());
 		JLabel title = generateTitle(getTitle(), constraints);
-		title.setText(getTitle());
+//		title.setText(getTitle());
 		DisplayId display = (DisplayId)constraints.get(ConstraintId.DISPLAY);
 		if(display == DisplayId.Non) {
 			display = DisplayId.Block;

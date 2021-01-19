@@ -94,12 +94,12 @@ public class IQL {
 //		""";
 		
 		var queryInline = """
-		'User Registration Form' Single('please provide a accurate details about yourself
-		and your family in order to be able to do something... or not')
+		'User Registration Form' Single(please provide a accurate details about yourself
+		and your family in order to be able to do something... or not)
 		name 'Full Name:' String{min=2 inline}
-		works 'Working Field2' MultiOpt['Computers|Building|Food']('Computers|Building'){inlineList}
-		worky 'Working Field2' SingleOpt['Computers|Building|Food']('Building'){inlineList}
-		slider 'my SliDer' Slider[0,12]('6'){inline}
+		works 'Working Field2' MultiOpt[Computers|Building|Food](Computers|Building){inlineList optional}
+		worky 'Working Field2' SingleOpt[Computers|Building|Food](Building){inlineList}
+		slider 'my SliDer' Slider[0,12](6){inline}
 		""";
 		
 //		var queryBlock2 = """

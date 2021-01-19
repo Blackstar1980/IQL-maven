@@ -16,8 +16,8 @@ fragment Bool: 'true' | 'false';
 fragment Digit: [0-9];
 fragment Integer: '-'?Digit+;
 fragment Decimal: Integer ('.'Digit+)?;
-fragment MultiOpt: 'MultiOpt[' QuotedCharText ']';
-fragment SingleOpt: 'SingleOpt[' QuotedCharText ']';
+fragment MultiOpt: 'MultiOpt[' CharText ']';
+fragment SingleOpt: 'SingleOpt[' CharText ']';
 fragment Slider: 'Slider[' CharText ']';
 fragment CharText: (LowerCaseLetter | UpperCaseLetter | Digit 
   | '<' | '>' | '&' | '|' | '*' | '+' | '-' | '=' | '!' | '%' 
@@ -51,7 +51,7 @@ MinorTicksCon: 'minorTicks' Whitespace* '=' Whitespace* Integer;
 
 
 NameWord: LowerCaseLetter (LowerCaseLetter | UpperCaseLetter)*;
-DefaultValue: '(' QuotedCharText ')';
+DefaultValue: '(' CharText ')';
 QuotedCharText: '\'' CharText '\'';
 
 

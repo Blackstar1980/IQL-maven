@@ -56,7 +56,7 @@ public class CMultiOpt implements Component {
 	
 	private List<String> setOptions(ComponentContext ctx) {
 		String idText = ctx.CompId().getText();
-		String options = idText.substring(idText.indexOf("['")+2, idText.indexOf("']")).trim();
+		String options = idText.substring(idText.indexOf("[")+1, idText.indexOf("]")).trim();
 		return extractOptions(options);
 	}
 	

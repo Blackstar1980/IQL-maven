@@ -15,7 +15,7 @@ import ast.constraints.ConstraintId;
 
 public interface Attributable<T> extends Ast<T> {
 	default String extractDefVal(TerminalNode constraintsNode) {
-		return constraintsNode == null? "":checkNewLine(subString(constraintsNode.getText(), 2, 2));
+		return constraintsNode == null? "":checkNewLine(subString(constraintsNode.getText(), 1, 1));
 	}
 	
 	default List<Constraint> extractConstraints(Id id, List<ParseTree> children) {

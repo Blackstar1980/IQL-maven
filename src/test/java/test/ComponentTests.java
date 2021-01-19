@@ -5,9 +5,9 @@ import org.junit.Test;
 public class ComponentTests {
 	@Test public void tab01() {
 		TestHelper.arrgumentException("""
-					'Dialog Title' Single('dialog description')
+					'Dialog Title' Single(dialog description)
 					'First Tab:' Tab{
-					name 'Name:' String('John')
+					name 'Name:' String(John)
 					}
 					""",
 					"There must be at least 2 tabs");
@@ -31,9 +31,9 @@ public class ComponentTests {
 	
 	@Test public void tab04() {
 		TestHelper.arrgumentException("""
-				'Dialog Title' Single('dialog description')
+				'Dialog Title' Single(dialog description)
 				'First Tab:' Tab{
-				name 'Name:' String('John')
+				name 'Name:' String(John)
 				}
 				""",
 				"""
@@ -43,15 +43,15 @@ public class ComponentTests {
 	
 	@Test public void tab05() {
 		TestHelper.checkAst("""
-				'Dialog Title' Single('dialog description')
+				'Dialog Title' Single(dialog description)
 				'First Tab:' Tab{
-				name 'Name:' String('John')
+				name 'Name:' String(John)
 				}
 				'Second Tab:' Tab{
 					'new group' Group {
 						age 'Age' Integer
 				}
-				surname 'Surname:' String('Doe')
+				surname 'Surname:' String(Doe)
 				}
 				""",
 				"""
@@ -68,9 +68,9 @@ public class ComponentTests {
 	
 	@Test public void group01() {
 		TestHelper.checkAst("""
-				'Dialog Title' Single('dialog description')
+				'Dialog Title' Single(dialog description)
 				'First Group:' Group{
-					name 'Name:' String('John')
+					name 'Name:' String(John)
 				}
 				""",
 				"""
@@ -101,21 +101,21 @@ public class ComponentTests {
 		
 	@Test public void comp01() {
 		TestHelper.arrgumentException("""
-				'Single Dialog' Single('single my description')
-				name 'Name:' String('John')
-				name 'Second Name:' String('Doe')
+				'Single Dialog' Single(single my description)
+				name 'Name:' String(John)
+				name 'Second Name:' String(Doe)
 				""",
 				"Components names must be unique. 'name', is appear more then once.");
 	}
 	
 	@Test public void comp02() {
 		TestHelper.arrgumentException("""
-				'Single Dialog' Single('single my description')
+				'Single Dialog' Single(single my description)
 				'first group' Group{
-				name 'Name:' String('John')
+				name 'Name:' String(John)
 				}
 				'second group' Group{
-				name 'Second Name:' String('Doe')
+				name 'Second Name:' String(Doe)
 				}
 				""",
 				"Components names must be unique. 'name', is appear more then once.");
@@ -123,12 +123,12 @@ public class ComponentTests {
 	
 	@Test public void comp03() {
 		TestHelper.arrgumentException("""
-				'Single Dialog' Single('single my description')
+				'Single Dialog' Single(single my description)
 				'first Tab' Tab{
-				name 'Name:' String('John')
+				name 'Name:' String(John)
 				}
 				'second Tab' Tab{
-				name 'Second Name:' String('Doe')
+				name 'Second Name:' String(Doe)
 				}
 				""",
 				"Components names must be unique. 'name', is appear more then once.");
@@ -136,16 +136,16 @@ public class ComponentTests {
 	
 	@Test public void comp04() {
 		TestHelper.arrgumentException("""
-			'Single Dialog' Single('single my description')
-			name 'Name:' String('John') {max=1 max=6}
+			'Single Dialog' Single(single my description)
+			name 'Name:' String(John) {max=1 max=6}
 			""",
 			"'MAX' constraint repeat more then once");
 	}
 	
 	@Test public void comp05() {
 		TestHelper.checkAst("""
-			'Single Dialog' Single('single my description')
-			name 'Name:' String('John') {min=1 max=6 inline}
+			'Single Dialog' Single(single my description)
+			name 'Name:' String(John) {min=1 max=6 inline}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
@@ -157,9 +157,9 @@ public class ComponentTests {
 	
 	@Test public void comp06() {
 		TestHelper.checkAst("""
-			'Single Dialog' Single('single my description')
-			cats 'Have cats?' Boolean('true')
-			dogs 'Have dogs?' Boolean('false')
+			'Single Dialog' Single(single my description)
+			cats 'Have cats?' Boolean(true)
+			dogs 'Have dogs?' Boolean(false)
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
@@ -172,7 +172,7 @@ public class ComponentTests {
 	
 	@Test public void comp07() {
 		TestHelper.checkAst("""
-			'Single Dialog' Single('single my description')
+			'Single Dialog' Single(single my description)
 			cats 'Have cats?' Boolean
 			dogs 'Have dogs?' Boolean
 			""",
@@ -187,16 +187,16 @@ public class ComponentTests {
 	
 	@Test public void comp08() {
 		TestHelper.arrgumentException("""
-			'Single Dialog' Single('single my description')
-			dogs 'Have dogs?' Boolean('yes')
+			'Single Dialog' Single(single my description)
+			dogs 'Have dogs?' Boolean(yes)
 			""",
 			"Boolean default value must be only 'true' or 'false'");
 	}
 	
 	@Test public void comp09() {
 		TestHelper.checkAst("""
-			'Single Dialog' Single('single my description')
-			cats 'Have cats?' String('My default value')
+			'Single Dialog' Single(single my description)
+			cats 'Have cats?' String(My default value)
 			{max=4 min=2  holder='my holder'  inline}
 			""",
 			"""
@@ -210,8 +210,8 @@ public class ComponentTests {
 	
 	@Test public void comp10() {
 		TestHelper.checkAst("""
-			'Single Dialog' Single('single my description')
-			cats 'Have cats?' TextArea('My default value')
+			'Single Dialog' Single(single my description)
+			cats 'Have cats?' TextArea(My default value)
 			{max=4 min=2  holder='my holder' inline optional}
 			""",
 			"""
@@ -225,8 +225,8 @@ public class ComponentTests {
 	
 	@Test public void comp11() {
 		TestHelper.checkAst("""
-			'Single Dialog' Single('single my description')
-			password 'Password:' Password('My default value')
+			'Single Dialog' Single(single my description)
+			password 'Password:' Password(My default value)
 			{max=8 min=2 holder='my holder' inline}
 			""",
 			"""
@@ -240,8 +240,8 @@ public class ComponentTests {
 
 	@Test public void comp12() { 
 		TestHelper.checkAst("""
-			'Single Dialog' Single('single my description')
-			phone 'Phone:' Integer('988643')
+			'Single Dialog' Single(single my description)
+			phone 'Phone:' Integer(988643)
 			{max=8 min=2 holder='87654' inline}
 			""",
 			"""
@@ -255,8 +255,8 @@ public class ComponentTests {
 	
 	@Test public void comp13() {
 		TestHelper.checkAst("""
-			'Single Dialog' Single('single my description')
-			height 'Height:' Decimal('1.45')
+			'Single Dialog' Single(single my description)
+			height 'Height:' Decimal(1.45)
 			{max=8 min=2 holder='enter your height' inline}
 			""",
 			"""
@@ -270,7 +270,7 @@ public class ComponentTests {
 	
 	@Test public void comp14() {
 		TestHelper.checkAst("""
-			'Single Dialog' Single('single my description')
+			'Single Dialog' Single(single my description)
 			height 'Height:' Slider[-5, 5]
 			{majorTicks=3 minorTicks=1 inline}
 			""",
@@ -286,8 +286,8 @@ public class ComponentTests {
 	
 	@Test public void comp15() {
 		TestHelper.checkAst("""
-			'Single Dialog' Single('single my description')
-			height 'Height:' Slider[0, 5]('1')
+			'Single Dialog' Single(single my description)
+			height 'Height:' Slider[0, 5](1)
 			{majorTicks=3 minorTicks=1 inline}
 			""","""
 			Query[dialog=Single[title=Single Dialog, \
@@ -301,8 +301,8 @@ public class ComponentTests {
 	
 	@Test public void comp16() {
 		TestHelper.numberException("""
-			'Single Dialog' Single('single my description')
-			height 'Height:' Slider[0.1, 5]('1')
+			'Single Dialog' Single(single my description)
+			height 'Height:' Slider[0.1, 5](1)
 			{majorTicks=3 minorTicks=1 inline}
 			""",
 			"Invalid Slider default values");
@@ -310,16 +310,16 @@ public class ComponentTests {
 	
 	@Test public void comp17() {
 		TestHelper.checkParseError("""
-			'Single Dialog' Single('single my description')
-			height 'Height:' Slider('1, 5, 1')
+			'Single Dialog' Single(single my description)
+			height 'Height:' Slider[1, 5] (1)
 			{majorTicks=3 minorTicks=1.3 inline}
 			""");
 	}
 	
 	@Test public void comp18() {
 		TestHelper.checkAst("""
-			'Single Dialog' Single('single my description')
-			height 'Height:' SingleOpt['Red|Blue|Green']
+			'Single Dialog' Single(single my description)
+			height 'Height:' SingleOpt[Red|Blue|Green]
 			{selected='Red' inlineList}
 			""",
 			"""
@@ -332,8 +332,8 @@ public class ComponentTests {
 	
 	@Test public void comp19() {
 		TestHelper.checkAst("""
-			'Single Dialog' Single('single my description')
-			height 'Height:' MultiOpt['Red|Blue|Green']('Red|Blue')
+			'Single Dialog' Single(single my description)
+			height 'Height:' MultiOpt[Red|Blue|Green](Red|Blue)
 			{ inlineList}
 			""",
 			"""
@@ -346,8 +346,8 @@ public class ComponentTests {
 	
 	@Test public void comp20() {
 		TestHelper.checkAst("""
-			'Single Dialog' Single('single my description')
-			height 'Height:' SingleOpt['Red|Blue|Green']('Green')
+			'Single Dialog' Single(single my description)
+			height 'Height:' SingleOpt[Red|Blue|Green](Green)
 			{selected='Red' inlineList}
 			""",
 			"""
@@ -360,8 +360,8 @@ public class ComponentTests {
 	
 	@Test public void comp21() {
 		TestHelper.arrgumentException("""
-			'Single Dialog' Single('single my description')
-			height 'Height:' SingleOpt['Red|Blue|Green']('Green|Blue')
+			'Single Dialog' Single(single my description)
+			height 'Height:' SingleOpt[Red|Blue|Green](Green|Blue)
 			{selected='Red' inlineList}
 			""",
 			"'Green|Blue' is not a valid option");

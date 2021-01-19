@@ -5,8 +5,8 @@ import org.junit.Test;
 public class ConstraintTests {
 	@Test public void con01() {
 		TestHelper.arrgumentException("""
-				'Single Dialog' Single('single my description')
-				cats 'Have cats?' String('My default value')
+				'Single Dialog' Single(single my description)
+				cats 'Have cats?' String(My default value)
 				{max=-3}
 				""",
 				"String max constraint, must be bigger than 0");
@@ -14,8 +14,8 @@ public class ConstraintTests {
 	
 	@Test public void con02() {
 		TestHelper.arrgumentException("""
-				'Single Dialog' Single('single my description')
-				cats 'Have cats?' String('My default value')
+				'Single Dialog' Single(single my description)
+				cats 'Have cats?' String(My default value)
 				{min=-1}
 				""",
 				"String min constraint must be bigger than 0");
@@ -23,24 +23,24 @@ public class ConstraintTests {
 	
 	@Test public void con03() {
 		TestHelper.checkParseError("""
-			'Single Dialog' Single('single my description')
-			cats 'Have cats?' String('My default value')
+			'Single Dialog' Single(single my description)
+			cats 'Have cats?' String(My default value)
 			{required= yes}
 			""");			
 	}
 	
 	@Test public void con04() {
 		TestHelper.checkParseError("""
-			'Single Dialog' Single('single my description')
-			cats 'Have cats?' String('My default value')
+			'Single Dialog' Single(single my description)
+			cats 'Have cats?' String(My default value)
 			{holder=my holder}
 			""");			
 	}
 	
 	@Test public void con05() {
 		TestHelper.arrgumentException("""
-				'Single Dialog' Single('single my description')
-				cats 'Have cats?' String('My default value')
+				'Single Dialog' Single(single my description)
+				cats 'Have cats?' String(My default value)
 				{ blockCheckbox }
 				""",
 				"blockCheckbox is not a valide component display");
@@ -48,8 +48,8 @@ public class ConstraintTests {
 	
 	@Test public void con06() {
 		TestHelper.arrgumentException("""
-				'Single Dialog' Single('single my description')
-				cats 'Have cats?' SingleOpt['Yes|No |Maybe |Yes no']
+				'Single Dialog' Single(single my description)
+				cats 'Have cats?' SingleOpt[Yes|No |Maybe |Yes no]
 				{blockCheckbox}
 				""",
 				"blockCheckbox is not a valide component display");
@@ -57,8 +57,8 @@ public class ConstraintTests {
 	
 	@Test public void con07() {
 		TestHelper.arrgumentException("""
-				'Single Dialog' Single('single my description')
-				cats 'Have cats?' MultiOpt['Yes|No |Maybe |Yes no']
+				'Single Dialog' Single(single my description)
+				cats 'Have cats?' MultiOpt[Yes|No |Maybe |Yes no]
 				{ blockRadio}
 				""",
 				"blockRadio is not a valide component display");
@@ -66,8 +66,8 @@ public class ConstraintTests {
 	
 	@Test public void con08() {
 		TestHelper.arrgumentException("""
-				'Single Dialog' Single('single my description')
-				cats 'Have cats?' MultiOpt['Yes|No |Maybe |Yes no|']
+				'Single Dialog' Single(single my description)
+				cats 'Have cats?' MultiOpt[Yes|No |Maybe |Yes no|]
 				{blockCheckbox}
 				""",
 				"'Yes|No |Maybe |Yes no|' are not a valid options");
@@ -75,8 +75,8 @@ public class ConstraintTests {
 	
 	@Test public void con09() {
 		TestHelper.arrgumentException("""
-				'Single Dialog' Single('single my description')
-				cats 'Have cats?' MultiOpt['Yes| |Maybe |Yes no']
+				'Single Dialog' Single(single my description)
+				cats 'Have cats?' MultiOpt[Yes| |Maybe |Yes no]
 				{blockCheckbox}
 				""",
 				"Empty value is not a valid option");
@@ -84,7 +84,7 @@ public class ConstraintTests {
 	
 	@Test public void con10() {
 		TestHelper.arrgumentException("""
-				'Single Dialog' Single('single my description')
+				'Single Dialog' Single(single my description)
 				cats 'Have cats?' Slider[My default value]
 				{inline}
 				""",
@@ -93,7 +93,7 @@ public class ConstraintTests {
 	
 	@Test public void con11() {
 		TestHelper.arrgumentException("""
-				'Single Dialog' Single('single my description')
+				'Single Dialog' Single(single my description)
 				cats 'Have cats?' Slider[23,2]
 				{inline}
 				""",
@@ -102,8 +102,8 @@ public class ConstraintTests {
 	
 	@Test public void con12() {
 		TestHelper.arrgumentException("""
-				'Single Dialog' Single('single my description')
-				cats 'Have cats?' Slider[2,4]('5')
+				'Single Dialog' Single(single my description)
+				cats 'Have cats?' Slider[2,4](5)
 				{inline}
 				""",
 				"Default value must be between or equal to the min and max values");
@@ -111,7 +111,7 @@ public class ConstraintTests {
 	
 	@Test public void con13() {
 		TestHelper.checkAst("""
-			'Single Dialog' Single('single my description')
+			'Single Dialog' Single(single my description)
 			cats 'Have cats?' Slider[2,4]
 			{inline}
 			""",
@@ -125,8 +125,8 @@ public class ConstraintTests {
 	
 	@Test public void con14() {
 		TestHelper.checkAst("""
-			'Single Dialog' Single('single my description')
-			cats 'Have cats?' Slider[2,44]('7')
+			'Single Dialog' Single(single my description)
+			cats 'Have cats?' Slider[2,44](7)
 			{inline}
 			""",
 			"""
@@ -139,7 +139,7 @@ public class ConstraintTests {
 	
 	@Test public void con15() {
 		TestHelper.arrgumentException("""
-			'Single Dialog' Single('single my description')
+			'Single Dialog' Single(single my description)
 			cats 'Have\ncats?' Slider[2,44]
 			{inline}
 			""",
@@ -151,9 +151,9 @@ public class ConstraintTests {
 	
 	@Test public void con16() {
 		TestHelper.arrgumentException("""
-			'Single Dialog' Single('single my description')
+			'Single Dialog' Single(single my description)
 			cats 'Have
-			cats?' Slider[2,44]('7')
+			cats?' Slider[2,44](7)
 			{inline}
 			""",
 			"""
@@ -164,9 +164,9 @@ public class ConstraintTests {
 	
 	@Test public void con17() {
 		TestHelper.checkAst("""
-			'Single Dialog' Single('single my description')
-			cats 'Have cats?' Boolean('true') {inline}
-			dogs 'Have dogs?' Boolean('false'){block}
+			'Single Dialog' Single(single my description)
+			cats 'Have cats?' Boolean(true) {inline}
+			dogs 'Have dogs?' Boolean(false){block}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
