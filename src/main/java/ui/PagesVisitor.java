@@ -3,6 +3,7 @@ package ui;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -10,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import ast.Ast.Containable;
 import ast.Ast.Query;
 import ast.Id;
@@ -50,7 +50,7 @@ public class PagesVisitor extends UiVisitor {
 			frame.add(panel, gbc);
 		}
 		gbc.fill = GridBagConstraints.NONE;
-		JPanel buttonsPanel = new JPanel();
+		JPanel buttonsPanel = new JPanel(new GridBagLayout());
 		JButton cancelButton = new JButton("Cancel");
 		JButton approveButton = new JButton("Approve");
 		JButton prevButton = new JButton("<");
@@ -58,7 +58,7 @@ public class PagesVisitor extends UiVisitor {
 		JButton addButton = new JButton("Add");
 		JButton deleteButton = new JButton("Delete");
 		JLabel pagesIndex = new JLabel(getPageIndex());
-		JPanel utilsPanel = new JPanel(new GridBagLayout());
+		JPanel pagesPanel = new JPanel(new GridBagLayout());
 		deleteButton.setBackground(Color.red);
 		deleteButton.setForeground(Color.white);
 		deleteButton.setEnabled(false);
@@ -136,18 +136,24 @@ public class PagesVisitor extends UiVisitor {
 				results.remove(currentPage);
 			updateUiFields(panels, results.get(currentPage -1), false);
 		});
-		
-		utilsPanel.setBorder(new EmptyBorder(5, 5, 0, 5));
-		utilsPanel.add(prevButton, gbc);
+				
+		gbc.anchor = GridBagConstraints.EAST;
+		pagesPanel.add(nextButton, gbc);
+		gbc.anchor = GridBagConstraints.CENTER;
+		pagesPanel.add(pagesIndex, gbc);
+		gbc.anchor = GridBagConstraints.WEST;
+		pagesPanel.add(prevButton, gbc);
+
+		gbc.ipadx = 0;
+		gbc.insets = new Insets(0, 0, 0, 5);
+		buttonsPanel.add(approveButton, gbc);
 		gbc.gridx++;
-		utilsPanel.add(pagesIndex, gbc);
+		buttonsPanel.add(cancelButton, gbc);
 		gbc.gridx++;
-		utilsPanel.add(nextButton, gbc);
+		buttonsPanel.add(deleteButton, gbc);
+		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.gridx++;
-		utilsPanel.add(deleteButton, gbc);
-		gbc.gridx++;
-		utilsPanel.add(addButton, gbc);
-		gbc.gridx = 0;
+		buttonsPanel.add(addButton, gbc);
 		
 		cancelButton.addActionListener(e-> {
 			results.clear();
@@ -155,7 +161,6 @@ public class PagesVisitor extends UiVisitor {
 			commitData(results);
 			frame.dispose();
 		});
-		buttonsPanel.add(approveButton);
 		approveButton.addActionListener(e->{
 			var saved = saveAsMap(panels);
 			if(saved==null) 
@@ -164,11 +169,14 @@ public class PagesVisitor extends UiVisitor {
 			commitData(results);
 			frame.dispose();
 		});
-		buttonsPanel.add(cancelButton);
 		gbc.gridy++;
-		frame.add(utilsPanel, gbc);
-		gbc.gridy++;
+		gbc.gridx = 0;
+		gbc.anchor = GridBagConstraints.EAST;
 		frame.add(buttonsPanel, gbc);
+		gbc.gridy++;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.insets = new Insets(10, 0, 0, 0);
+		frame.add(pagesPanel, gbc);
 	}
 	
 	private void updateDataList(List<Map<String, String>> dataList, Map<String, String> value, int index, boolean setDefault) {
