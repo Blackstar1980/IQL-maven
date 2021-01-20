@@ -20,7 +20,7 @@ fragment MultiOpt: 'MultiOpt[' CharText ']';
 fragment SingleOpt: 'SingleOpt[' CharText ']';
 fragment Slider: 'Slider[' CharText ']';
 fragment CharText: (LowerCaseLetter | UpperCaseLetter | Digit 
-  | '<' | '>' | '&' | '|' | '*' | '+' | '-' | '=' | '!' | '%' 
+  | '<' | '>' | '&' | '|' | '*' | '+' | '-' | '=' | '!' | '%' | '[' | ']'
   | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' 
   | '`' | '^' | '_' | '"' | '\\' | '\n' )*;
 Whitespace: [ \t\r\n]-> channel(HIDDEN);
@@ -44,7 +44,7 @@ RegexCon: 'regex' Whitespace* '=' Whitespace* QuotedCharText;
 OptionalCon: Whitespace* 'optional' Whitespace*;
 //DisplayCon: 'display' Whitespace* '=' Whitespace* Displays;
 DisplayCon: 'inline' | 'block' | 'inlineList' | 'blockList' | 'blockRadio' | 'blockCheckbox';
-HolderCon: 'holder' Whitespace* '=' Whitespace* QuotedCharText;
+HolderCon: 'placeholder' Whitespace* '=' Whitespace* QuotedCharText;
 SelectedCon: 'selected' Whitespace* '=' Whitespace* QuotedCharText;
 MajorTicksCon: 'majorTicks' Whitespace* '=' Whitespace* Integer;
 MinorTicksCon: 'minorTicks' Whitespace* '=' Whitespace* Integer;

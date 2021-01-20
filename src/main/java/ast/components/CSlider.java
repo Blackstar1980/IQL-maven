@@ -172,13 +172,13 @@ public class CSlider implements Component {
 	private JPanelWithValue setSliderInlineDisplay(JLabel title, JSlider slider, JLabel value,
 			JPanelWithValue panel) {
 		GridBagConstraints gbc = new GridBagConstraints();
-		slider.setPreferredSize(new Dimension(230, 50));
+		slider.setPreferredSize(new Dimension(245, 50));
 		gbc.anchor = GridBagConstraints.NORTHEAST;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		panel.add(title, gbc);
 		JPanel sliderPanel = new JPanel(new GridBagLayout());
-		sliderPanel.setPreferredSize(new Dimension(280, 50));
+		sliderPanel.setPreferredSize(new Dimension(295, 50));
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		sliderPanel.add(slider, gbc);
@@ -193,7 +193,7 @@ public class CSlider implements Component {
 
 	private JPanelWithValue setSliderBlockDisplay(JLabel title, JSlider slider, JLabel value, JPanelWithValue panel) {
 		GridBagConstraints gbc = new GridBagConstraints();
-		slider.setPreferredSize(new Dimension(230, 50));
+		slider.setPreferredSize(new Dimension(245, 50));
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
@@ -205,7 +205,7 @@ public class CSlider implements Component {
 		gbc.gridx = 1;
 		gbc.insets = new Insets(0, 10, 0, 0);
 		panel.add(value, gbc);
-		panel.setPreferredSize(new Dimension(280, (int) panel.getPreferredSize().getHeight()));
+		panel.setPreferredSize(new Dimension(295, (int) panel.getPreferredSize().getHeight()));
 		return panel;
 	}
 	

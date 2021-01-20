@@ -197,7 +197,7 @@ public class ComponentTests {
 		TestHelper.checkAst("""
 			'Single Dialog' Single(single my description)
 			cats 'Have cats?' String(My default value)
-			{max=4 min=2  holder='my holder'  inline}
+			{max=4 min=2  placeholder='my holder'  inline}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
@@ -212,7 +212,7 @@ public class ComponentTests {
 		TestHelper.checkAst("""
 			'Single Dialog' Single(single my description)
 			cats 'Have cats?' TextArea(My default value)
-			{max=4 min=2  holder='my holder' inline optional}
+			{max=4 min=2  placeholder='my holder' inline optional}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
@@ -227,7 +227,7 @@ public class ComponentTests {
 		TestHelper.checkAst("""
 			'Single Dialog' Single(single my description)
 			password 'Password:' Password(My default value)
-			{max=8 min=2 holder='my holder' inline}
+			{max=8 min=2 placeholder='my holder' inline}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
@@ -242,7 +242,7 @@ public class ComponentTests {
 		TestHelper.checkAst("""
 			'Single Dialog' Single(single my description)
 			phone 'Phone:' Integer(988643)
-			{max=8 min=2 holder='87654' inline}
+			{max=8 min=2 placeholder='87654' inline}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \
@@ -257,7 +257,7 @@ public class ComponentTests {
 		TestHelper.checkAst("""
 			'Single Dialog' Single(single my description)
 			height 'Height:' Decimal(1.45)
-			{max=8 min=2 holder='enter your height' inline}
+			{max=8 min=2 placeholder='enter your height' inline}
 			""",
 			"""
 			Query[dialog=Single[title=Single Dialog, \

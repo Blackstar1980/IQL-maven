@@ -155,7 +155,7 @@ public class CPassword implements Component {
 		});
 		
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		passField.setPreferredSize(new Dimension(258, 22));
+		passField.setPreferredSize(new Dimension(253, 22));
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		panel.add(title, gbc);
@@ -195,7 +195,7 @@ public class CPassword implements Component {
 		});
 
 //		gbc.anchor = GridBagConstraints.WEST;
-		passField.setPreferredSize(new Dimension(258, 22));
+		passField.setPreferredSize(new Dimension(253, 22));
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;

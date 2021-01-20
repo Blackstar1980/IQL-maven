@@ -111,7 +111,7 @@ public class SingleVisitor extends UiVisitor {
 				frame.dispose();
 			}});
 		gbc.gridy++;
-		gbc.anchor = GridBagConstraints.WEST;
+		gbc.anchor = GridBagConstraints.CENTER;
 		frame.add(buttonsPanel, gbc);
 	}
 	

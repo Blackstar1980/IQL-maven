@@ -93,8 +93,8 @@ public class IQL {
 //		""";
 		
 		var queryInline = """
-		'User Registration Form' Single(please provide a accurate details about yourself
-		and your family in order to be able to do something... or not)
+		'User Registration Form' Single(please provide a accurate 
+		and your family in order to be able to )
 		name 'Full Name:' String{min=2 inline}
 		works 'Working Field2' MultiOpt[Computers|Building|Food](Computers|Building){inlineList optional}
 		worky 'Working Field2' SingleOpt[Computers|Building|Food](Building){inlineList}
@@ -132,24 +132,65 @@ public class IQL {
 		
 		
 		var exampleString01 = """
-				'User Details' Single('Please provide your details below')
-					name 'Full Name:' String
+				'User Details' Single(Please provide your personal details)
+					name 'Full Name:' String{inline}
 				""";
 		
 		var exampleString02 = """
-				'User Details' Single('Please provide your details below')
-					name 'First Name:' String('Jack')
+				'User Details' Single(Please provide your personal details)
+					name 'First Name:' String(Jack)
 				""";
 		var exampleString03 = """
-				'User Details' Single('Please provide your details below')
-					name 'First Name:' String{required=false min=2 max=12 holder='Enter you name here' display=inline regex='[a-zA-Z]+'}
+				'User Details' Single(Please provide your details below)
+					name 'First Name:' String{min=2 max=12 placeholder='Enter you name here' optional regex='[a-zA-Z]+'}
+				""";
+		
+		var exampleInteger01 = """
+				'User Details' Single(Please provide your personal details)
+					age 'Age:' Integer
+				""";
+		
+		var exampleInteger02 = """
+				'User Details' Single(Please provide your personal details)
+				age 'Age:' Integer(34)
+			""";
+		var exampleInteger03 = """
+				'User Details' Single(Please provide your details below)
+					age 'Age:' Integer{min=1 max=120 placeholder='Enter you age here' optional}
+				""";
+		
+		var exampleInteger04 = """
+				'User Details' Single(Please provide your details below)
+					name 'Full Name:' String{inline placeholder='Enter you name here'}
+					age 'Age:' Integer{inline min=1 max=120 placeholder='Enter you age here' optional}
+				""";
+		
+		var exampleDecimal01 = """
+				'User Details' Single(Please provide your personal details)
+					weight 'Weight:' Decimal
+				""";
+		
+		var exampleDecimal02 = """
+				'User Details' Single(Please provide your personal details)
+				weight 'Weight:' Decimal(77.4)
+			""";
+		var exampleDecimal03 = """
+				'User Details' Single(Please provide your details below)
+					weight 'Weight:' Decimal{min=10.1 max=220.6 placeholder='Enter you weight in Kg' optional}
+				""";
+		
+		var exampleDecimal04 = """
+				'User Details' Single(Please provide your details below)
+					name 'Full Name:' String{inline placeholder='Enter you name here'}
+					age 'Age:' Integer{inline placeholder='Enter you age here' optional}
+					weight 'Weight:' Decimal{inline min=10 max=220 placeholder='Enter you weight in Kg' optional}
 				""";
 		
 //		run(exampleString03);
 //		run(queryBlock);
 //		run(queryInline);
 //		List<Map<String, String>> results = run(query);
-		List<Map<String, String>> results = run(queryInline);
+		List<Map<String, String>> results = run(exampleDecimal04);
 		System.out.println(results);
 	}
 
