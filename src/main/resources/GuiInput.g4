@@ -22,7 +22,7 @@ fragment Slider: 'Slider[' CharText ']';
 fragment CharText: (LowerCaseLetter | UpperCaseLetter | Digit 
   | '<' | '>' | '&' | '|' | '*' | '+' | '-' | '=' | '!' | '%' | '[' | ']'
   | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' 
-  | '`' | '^' | '_' | '"' | '\\' | '\n' )*;
+  | '`' | '^' | '_' | '"' | '\\\\' | '\n' | '\\\'' | ')' | '(' | '{' | '}')*;
 Whitespace: [ \t\r\n]-> channel(HIDDEN);
 DialogId: 'Single' | 'Multi' | 'Pages';
 //work 'Working Field' MultiOpt('Computers|Building|Teaching'){selected='Building|Teaching'}

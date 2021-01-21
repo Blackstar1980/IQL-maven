@@ -29,7 +29,7 @@ import fields.*;
 public abstract class UiVisitor implements Visitor {
 	private CompletableFuture<List<Map<String, String>>> data = new CompletableFuture<>();
 	private final JTabbedPane tabbedPane = new JTabbedPane();
-	protected abstract void constructDialog(JFrame frame, List<JPanelContainer> panels);
+	protected abstract void constructDialog(JFrame frame, List<JPanelContainer> panels, String desc);
 	
 	protected void commitData(List<Map<String, String>> res){
 		res=res.stream().map(m->new HashMap<>(m)).collect(Collectors.toList());
@@ -41,20 +41,20 @@ public abstract class UiVisitor implements Visitor {
 		return data;
 	}
 
-	@Override
-	public JFrame visitQuery(Query query) {
-		JFrame jFrame = new JFrame();
-		jFrame = visitSingle((DSingle)query.dialog());
-		List<Containable> containers = query.containers();
-		List<JPanelContainer> panels = new ArrayList<>();
-		for(Containable container:containers)
-			panels.add(getPanel(container));
-		constructDialog(jFrame, panels);
-		jFrame.pack();
-		jFrame.setVisible(true);
-		System.out.println("in Single");
-		return jFrame;
-	}
+//	@Override
+//	public JFrame visitQuery(Query query) {
+//		JFrame jFrame = new JFrame();
+//		jFrame = visitSingle((DSingle)query.dialog());
+//		List<Containable> containers = query.containers();
+//		List<JPanelContainer> panels = new ArrayList<>();
+//		for(Containable container:containers)
+//			panels.add(getPanel(container));
+//		constructDialog(jFrame, panels);
+//		jFrame.pack();
+//		jFrame.setVisible(true);
+//		System.out.println("in Single");
+//		return jFrame;
+//	}
 	
 	protected JPanelContainer getPanel(Containable container) {
 		return container.accept(this);
@@ -154,7 +154,7 @@ public abstract class UiVisitor implements Visitor {
 		gbc.gridy = 0;
 		jFrame.setTitle(frame.getTitle());
 		JTextArea desc = generateDesc(frame.getDescription());
-		jFrame.add(desc, gbc);
+//		jFrame.add(desc, gbc);
 		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		jFrame.setResizable(false);
 		return jFrame;

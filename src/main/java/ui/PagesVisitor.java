@@ -25,12 +25,13 @@ public class PagesVisitor extends UiVisitor {
 	public JFrame visitQuery(Query query) {
 		JFrame jFrame = new JFrame();
 		jFrame = visitPages((DPages)query.dialog());
+		String desc = query.dialog().getDescription();
 		List<Containable> containers = query.containers();
 		List<JPanelContainer> panels = new ArrayList<>();
 		for(Containable container:containers) {
 			panels.add(getPanel(container));
 		}
-		constructDialog(jFrame, panels);
+		constructDialog(jFrame, panels, desc);
 		jFrame.pack();
 		jFrame.setVisible(true);
 		System.out.println("in Pages");
@@ -38,7 +39,7 @@ public class PagesVisitor extends UiVisitor {
 	}
 
 	@Override
-	protected void constructDialog(JFrame frame, List<JPanelContainer> panels) {
+	protected void constructDialog(JFrame frame, List<JPanelContainer> panels, String desc) {
 		List<Map<String, String>> results = new ArrayList<>();
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.EAST;

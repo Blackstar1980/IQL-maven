@@ -180,7 +180,7 @@ public class IQL {
 				""";
 		
 		var exampleDecimal04 = """
-				'User Details' Single(Please provide your details below)
+				'User Details' Single(Please provide your details below sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssaaa)
 					name 'Full Name:' String{inline placeholder='Enter you name here'}
 					age 'Age:' Integer{inline placeholder='Enter you age here' optional}
 					weight 'Weight:' Decimal{inline min=10 max=220 placeholder='Enter you weight in Kg' optional}
