@@ -23,7 +23,7 @@ public class SingleVisitor extends UiVisitor {
 	public JFrame visitQuery(Query query) {
 		JFrame jFrame = new JFrame();
 		String desc = query.dialog().getDescription();
-		jFrame = visitSingle((DSingle)query.dialog());
+		jFrame = visitSingle(query.dialog());
 		List<Containable> containers = query.containers();
 		List<JPanelContainer> panels = new ArrayList<>();
 		for(Containable container:containers)
@@ -95,16 +95,16 @@ public class SingleVisitor extends UiVisitor {
 		gbc.anchor = GridBagConstraints.CENTER;
 		frame.add(buttonsPanel, gbc);
 		
-		JTextArea JDesc = generateDesc(desc);
-		double frameWidth = frame.getPreferredSize().getWidth();
-		JDesc.setPreferredSize(new Dimension((int)frameWidth, (int)frame.getPreferredSize().getHeight()));
-		JDesc.setWrapStyleWord(true);
-		JDesc.setLineWrap(true);
-		JDesc.setEditable(false);
-		JDesc.setBackground(Color.green);
+		JTextArea jDesc = generateDesc(desc);
+		double frameWidth = frame.getPreferredSize().getWidth() - 30;
+		double height = jDesc.getPreferredSize().getHeight();
+		int newheight = (int) ((jDesc.getPreferredSize().getWidth()/frameWidth)*height);
+		jDesc.setPreferredSize(new Dimension((int)frameWidth, newheight));
+		jDesc.setWrapStyleWord(true);
+		jDesc.setLineWrap(true);
 		gbc.gridy = 0;
-		
-		frame.add(JDesc, gbc);
+		gbc.insets = new Insets(0, 0, 10, 0);
+		frame.add(jDesc, gbc);
 	}
 	
 }

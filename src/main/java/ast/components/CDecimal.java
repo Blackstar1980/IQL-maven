@@ -116,7 +116,7 @@ public class CDecimal implements Component, Placeholder, BasicLayout {
 		return title;
 	}
 
-	public double getDefVal() {
+	public Double getDefVal() {
 		return defVal;
 	}
 

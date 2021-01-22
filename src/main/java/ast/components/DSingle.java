@@ -3,7 +3,6 @@ package ast.components;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import ast.Ast.Dialog;

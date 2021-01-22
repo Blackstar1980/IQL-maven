@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -24,7 +25,7 @@ public class PagesVisitor extends UiVisitor {
 	@Override
 	public JFrame visitQuery(Query query) {
 		JFrame jFrame = new JFrame();
-		jFrame = visitPages((DPages)query.dialog());
+		jFrame = visitPages(query.dialog());
 		String desc = query.dialog().getDescription();
 		List<Containable> containers = query.containers();
 		List<JPanelContainer> panels = new ArrayList<>();
@@ -45,7 +46,7 @@ public class PagesVisitor extends UiVisitor {
 		gbc.anchor = GridBagConstraints.EAST;
 		gbc.weightx = 1.0;
 		gbc.gridx = 0;
-		gbc.gridy = 0;
+		gbc.gridy = 1;
 		for(JPanel panel : panels) {
 			gbc.gridy++;
 			frame.add(panel, gbc);
@@ -178,6 +179,16 @@ public class PagesVisitor extends UiVisitor {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(10, 0, 0, 0);
 		frame.add(pagesPanel, gbc);
+		JTextArea jDesc = generateDesc(desc);
+		double frameWidth = frame.getPreferredSize().getWidth() - 30;
+		double height = jDesc.getPreferredSize().getHeight();
+		int newheight = (int) ((jDesc.getPreferredSize().getWidth()/frameWidth)*height);
+		jDesc.setPreferredSize(new Dimension((int)frameWidth, newheight));
+		jDesc.setWrapStyleWord(true);
+		jDesc.setLineWrap(true);
+		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 0, 10, 0);
+		frame.add(jDesc, gbc);
 	}
 	
 	private void updateDataList(List<Map<String, String>> dataList, Map<String, String> value, int index, boolean setDefault) {

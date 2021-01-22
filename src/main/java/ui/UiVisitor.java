@@ -1,12 +1,9 @@
 package ui;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +17,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import ast.Ast.Containable;
-import ast.Ast.Query;
+import ast.Ast.Dialog;
 import ast.Ast.Tabable;
 import ast.Id;
 import ast.components.*;
@@ -142,7 +139,7 @@ public abstract class UiVisitor implements Visitor {
 	
 
 	@Override
-	public JFrame visitSingle(DSingle frame) {
+	public JFrame visitSingle(Dialog frame) {
 		JFrame jFrame = new JFrame();
 		jFrame.setLayout(new GridBagLayout());
 		JPanel panel = (JPanel)jFrame.getContentPane();
@@ -153,7 +150,7 @@ public abstract class UiVisitor implements Visitor {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		jFrame.setTitle(frame.getTitle());
-		JTextArea desc = generateDesc(frame.getDescription());
+//		JTextArea desc = generateDesc(frame.getDescription());
 //		jFrame.add(desc, gbc);
 		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		jFrame.setResizable(false);
@@ -161,12 +158,7 @@ public abstract class UiVisitor implements Visitor {
 	}
 
 	@Override
-	public JFrame visitMulti(DMulti frame) {
-		return null;
-	}
-
-	@Override
-	public JFrame visitPages(DPages frame) {
+	public JFrame visitMulti(Dialog frame) {
 		JFrame jFrame = new JFrame();
 		jFrame.setLayout(new GridBagLayout());
 		JPanel panel = (JPanel)jFrame.getContentPane();
@@ -177,8 +169,27 @@ public abstract class UiVisitor implements Visitor {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		jFrame.setTitle(frame.getTitle());
-		JTextArea desc = generateDesc(frame.getDescription());
-		jFrame.add(desc, gbc);
+//		JLabel desc = generateDesc(frame.getDescription());
+//		jDialog.add(desc, gbc);
+		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		jFrame.setResizable(false);
+		return jFrame;
+	}
+
+	@Override
+	public JFrame visitPages(Dialog frame) {
+		JFrame jFrame = new JFrame();
+		jFrame.setLayout(new GridBagLayout());
+		JPanel panel = (JPanel)jFrame.getContentPane();
+		panel.setBorder(new EmptyBorder(0, 15, 5, 15));
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		jFrame.setTitle(frame.getTitle());
+//		JTextArea desc = generateDesc(frame.getDescription());
+//		jFrame.add(desc, gbc);
 		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		jFrame.setResizable(false);
 		return jFrame;

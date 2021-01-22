@@ -7,6 +7,8 @@ import java.util.concurrent.CompletableFuture;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
+import ast.Ast;
+import ast.Ast.Dialog;
 import ast.Ast.Query;
 import ast.components.CBoolean;
 import ast.components.CDecimal;
@@ -27,9 +29,9 @@ import fields.JPanelWithValue;
 
 public interface Visitor {
 	CompletableFuture<List<Map<String, String>>> getData();
-	JFrame visitSingle(DSingle dialog);
-	JFrame visitMulti(DMulti dialog);
-	JFrame visitPages(DPages dialog);
+	JFrame visitSingle(Dialog dialog);
+	JFrame visitMulti(Dialog dialog);
+	JFrame visitPages(Dialog dialog);
 	JPanelContainer visitGroup(Group group);
 	JPanelContainer visitTab(Tab tab);
 	JPanelWithValue visitString(CString component);
