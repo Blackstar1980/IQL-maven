@@ -186,11 +186,108 @@ public class IQL {
 					weight 'Weight:' Decimal{min=10 max=220 placeholder='Enter you weight in Kg' optional}
 				""";
 		
+		var exampletextl01 = """
+				'User Details' Single(Please provide your personal details)
+					comment 'Comment:' TextArea
+				""";
+		var exampletextl02 = """
+				'User Details' Single(Please provide your personal details)
+					comment 'Comment:' TextArea(My name is...)
+				""";
+		var exampletextl03 = """
+				'User Details' Single(Please provide your personal details)
+				comment 'Comment:' TextArea{
+					min=10
+					max=100
+				  	placeholder='Enter your comment here'
+				  	optional}
+				""";
+		
+		var exampletextl04 = """
+				'User Details' Single(Please provide your personal details)
+				name 'Full Name:' String{inline placeholder='Enter you name here'}
+				age 'Age:' Integer{inline placeholder='Enter you age here' optional}
+				comment 'Comment:' TextArea{
+				  inline
+				  min=10 
+				  max=100 
+				  placeholder='Enter your comment here'
+				  optional
+				}
+				""";
+		
+		var examplePassl01 = """
+				'Create password' Single(Please provide your details below)
+					password 'Password:' Password
+				""";
+		
+		var examplePassl02 = """
+				'Create password' Single(Please provide your details below)
+				password 'Password:' Password(MyPassword)
+				""";
+		
+		var examplePassl03 = """
+				'Create password' Single(Please provide your details below)
+				password 'Password:' Password{
+					min=6
+					max=12
+					placeholder='Enter your password here'
+					optional
+					regex='[A][a-z]+'
+				}
+				""";
+		
+		var examplePassl04 = """
+				'Create password' Single(Please provide your details below)
+				name 'User Name:' String{inline placeholder='Enter you name here'}
+				password 'Password:' Password{
+					inline
+					min=6
+					max=12
+					placeholder='Enter your password here'
+					regex='[A][a-z]+'
+				}
+				""";
+		
+		var exampleBooleanl01 = """
+				'Personal details' Single(Please provide your details below)
+				married 'married?' Boolean{ blockList optional}
+				""";
+		
+		var exampleBooleanl02 = """
+				'Personal details' Single(Please provide your details below)
+				married 'married?' Boolean(true)
+				""";
+		
+		var exampleSingleOpt01 = """
+				'Personal details' Single(Please provide your details below)
+				employment 'Employment Status:' SingleOpt[Full Time|Part Time|Self Employed|Not Employed]{inlineList optional}
+				""";
+		var exampleSingleOpt02 = """
+				'Personal details' Single(Please provide your details below)
+				employment 'Employment Status:' SingleOpt[Full Time|Part Time|Self Employed|Not Employed](Part Time)
+				""";
+		var exampleMultiOpt01 = """
+				'Personal details' Single(Please provide your details below)
+				countries 'Visited countries:' MultiOpt[Chile|Peru|Germany|Sweden]{optional blockCheckbox}
+				""";
+		var exampleMultiOpt02 = """
+				'Personal details' Single(Please provide your details below)
+				countries 'Visited countries:' MultiOpt[Chile|Peru|Germany|Sweden](Germany|Sweden)
+				""";
+		
+		var q = """
+				'Personal details' Single('Please provide your details below')
+				countries 'Visited countries:' Slider['1,10000']('60')
+				""";
+		
+		
+		
 //		run(exampleString03);
 //		run(queryBlock);
 //		run(queryInline);
 //		List<Map<String, String>> results = run(query);
-		List<Map<String, String>> results = run(exampleDecimal04);
+		List<Map<String, String>> results = run(q);
 		System.out.println(results);
 	}
 

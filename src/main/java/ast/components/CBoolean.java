@@ -125,7 +125,7 @@ public class CBoolean implements Component {
 		gbc.gridy = 2;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		panel.add(panel.getErrorLabel(), gbc);
-		panel.setPreferredSize(new Dimension(295, (int) panel.getPreferredSize().getHeight()));
+		panel.setPreferredSize(new Dimension(300, (int) panel.getPreferredSize().getHeight()));
 		return panel;
 	}
 
@@ -173,7 +173,7 @@ public class CBoolean implements Component {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.EAST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		combo.setPreferredSize(new Dimension(295, 22));
+		combo.setPreferredSize(new Dimension(300, 22));
 //		gbc.insets = new Insets(0, 20, 0, 0);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -258,7 +258,7 @@ public class CBoolean implements Component {
 		gbc.weightx = 1;
 		gbc.gridx = 1;
 		buttonsPanel.add(noButton, gbc);
-		buttonsPanel.setPreferredSize(new Dimension(295, (int) panel.getPreferredSize().getHeight()));
+		buttonsPanel.setPreferredSize(new Dimension(300, (int) panel.getPreferredSize().getHeight()));
 		
 		panel.add(buttonsPanel, gbc);
 		gbc.gridx = 1;
@@ -340,7 +340,7 @@ public class CBoolean implements Component {
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		panel.add(panel.getErrorLabel(), gbc);
-		panel.setPreferredSize(new Dimension(295, (int) panel.getPreferredSize().getHeight()));
+		panel.setPreferredSize(new Dimension(300, (int) panel.getPreferredSize().getHeight()));
 		return panel;
 	}
 

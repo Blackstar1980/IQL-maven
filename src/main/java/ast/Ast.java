@@ -57,7 +57,7 @@ public interface Ast<T> {
 		}
 		
 		default String extractDialogDesc(DialogContext ctx) {
-			return ctx.DefaultValue() == null? "": subString(ctx.DefaultValue().getText(), 1, 1);
+			return ctx.DefaultValue() == null? "": subString(ctx.DefaultValue().getText(), 2, 2);
 		}
 	}
 	interface Containable extends Ast<JPanelContainer>{}

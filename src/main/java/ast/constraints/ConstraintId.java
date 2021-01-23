@@ -43,12 +43,8 @@ public enum ConstraintId {
 
 	private static boolean isDisplay(String input) {
 		return switch (input.trim()) {
-			case "inline" -> true;
-			case "block" -> true;
-			case "inlineList" -> true;
-			case "blockList" -> true;
-			case "blockRadio" -> true;
-			case "blockCheckbox" -> true;
+			case "inline", "block", "inlineList",
+			"blockList", "blockRadio", "blockCheckbox" -> true;
 			default -> false;
 		};
 	}

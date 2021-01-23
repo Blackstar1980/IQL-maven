@@ -56,7 +56,7 @@ public class CMultiOpt implements Component {
 	
 	private List<String> setOptions(ComponentContext ctx) {
 		String idText = ctx.CompId().getText();
-		String options = idText.substring(idText.indexOf("[")+1, idText.indexOf("]")).trim();
+		String options = idText.substring(idText.indexOf("[")+2, idText.indexOf("]")-1).trim();
 		return extractOptions(options);
 	}
 	
@@ -155,7 +155,7 @@ public class CMultiOpt implements Component {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 		MultiOptComboBox comboBox = new MultiOptComboBox();
-		comboBox.setPreferredSize(new Dimension(295, 22));
+		comboBox.setPreferredSize(new Dimension(300, 22));
 		comboBox.setEditable(true);
 		comboBox.addItems(options);
 		gbc.gridx = 0;
@@ -166,7 +166,7 @@ public class CMultiOpt implements Component {
 		gbc.gridy = 2;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		panel.add(panel.getErrorLabel(), gbc);
-		panel.setPreferredSize(new Dimension(295, (int) panel.getPreferredSize().getHeight()));
+		panel.setPreferredSize(new Dimension(300, (int) panel.getPreferredSize().getHeight()));
 		return panel;
 	}
 
@@ -225,7 +225,7 @@ public class CMultiOpt implements Component {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.EAST;
 		JPanel comboBoxPanel = new JPanel(new GridBagLayout());
-		comboBoxPanel.setPreferredSize(new Dimension(295, 22));
+		comboBoxPanel.setPreferredSize(new Dimension(300, 22));
 		gbc.weightx = 1.0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		comboBoxPanel.add(ccb, gbc);
@@ -294,7 +294,7 @@ public class CMultiOpt implements Component {
 		gbc.gridy++;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		panel.add(panel.getErrorLabel(), gbc);
-		panel.setPreferredSize(new Dimension(295, (int) panel.getPreferredSize().getHeight()));
+		panel.setPreferredSize(new Dimension(300, (int) panel.getPreferredSize().getHeight()));
 		return panel;
 	}
 
@@ -340,7 +340,7 @@ public class CMultiOpt implements Component {
 			checkBoxesPanel.add(checkBox, gbc);
 			gbc.gridx++;
 		});
-		checkBoxesPanel.setPreferredSize(new Dimension(295, (int) panel.getPreferredSize().getHeight()));
+		checkBoxesPanel.setPreferredSize(new Dimension(300, (int) panel.getPreferredSize().getHeight()));
 		gbc.gridx = 1;
 		panel.add(checkBoxesPanel, gbc);
 		gbc.gridy++;

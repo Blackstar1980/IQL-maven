@@ -96,14 +96,15 @@ public class SingleVisitor extends UiVisitor {
 		frame.add(buttonsPanel, gbc);
 		
 		JTextArea jDesc = generateDesc(desc);
-		double frameWidth = frame.getPreferredSize().getWidth() - 30;
-		double height = jDesc.getPreferredSize().getHeight();
-		int newheight = (int) ((jDesc.getPreferredSize().getWidth()/frameWidth)*height);
-		jDesc.setPreferredSize(new Dimension((int)frameWidth, newheight));
-		jDesc.setWrapStyleWord(true);
-		jDesc.setLineWrap(true);
+//		double frameWidth = frame.getPreferredSize().getWidth() - 30;
+//		double height = jDesc.getPreferredSize().getHeight();
+//		int newheight = (int) ((jDesc.getPreferredSize().getWidth()/frameWidth)*height);
+//		jDesc.setPreferredSize(new Dimension((int)frameWidth, newheight));
+//		jDesc.setWrapStyleWord(true);
+//		jDesc.setLineWrap(true);
+		gbc.anchor = GridBagConstraints.WEST;
 		gbc.gridy = 0;
-		gbc.insets = new Insets(0, 0, 10, 0);
+//		gbc.insets = new Insets(0, 0, 5, 0);
 		frame.add(jDesc, gbc);
 	}
 	

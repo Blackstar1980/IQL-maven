@@ -47,19 +47,19 @@ public class DialogTests {
 	
 	@Test public void wrongDialogInformation05() {
 		TestHelper.arrgumentException(
-				"'Dialog Title' Single(dialog description){max=-2}  name 'Name:' String",
+				"'Dialog Title' Single('dialog description'){max=-2}  name 'Name:' String",
 				"Single is not support Max constraint");
 	}
 	
 	@Test public void wrongDialogInformation06() {
 		TestHelper.arrgumentException(
-				"'Dialog Title' Multi(dialog description){max=-2}  name 'Name:' String",
+				"'Dialog Title' Multi('dialog description'){max=-2}  name 'Name:' String",
 				"Multi max constraint, must be bigger than 0");
 	}
 	
 	@Test public void wrongDialogInformation07() {
 		TestHelper.numberException(
-				"'Dialog Title' Pages(dialog description){max=2.5}  name 'Name:' String",
+				"'Dialog Title' Pages('dialog description'){max=2.5}  name 'Name:' String",
 				"For input string: \"2.5\""	);
 	}
 	
@@ -70,7 +70,7 @@ public class DialogTests {
 	@Test public void dialog01() {
 		TestHelper.checkAst(
 				"""
-				'Dialog Title' Single(dialog description)
+				'Dialog Title' Single('dialog description')
 				name 'Name:' String
 				""",
 				"""
@@ -83,7 +83,7 @@ public class DialogTests {
 	@Test public void dialog02() {
 		TestHelper.checkAst(
 				"""
-				'Dialog Title' Pages(dialog description) {min=4 max =  6}
+				'Dialog Title' Pages('dialog description') {min=4 max =  6}
 				name 'Name:' String
 				""",
 				"""
@@ -96,8 +96,8 @@ public class DialogTests {
 	
 	@Test public void dialog03() {
 		TestHelper.checkAst("""
-				'Dialog Title' Single(dialog description)
-				name 'Name:' String(default value)
+				'Dialog Title' Single('dialog description')
+				name 'Name:' String('default value')
 				""",
 				"""
 				Query[dialog=Single[title=Dialog Title, \
@@ -108,9 +108,9 @@ public class DialogTests {
 	
 	@Test public void dialog04() {
 		TestHelper.checkAst("""
-				'Dialog Title' Single(dialog description)
+				'Dialog Title' Single('dialog description')
 				'My group:' Group{
-					name 'Name:' String(default value)
+					name 'Name:' String('default value')
 				}
 				""",
 				"""
@@ -124,12 +124,12 @@ public class DialogTests {
 	
 	@Test public void dialog05() {
 		TestHelper.checkAst("""
-				'Dialog Title' Single(dialog description)
+				'Dialog Title' Single('dialog description')
 				'First Tab:' Tab{
-					name 'Name:' String(John)
+					name 'Name:' String('John')
 				}
 				'Second Tab:' Tab{
-					surname 'Surname:' String(Doe)
+					surname 'Surname:' String('Doe')
 				}
 				""",
 				"""
@@ -145,9 +145,9 @@ public class DialogTests {
 	
 	@Test public void dialog06() {
 		TestHelper.checkAst("""
-			'Single Dialog' Single(single my 
-			description)
-			cats 'Have cats?' Slider[2,44](7)
+			'Single Dialog' Single('single my 
+			description')
+			cats 'Have cats?' Slider['2,44']('7')
 			{ inline}
 			""",
 			"""

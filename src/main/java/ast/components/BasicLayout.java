@@ -25,7 +25,7 @@ public interface BasicLayout {
 			JLabel errorMsg, JPanelWithValue panel) {
 		panel.setLayout(new GridBagLayout());
 		if(!(component instanceof JScrollPane))
-			component.setPreferredSize(new Dimension(295, 22));
+			component.setPreferredSize(new Dimension(300, 22));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.anchor = GridBagConstraints.NORTHEAST;
@@ -46,7 +46,7 @@ public interface BasicLayout {
 
 	private JPanelWithValue setBlockDisplay(JLabel title, JComponent component, JLabel errorMsg, JPanelWithValue panel) {
 		if(!(component instanceof JScrollPane))
-			component.setPreferredSize(new Dimension(295, 22));
+			component.setPreferredSize(new Dimension(300, 22));
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
