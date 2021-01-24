@@ -18,9 +18,9 @@ public class GuiInputParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, Whitespace=3, DialogId=4, GroupId=5, TabId=6, CompId=7, 
-		MinCon=8, MaxCon=9, RegexCon=10, OptionalCon=11, DisplayCon=12, HolderCon=13, 
-		SelectedCon=14, MajorTicksCon=15, MinorTicksCon=16, NameWord=17, DefaultValue=18, 
-		QuotedCharText=19;
+		ApproveCon=8, CancelCon=9, BackgroundlCon=10, MinCon=11, MaxCon=12, RegexCon=13, 
+		OptionalCon=14, DisplayCon=15, HolderCon=16, SelectedCon=17, MajorTicksCon=18, 
+		MinorTicksCon=19, NameWord=20, DefaultValue=21, QuotedCharText=22;
 	public static final int
 		RULE_compCon = 0, RULE_component = 1, RULE_group = 2, RULE_groupOrcomp = 3, 
 		RULE_tab = 4, RULE_dialogCon = 5, RULE_dialog = 6, RULE_query = 7;
@@ -41,9 +41,9 @@ public class GuiInputParser extends Parser {
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, null, null, "Whitespace", "DialogId", "GroupId", "TabId", "CompId", 
-			"MinCon", "MaxCon", "RegexCon", "OptionalCon", "DisplayCon", "HolderCon", 
-			"SelectedCon", "MajorTicksCon", "MinorTicksCon", "NameWord", "DefaultValue", 
-			"QuotedCharText"
+			"ApproveCon", "CancelCon", "BackgroundlCon", "MinCon", "MaxCon", "RegexCon", 
+			"OptionalCon", "DisplayCon", "HolderCon", "SelectedCon", "MajorTicksCon", 
+			"MinorTicksCon", "NameWord", "DefaultValue", "QuotedCharText"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -483,6 +483,18 @@ public class GuiInputParser extends Parser {
 		public TerminalNode MinCon(int i) {
 			return getToken(GuiInputParser.MinCon, i);
 		}
+		public List<TerminalNode> ApproveCon() { return getTokens(GuiInputParser.ApproveCon); }
+		public TerminalNode ApproveCon(int i) {
+			return getToken(GuiInputParser.ApproveCon, i);
+		}
+		public List<TerminalNode> CancelCon() { return getTokens(GuiInputParser.CancelCon); }
+		public TerminalNode CancelCon(int i) {
+			return getToken(GuiInputParser.CancelCon, i);
+		}
+		public List<TerminalNode> BackgroundlCon() { return getTokens(GuiInputParser.BackgroundlCon); }
+		public TerminalNode BackgroundlCon(int i) {
+			return getToken(GuiInputParser.BackgroundlCon, i);
+		}
 		public DialogConContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -514,12 +526,12 @@ public class GuiInputParser extends Parser {
 			setState(62);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while (_la==MinCon || _la==MaxCon) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ApproveCon) | (1L << CancelCon) | (1L << BackgroundlCon) | (1L << MinCon) | (1L << MaxCon))) != 0)) {
 				{
 				{
 				setState(59);
 				_la = _input.LA(1);
-				if ( !(_la==MinCon || _la==MaxCon) ) {
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ApproveCon) | (1L << CancelCon) | (1L << BackgroundlCon) | (1L << MinCon) | (1L << MaxCon))) != 0)) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
@@ -714,25 +726,25 @@ public class GuiInputParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\25^\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\30^\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\3\2\3\2\7\2\25\n\2"+
 		"\f\2\16\2\30\13\2\3\2\3\2\3\3\3\3\3\3\3\3\5\3 \n\3\3\3\5\3#\n\3\3\4\3"+
 		"\4\3\4\3\4\6\4)\n\4\r\4\16\4*\3\4\3\4\3\5\3\5\5\5\61\n\5\3\6\3\6\3\6\3"+
 		"\6\6\6\67\n\6\r\6\16\68\3\6\3\6\3\7\3\7\7\7?\n\7\f\7\16\7B\13\7\3\7\3"+
 		"\7\3\b\3\b\3\b\3\b\5\bJ\n\b\3\t\3\t\6\tN\n\t\r\t\16\tO\3\t\3\t\3\t\3\t"+
 		"\6\tV\n\t\r\t\16\tW\3\t\3\t\5\t\\\n\t\3\t\2\2\n\2\4\6\b\n\f\16\20\2\4"+
-		"\3\2\n\22\3\2\n\13\2`\2\22\3\2\2\2\4\33\3\2\2\2\6$\3\2\2\2\b\60\3\2\2"+
+		"\3\2\r\25\3\2\n\16\2`\2\22\3\2\2\2\4\33\3\2\2\2\6$\3\2\2\2\b\60\3\2\2"+
 		"\2\n\62\3\2\2\2\f<\3\2\2\2\16E\3\2\2\2\20[\3\2\2\2\22\26\7\3\2\2\23\25"+
 		"\t\2\2\2\24\23\3\2\2\2\25\30\3\2\2\2\26\24\3\2\2\2\26\27\3\2\2\2\27\31"+
-		"\3\2\2\2\30\26\3\2\2\2\31\32\7\4\2\2\32\3\3\2\2\2\33\34\7\23\2\2\34\35"+
-		"\7\25\2\2\35\37\7\t\2\2\36 \7\24\2\2\37\36\3\2\2\2\37 \3\2\2\2 \"\3\2"+
-		"\2\2!#\5\2\2\2\"!\3\2\2\2\"#\3\2\2\2#\5\3\2\2\2$%\7\25\2\2%&\7\7\2\2&"+
+		"\3\2\2\2\30\26\3\2\2\2\31\32\7\4\2\2\32\3\3\2\2\2\33\34\7\26\2\2\34\35"+
+		"\7\30\2\2\35\37\7\t\2\2\36 \7\27\2\2\37\36\3\2\2\2\37 \3\2\2\2 \"\3\2"+
+		"\2\2!#\5\2\2\2\"!\3\2\2\2\"#\3\2\2\2#\5\3\2\2\2$%\7\30\2\2%&\7\7\2\2&"+
 		"(\7\3\2\2\')\5\4\3\2(\'\3\2\2\2)*\3\2\2\2*(\3\2\2\2*+\3\2\2\2+,\3\2\2"+
 		"\2,-\7\4\2\2-\7\3\2\2\2.\61\5\6\4\2/\61\5\4\3\2\60.\3\2\2\2\60/\3\2\2"+
-		"\2\61\t\3\2\2\2\62\63\7\25\2\2\63\64\7\b\2\2\64\66\7\3\2\2\65\67\5\b\5"+
+		"\2\61\t\3\2\2\2\62\63\7\30\2\2\63\64\7\b\2\2\64\66\7\3\2\2\65\67\5\b\5"+
 		"\2\66\65\3\2\2\2\678\3\2\2\28\66\3\2\2\289\3\2\2\29:\3\2\2\2:;\7\4\2\2"+
 		";\13\3\2\2\2<@\7\3\2\2=?\t\3\2\2>=\3\2\2\2?B\3\2\2\2@>\3\2\2\2@A\3\2\2"+
-		"\2AC\3\2\2\2B@\3\2\2\2CD\7\4\2\2D\r\3\2\2\2EF\7\25\2\2FG\7\6\2\2GI\7\24"+
+		"\2AC\3\2\2\2B@\3\2\2\2CD\7\4\2\2D\r\3\2\2\2EF\7\30\2\2FG\7\6\2\2GI\7\27"+
 		"\2\2HJ\5\f\7\2IH\3\2\2\2IJ\3\2\2\2J\17\3\2\2\2KM\5\16\b\2LN\5\b\5\2ML"+
 		"\3\2\2\2NO\3\2\2\2OM\3\2\2\2OP\3\2\2\2PQ\3\2\2\2QR\7\2\2\3R\\\3\2\2\2"+
 		"SU\5\16\b\2TV\5\n\6\2UT\3\2\2\2VW\3\2\2\2WU\3\2\2\2WX\3\2\2\2XY\3\2\2"+

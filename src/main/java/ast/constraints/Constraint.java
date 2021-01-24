@@ -2,69 +2,109 @@ package ast.constraints;
 
 public interface Constraint {
 	public ConstraintId getID();
-	
-	record MaxCon(double value) implements Constraint{
+
+	record MaxCon(double value) implements Constraint {
 		@Override
 		public ConstraintId getID() {
 			return ConstraintId.MAX;
 		}
 
 		public String validateLength(String text) {
-			return text.length() > value? "Input must contain less than " + (int)value + " characters. " : " ";
+			return text.length() > value ? "Input must contain less than " + (int) value + " characters. " : " ";
 		}
+
 		public String validateInt(String text) {
-			return text.isEmpty() ||  Integer.valueOf(text) > value? "Input must smaller or equals to " + (int)value : " ";
+			return text.isEmpty() || Integer.valueOf(text) > value ? "Input must smaller or equals to " + (int) value
+					: " ";
 		}
+
 		public String validateDec(String text) {
-			return text.isEmpty() ||  Double.valueOf(text) > value? "Input must smaller or equals to " + value : " ";
-		}};
-	record MinCon(double value) implements Constraint{
+			return text.isEmpty() || Double.valueOf(text) > value ? "Input must smaller or equals to " + value : " ";
+		}
+	};
+
+	record MinCon(double value) implements Constraint {
 		@Override
 		public ConstraintId getID() {
 			return ConstraintId.MIN;
 		}
 
 		public String validateLength(String text) {
-			return text.length() < value? "Input must contain at least " + (int)value + " characters. " : " ";
+			return text.length() < value ? "Input must contain at least " + (int) value + " characters. " : " ";
 		}
+
 		public String validateInt(String text) {
-			return text.isEmpty() || "-".equals(text) || Integer.valueOf(text) < value? 
-					"Input must greater or equals to " + (int)value : " ";
+			return text.isEmpty() || "-".equals(text) || Integer.valueOf(text) < value
+					? "Input must greater or equals to " + (int) value
+					: " ";
 		}
+
 		public String validateDec(String text) {
-			return text.isEmpty() || "-".equals(text) || Double.valueOf(text) < value?
-					"Input must greater or equals to " + value : " ";
-		}};
-		
-	record MajorTicksCon(int value) implements Constraint{
+			return text.isEmpty() || "-".equals(text) || Double.valueOf(text) < value
+					? "Input must greater or equals to " + value
+					: " ";
+		}
+	};
+
+	record MajorTicksCon(int value) implements Constraint {
 		@Override
 		public ConstraintId getID() {
 			return ConstraintId.MAJORTICKS;
-		}};
-	record MinorTicksCon(int value) implements Constraint{
+		}
+	};
+
+	record ApproveCon(String value) implements Constraint {
+		@Override
+		public ConstraintId getID() {
+			return ConstraintId.APPROVE;
+		}
+	};
+
+	record CancelCon(String value) implements Constraint {
+		@Override
+		public ConstraintId getID() {
+			return ConstraintId.CANCEL;
+		}
+	};
+	
+	record BackgroundCon(String value) implements Constraint {
+		@Override
+		public ConstraintId getID() {
+			return ConstraintId.BACKGROUND;
+		}
+	};
+
+	record MinorTicksCon(int value) implements Constraint {
 		@Override
 		public ConstraintId getID() {
 			return ConstraintId.MINORTICKS;
-		}};
-	record HolderCon(String value) implements Constraint{
+		}
+	};
+
+	record HolderCon(String value) implements Constraint {
 		@Override
 		public ConstraintId getID() {
 			return ConstraintId.HOLDER;
-		}};
-	record SelectedCon(String value) implements Constraint{
+		}
+	};
+
+	record SelectedCon(String value) implements Constraint {
 		@Override
 		public ConstraintId getID() {
 			return ConstraintId.SELECTED;
-		}};
-	record RegexCon(String value) implements Constraint{
+		}
+	};
+
+	record RegexCon(String value) implements Constraint {
 		@Override
 		public ConstraintId getID() {
 			return ConstraintId.REGEX;
 		}
 
 		public String validate(String text) {
-			return text.matches(value)? " ": "Input don't match to the pattern '" + value +"'";
-		}};
+			return text.matches(value) ? " " : "Input don't match to the pattern '" + value + "'";
+		}
+	};
 //	enum RequiredCon implements Constraint{
 //		Required,NotRequired;
 //		public static RequiredCon from(String value) {
@@ -80,24 +120,27 @@ public interface Constraint {
 //			return text == null || text.isEmpty()? "This field is required": " ";
 //		}
 //	}
-	
-	enum OptionalCon implements Constraint{
-		Required,Optional;
+
+	enum OptionalCon implements Constraint {
+		Required, Optional;
+
 		public static OptionalCon from(String value) {
-			if("optional".contentEquals(value))
+			if ("optional".contentEquals(value))
 				return OptionalCon.Optional;
 			else
 				return OptionalCon.Required;
 //			if("false".contentEquals(value)) return RequiredCon.NotRequired;
 //			throw new IllegalArgumentException("Illigal constraint value: " + value);	
 		}
+
 		@Override
 		public ConstraintId getID() {
 			return ConstraintId.OPTIONAL;
 		}
+
 		public String validate(String text) {
-			return text == null || text.isEmpty()? "This field is required": " ";
+			return text == null || text.isEmpty() ? "This field is required" : " ";
 		}
 	}
-	
+
 }

@@ -276,9 +276,96 @@ public class IQL {
 				countries 'Visited countries:' MultiOpt[Chile|Peru|Germany|Sweden](Germany|Sweden)
 				""";
 		
-		var q = """
+		var exampleSlider01 = """
 				'Personal details' Single('Please provide your details below')
-				countries 'Visited countries:' Slider['1,10000']('60')
+				children 'Number of children:' Slider['0,12']
+				""";
+		
+		var exampleSlider02 = """
+				'Personal details' Single('Please provide your details below')
+				children 'Number of children:' Slider['0,12']('5')
+				""";
+		var exampleSlider03 = """
+				'Personal details' Single('Please provide your details below')
+				children 'Number of children:' Slider['0,12']{
+				  majorTicks=3
+				  }
+				""";
+		
+		var exampleSlider04 = """
+				'Personal details' Single('Please provide your details below')
+				children 'Number of children:' Slider['0,12']{
+				  inline
+				  }
+				""";
+		
+		var exampleGroup01 = """
+				'Personal details' Single('Please provide your details below')
+				'Address' Group{
+					city 'City:' String
+				}
+				""";
+		
+		var exampleGroup02 = """
+				'Personal details' Single('Please provide your details below')
+				name 'Full Name:' String
+				'Address' Group{
+					city 'City:' String
+					street 'Street:' String
+				}
+				'Additional details' Group{
+					married 'Married:' Boolean
+					age 'Age:' Integer
+				}
+				""";
+		
+		var exampleTab01 = """
+				'Personal details' Single('Please provide your details below')
+				'Personal details' Tab{
+					name 'Full Name:' String
+				}
+				'Address' Tab{
+					city 'City:' String
+				}
+				""";
+		var exampleTab02 = """
+				'Personal details' Pages('Please provide your details below'){min=3 max=7 approve= 'Play' cancel='Quit' }
+				'Personal details' Tab{
+					name 'Full Name:' String{optional placeholder='hi'}
+					'Address' Group{
+						city 'City:' String{optional}
+						street 'Street:' String{optional}
+					}
+				}
+				'Additional details' Tab{
+					married 'Married:' Boolean{optional}
+					age 'Age:' Integer{optional}
+					weight 'Weight:' Decimal{optional}
+				}
+				""";
+		
+		var exampleIntroduction01 = """
+				'Person data' Single('Please fill your personal data bellow')
+				  name 'Name' String
+				  age 'Age' Integer
+				""";
+		
+		var exampleIntroduction02 = """
+				'User Registration Form' Single('Please provide an accurate details about yourself')
+				  'Personal Details' Tab{
+				    name 'Full Name:' String{min=2}
+				    age 'Age:' Integer{min=1 max=120}
+				    middle 'Middle Name' String{optional}
+				  'Family details' Group{
+					marry 'Are you married?' Boolean
+					children 'How many children do you have?' Slider['0,12']('4') {majorTicks=3 minorTicks=1}
+				    }
+				  }
+				  'Account Details' Tab{
+					password 'Password:' Password{placeholder='Password'}
+					comments 'Comments:' TextArea{min=4 max=20 placeholder='We would like to here from you'}
+					work 'Working Field' SingleOpt['Computers|Building|Teaching|Non of the above']
+				}
 				""";
 		
 		
@@ -287,7 +374,7 @@ public class IQL {
 //		run(queryBlock);
 //		run(queryInline);
 //		List<Map<String, String>> results = run(query);
-		List<Map<String, String>> results = run(q);
+		List<Map<String, String>> results = run(exampleIntroduction02);
 		System.out.println(results);
 	}
 

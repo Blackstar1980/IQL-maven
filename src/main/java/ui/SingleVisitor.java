@@ -38,7 +38,7 @@ public class SingleVisitor extends UiVisitor {
 	@Override
 	protected void constructDialog(JFrame frame, List<JPanelContainer> panels, String desc) {
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.EAST;
+		gbc.anchor = GridBagConstraints.CENTER;
 //		gbc.fill = GridBagConstraints.HORIZONTAL;
 		
 //		JTextArea JDesc = generateDesc(desc);
@@ -104,7 +104,7 @@ public class SingleVisitor extends UiVisitor {
 //		jDesc.setLineWrap(true);
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.gridy = 0;
-//		gbc.insets = new Insets(0, 0, 5, 0);
+		gbc.insets = new Insets(0, 0, 0, 0);
 		frame.add(jDesc, gbc);
 	}
 	

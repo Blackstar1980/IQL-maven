@@ -223,7 +223,7 @@ public abstract class UiVisitor implements Visitor {
 		groupPanel.setLayout(new GridBagLayout());
 //		groupPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.GRAY));
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
+		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 //		gbc.insets = new Insets(10, 0, 5, 0);
 		gbc.gridx = 0;

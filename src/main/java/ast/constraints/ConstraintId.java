@@ -1,17 +1,11 @@
 package ast.constraints;
 
 import ast.Id;
-import ast.constraints.Constraint.HolderCon;
-import ast.constraints.Constraint.MajorTicksCon;
-import ast.constraints.Constraint.MaxCon;
-import ast.constraints.Constraint.MinCon;
-import ast.constraints.Constraint.MinorTicksCon;
-import ast.constraints.Constraint.RegexCon;
-import ast.constraints.Constraint.OptionalCon;
-import ast.constraints.Constraint.SelectedCon;
+import ast.constraints.Constraint.*;
 
 public enum ConstraintId {
-	MIN, MAX, REGEX, DISPLAY, HOLDER, SELECTED, MAJORTICKS, MINORTICKS, OPTIONAL;
+	MIN, MAX, REGEX, DISPLAY, HOLDER, SELECTED, MAJORTICKS,
+	MINORTICKS, OPTIONAL, CANCEL, APPROVE, BACKGROUND;
 
 	public static Constraint from(Id id, String input) {
 		if(isDisplay(input.trim()))
@@ -23,10 +17,10 @@ public enum ConstraintId {
 		return switch (constrient) {
 		case "max" -> getMaxCon(id, value);
 		case "min" -> getMinCon(id, value);
-//		case "required" -> getRequiredCon(id, value);
-//		case "optional" -> getOptionalCon(id, value);
+		case "approve" -> getApproveCon(id, value);
+		case "cancel" -> getCancelCon(id, value);
 		case "placeholder" -> getHolderCon(id, value);
-		case "selected" -> getSelectedCon(id, value);
+		case "background" -> getBackgroundCon(id, value);
 //		case "display" -> getDisplayCon(id, value);
 		case "majorTicks" -> getMajorTicksCon(id, value);
 		case "minorTicks" -> getMinorTicksCon(id, value);
@@ -38,6 +32,27 @@ public enum ConstraintId {
 //		case "blockRadio" -> getDisplayCon(id, value);
 //		case "blockCheckbox" -> getDisplayCon(id, value);
 		default -> throw new IllegalArgumentException("Illigal constraint: " + constrient);
+		};
+	}
+
+	private static BackgroundCon getBackgroundCon(Id id, String value) {
+		return switch (id) {
+		case Pages, Single -> new BackgroundCon(value.substring(1, value.length() - 1));
+		default -> throw new IllegalArgumentException(id + " is not support Background constraint");
+		};
+	}
+
+	private static CancelCon getCancelCon(Id id, String value) {
+		return switch (id) {
+		case Pages, Single -> new CancelCon(value.substring(1, value.length() - 1));
+		default -> throw new IllegalArgumentException(id + " is not support Approve constraint");
+		};
+	}
+
+	private static ApproveCon getApproveCon(Id id, String value) {
+		return switch (id) {
+		case Pages, Single -> new ApproveCon(value.substring(1, value.length() - 1));
+		default -> throw new IllegalArgumentException(id + " is not support Cancel constraint");
 		};
 	}
 
@@ -56,12 +71,12 @@ public enum ConstraintId {
 		};
 	}
 
-	private static SelectedCon getSelectedCon(Id id, String value) {
-		return switch (id) {
-		case SingleOpt, MultiOpt -> new SelectedCon(value.substring(1, value.length() - 1));
-		default -> throw new IllegalArgumentException(id + " is not support Selected constraint");
-		};
-	}
+//	private static SelectedCon getSelectedCon(Id id, String value) {
+//		return switch (id) {
+//		case SingleOpt, MultiOpt -> new SelectedCon(value.substring(1, value.length() - 1));
+//		default -> throw new IllegalArgumentException(id + " is not support Selected constraint");
+//		};
+//	}
 
 	private static MinorTicksCon getMinorTicksCon(Id id, String value) {
 		int tickValue = getTickConValue(id, value);

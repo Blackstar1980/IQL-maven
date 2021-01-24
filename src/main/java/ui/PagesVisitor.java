@@ -16,16 +16,23 @@ import ast.Ast.Containable;
 import ast.Ast.Query;
 import ast.Id;
 import ast.components.*;
+import ast.constraints.Constraint;
+import ast.constraints.ConstraintId;
 import fields.*;
 
 public class PagesVisitor extends UiVisitor {
 	private int currentPage = 1;
 	private int totalPages = 1;
+	private int minPages = 1;
+	private int maxPages = Integer.MAX_VALUE;
+	private String approveBtnLabel = "Approve";
+	private String cancelBtnLabel = "Cancel";
 
 	@Override
 	public JFrame visitQuery(Query query) {
 		JFrame jFrame = new JFrame();
 		jFrame = visitPages(query.dialog());
+		setConstraits(query.dialog().getConstraints());
 		String desc = query.dialog().getDescription();
 		List<Containable> containers = query.containers();
 		List<JPanelContainer> panels = new ArrayList<>();
@@ -37,6 +44,49 @@ public class PagesVisitor extends UiVisitor {
 		jFrame.setVisible(true);
 		System.out.println("in Pages");
 		return jFrame;
+	}
+
+	private void setConstraits(List<Constraint> constraints) {
+		if(constraints == null || constraints.isEmpty())
+			return;
+		for(Constraint constraint: constraints) {
+			ConstraintId id = constraint.getID();
+			switch (id) {
+			case MIN -> setMinPages(constraint);
+			case MAX -> setMaxPages(constraint);
+			case CANCEL -> setCancelBtnLabel(constraint);
+			case APPROVE -> setApproveBtnLabel(constraint);
+			default ->
+			throw new IllegalArgumentException("Unexpected value: " + id);
+			}
+		}		
+	}
+
+	private void setApproveBtnLabel(Constraint constraint) {
+		approveBtnLabel = ((Constraint.ApproveCon)constraint).value();
+	}
+
+	private void setCancelBtnLabel(Constraint constraint) {
+		cancelBtnLabel = ((Constraint.CancelCon)constraint).value();
+	}
+
+	private void setMinPages(Constraint constraint) {
+		double value = ((Constraint.MinCon)constraint).value();
+		if(value < 1 || value > maxPages)
+			throw new IllegalArgumentException("Dialog min constraint must be greater or equals"
+					+ " to one and small or equals than max constraint.");
+		minPages = (int)value;
+		if(minPages != value)
+			throw new IllegalArgumentException(value + " is not a valid value. The value must be an integer");
+	}
+	
+	private void setMaxPages(Constraint constraint) {
+		double value = ((Constraint.MaxCon)constraint).value();
+		if(value < minPages)
+			throw new IllegalArgumentException("Dialog max constraint positive and greater or equal to min constraint.");
+		maxPages = (int)value;
+		if(maxPages != value)
+			throw new IllegalArgumentException(value + " is not a valid value. The value must be an integer");
 	}
 
 	@Override
@@ -53,8 +103,8 @@ public class PagesVisitor extends UiVisitor {
 		}
 		gbc.fill = GridBagConstraints.NONE;
 		JPanel buttonsPanel = new JPanel(new GridBagLayout());
-		JButton cancelButton = new JButton("Cancel");
-		JButton approveButton = new JButton("Approve");
+		JButton cancelButton = new JButton(cancelBtnLabel);
+		JButton approveButton = new JButton(approveBtnLabel);
 		JButton prevButton = new JButton("<");
 		JButton nextButton = new JButton(">");
 		JButton addButton = new JButton("Add");
@@ -117,6 +167,8 @@ public class PagesVisitor extends UiVisitor {
 			updateDataList(results, saved, currentPage -1, true);
 			updateUiFields(panels, new HashMap<String, String>(), true);
 			totalPages++;
+			if(totalPages == maxPages)
+				addButton.setEnabled(false);
 			deleteButton.setEnabled(true);
 			if(totalPages > 1) 
 				prevButton.setEnabled(true);
@@ -126,6 +178,7 @@ public class PagesVisitor extends UiVisitor {
 		
 		deleteButton.addActionListener(e -> {
 			totalPages--;
+			addButton.setEnabled(true);
 			if(totalPages == 1)
 				deleteButton.setEnabled(false);
 			currentPage = currentPage-1>0? currentPage-1: currentPage;
