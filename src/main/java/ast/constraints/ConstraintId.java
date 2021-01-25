@@ -20,7 +20,7 @@ public enum ConstraintId {
 		case "approve" -> getApproveCon(id, value);
 		case "cancel" -> getCancelCon(id, value);
 		case "placeholder" -> getHolderCon(id, value);
-		case "background" -> getBackgroundCon(id, value);
+//		case "background" -> getBackgroundCon(id, value);
 //		case "display" -> getDisplayCon(id, value);
 		case "majorTicks" -> getMajorTicksCon(id, value);
 		case "minorTicks" -> getMinorTicksCon(id, value);
@@ -35,23 +35,23 @@ public enum ConstraintId {
 		};
 	}
 
-	private static BackgroundCon getBackgroundCon(Id id, String value) {
-		return switch (id) {
-		case Pages, Single -> new BackgroundCon(value.substring(1, value.length() - 1));
-		default -> throw new IllegalArgumentException(id + " is not support Background constraint");
-		};
-	}
+//	private static BackgroundCon getBackgroundCon(Id id, String value) {
+//		return switch (id) {
+//		case Pages, Single -> new BackgroundCon(value.substring(1, value.length() - 1));
+//		default -> throw new IllegalArgumentException(id + " is not support Background constraint");
+//		};
+//	}
 
 	private static CancelCon getCancelCon(Id id, String value) {
 		return switch (id) {
-		case Pages, Single -> new CancelCon(value.substring(1, value.length() - 1));
+		case Pages, Single, Tabular -> new CancelCon(value.substring(1, value.length() - 1));
 		default -> throw new IllegalArgumentException(id + " is not support Approve constraint");
 		};
 	}
 
 	private static ApproveCon getApproveCon(Id id, String value) {
 		return switch (id) {
-		case Pages, Single -> new ApproveCon(value.substring(1, value.length() - 1));
+		case Pages, Single, Tabular -> new ApproveCon(value.substring(1, value.length() - 1));
 		default -> throw new IllegalArgumentException(id + " is not support Cancel constraint");
 		};
 	}
@@ -133,7 +133,7 @@ public enum ConstraintId {
 
 	private static MaxCon getMaxCon(Id id, String value) {
 		return switch (id) {
-		case String, Password, TextArea, Multi, Pages -> {
+		case String, Password, TextArea, Tabular, Pages -> {
 			int maxValue = Integer.valueOf(value);
 			if (maxValue < 0)
 				throw new IllegalArgumentException(id + " max constraint, must be bigger than 0");
@@ -147,7 +147,7 @@ public enum ConstraintId {
 
 	private static MinCon getMinCon(Id id, String value) {
 		return switch (id) {
-		case String, Password, TextArea, Multi, Pages -> {
+		case String, Password, TextArea, Tabular, Pages -> {
 			int minValue = Integer.valueOf(value);
 			if (minValue < 0)
 				throw new IllegalArgumentException(id + " min constraint must be bigger than 0");

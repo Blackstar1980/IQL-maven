@@ -1,7 +1,7 @@
 package ast;
 
 public enum Id{String,Integer,Decimal,Boolean,
-	SingleOpt,MultiOpt,Password,Slider,TextArea, Single, Multi, Pages, Group, Tab, Query, TabsContainer;
+	SingleOpt,MultiOpt,Password,Slider,TextArea, Single, Tabular, Pages, Group, Tab, Query, TabsContainer;
 	
 	public static Id from(String input) {
 		return switch(input){
@@ -15,7 +15,7 @@ public enum Id{String,Integer,Decimal,Boolean,
 		case "Slider" -> Slider;
 		case "TextArea" -> TextArea;
 		case "Single" -> Single;
-		case "Multi" -> Multi;
+		case "Tabular" -> Tabular;
 		case "Pages" -> Pages;
 		case "Group" -> Group;
 		case "Tab" -> Tab;

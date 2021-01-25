@@ -31,20 +31,20 @@ import ui.Visitor;
 
 public class CPassword implements Component {	
 	private final String name;
-	private final String title;
+	private final String prompt;
 	private final String defVal;
 	private final List<Constraint> constraints;
 	
-	public CPassword(String name, String title, String defVal, List<Constraint> constraints) {
+	public CPassword(String name, String prompt, String defVal, List<Constraint> constraints) {
 		this.name = name;
-		this.title = title;
+		this.prompt = prompt;
 		this.defVal = defVal;
 		this.constraints = constraints;
 	}
 	
 	public CPassword(ComponentContext ctx) {
 		name = extractCompName(ctx);
-		title = extractCompTitle(ctx);
+		prompt = extractCompTitle(ctx);
 		defVal = extractCompDefVal(ctx);
 		constraints = extractConstraints(ctx);
 	}
@@ -52,7 +52,7 @@ public class CPassword implements Component {
 	public JPanelWithValue make() {
 		PlaceholderPasswordField passField = new PlaceholderPasswordField();
 		Map<ConstraintId, Constraint> constraintMap = getMapConstraint(constraints);
-		JPanelWithValue panel = new JPanelWithValue(Id.Password, name){
+		JPanelWithValue panel = new JPanelWithValue(Id.Password, name, prompt){
 			@Override
 			public boolean checkForError() {
 				String errorMsg = validateConstraints(Id.Password, String.valueOf(passField.getPassword()), constraintMap);
@@ -73,7 +73,7 @@ public class CPassword implements Component {
 		};
 		
 		panel.setValueOrDefault("", true);
-		JLabel jTitle = generateTitle(title, constraintMap);
+		JLabel jTitle = generateTitle(prompt, constraintMap);
 		JLabel errorMsg = panel.getErrorLabel();
 		DisplayId display = (DisplayId)constraintMap.get(ConstraintId.DISPLAY);
 		if(display == DisplayId.Non) {
@@ -219,8 +219,8 @@ public class CPassword implements Component {
 		return name;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getPrompt() {
+		return prompt;
 	}
 
 	public String getDefVal() {
@@ -236,7 +236,7 @@ public class CPassword implements Component {
 
 	@Override
 	public String toString() {
-		return "Password [name=" + name + ", title=" + title + ", defVal=" + defVal + ", constraints=" + constraints
+		return "Password [name=" + name + ", prompt=" + prompt + ", defVal=" + defVal + ", constraints=" + constraints
 				+ "]";
 	}
 	

@@ -2,9 +2,12 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -13,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.*;
 import ast.Ast.Containable;
+import ast.Ast.Dialog;
 import ast.Ast.Query;
 import ast.Id;
 import ast.components.*;
@@ -23,30 +27,29 @@ import fields.*;
 public class PagesVisitor extends UiVisitor {
 	private int currentPage = 1;
 	private int totalPages = 1;
-	private int minPages = 1;
-	private int maxPages = Integer.MAX_VALUE;
+	private int minEntries = 1;
+	private int maxEntries = Integer.MAX_VALUE;
 	private String approveBtnLabel = "Approve";
 	private String cancelBtnLabel = "Cancel";
 
 	@Override
 	public JFrame visitQuery(Query query) {
 		JFrame jFrame = new JFrame();
-		jFrame = visitPages(query.dialog());
-		setConstraits(query.dialog().getConstraints());
-		String desc = query.dialog().getDescription();
+		Dialog dialog = query.dialog();
+		String desc = dialog.getDescription();
+		jFrame = visitPages(dialog);
+		setDialogConstraits(dialog.getConstraints());
 		List<Containable> containers = query.containers();
 		List<JPanelContainer> panels = new ArrayList<>();
-		for(Containable container:containers) {
+		for(Containable container:containers)
 			panels.add(getPanel(container));
-		}
 		constructDialog(jFrame, panels, desc);
 		jFrame.pack();
 		jFrame.setVisible(true);
-		System.out.println("in Pages");
 		return jFrame;
 	}
 
-	private void setConstraits(List<Constraint> constraints) {
+	private void setDialogConstraits(List<Constraint> constraints) {
 		if(constraints == null || constraints.isEmpty())
 			return;
 		for(Constraint constraint: constraints) {
@@ -57,7 +60,7 @@ public class PagesVisitor extends UiVisitor {
 			case CANCEL -> setCancelBtnLabel(constraint);
 			case APPROVE -> setApproveBtnLabel(constraint);
 			default ->
-			throw new IllegalArgumentException("Unexpected value: " + id);
+			throw new IllegalArgumentException(id + " ,unsoppurted constraint by Pages dialog");
 			}
 		}		
 	}
@@ -72,20 +75,20 @@ public class PagesVisitor extends UiVisitor {
 
 	private void setMinPages(Constraint constraint) {
 		double value = ((Constraint.MinCon)constraint).value();
-		if(value < 1 || value > maxPages)
+		if(value < 1 || value > maxEntries)
 			throw new IllegalArgumentException("Dialog min constraint must be greater or equals"
 					+ " to one and small or equals than max constraint.");
-		minPages = (int)value;
-		if(minPages != value)
+		minEntries = (int)value;
+		if(minEntries != value)
 			throw new IllegalArgumentException(value + " is not a valid value. The value must be an integer");
 	}
 	
 	private void setMaxPages(Constraint constraint) {
 		double value = ((Constraint.MaxCon)constraint).value();
-		if(value < minPages)
+		if(value < minEntries)
 			throw new IllegalArgumentException("Dialog max constraint positive and greater or equal to min constraint.");
-		maxPages = (int)value;
-		if(maxPages != value)
+		maxEntries = (int)value;
+		if(maxEntries != value)
 			throw new IllegalArgumentException(value + " is not a valid value. The value must be an integer");
 	}
 
@@ -93,10 +96,15 @@ public class PagesVisitor extends UiVisitor {
 	protected void constructDialog(JFrame frame, List<JPanelContainer> panels, String desc) {
 		List<Map<String, String>> results = new ArrayList<>();
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.EAST;
+		JTextArea jDesc = generateDesc(desc);
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 0, 0, 0);
+		frame.add(jDesc, gbc);
 		gbc.weightx = 1.0;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
+		gbc.anchor = GridBagConstraints.CENTER;
 		for(JPanel panel : panels) {
 			gbc.gridy++;
 			frame.add(panel, gbc);
@@ -167,7 +175,7 @@ public class PagesVisitor extends UiVisitor {
 			updateDataList(results, saved, currentPage -1, true);
 			updateUiFields(panels, new HashMap<String, String>(), true);
 			totalPages++;
-			if(totalPages == maxPages)
+			if(totalPages == maxEntries)
 				addButton.setEnabled(false);
 			deleteButton.setEnabled(true);
 			if(totalPages > 1) 
@@ -198,7 +206,6 @@ public class PagesVisitor extends UiVisitor {
 		pagesPanel.add(pagesIndex, gbc);
 		gbc.anchor = GridBagConstraints.WEST;
 		pagesPanel.add(prevButton, gbc);
-
 		gbc.ipadx = 0;
 		gbc.insets = new Insets(0, 0, 0, 5);
 		buttonsPanel.add(approveButton, gbc);
@@ -217,6 +224,13 @@ public class PagesVisitor extends UiVisitor {
 			frame.dispose();
 		});
 		approveButton.addActionListener(e->{
+			if(totalPages < minEntries) {
+				JOptionPane.showMessageDialog(frame,
+						"You must have a least " + minEntries + " entries",
+						"Warning",
+					    JOptionPane.WARNING_MESSAGE);
+				return;
+			}
 			var saved = saveAsMap(panels);
 			if(saved==null) 
 				return;
@@ -226,22 +240,12 @@ public class PagesVisitor extends UiVisitor {
 		});
 		gbc.gridy++;
 		gbc.gridx = 0;
-		gbc.anchor = GridBagConstraints.EAST;
+		gbc.anchor = GridBagConstraints.CENTER;
 		frame.add(buttonsPanel, gbc);
 		gbc.gridy++;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(10, 0, 0, 0);
 		frame.add(pagesPanel, gbc);
-		JTextArea jDesc = generateDesc(desc);
-		double frameWidth = frame.getPreferredSize().getWidth() - 30;
-		double height = jDesc.getPreferredSize().getHeight();
-		int newheight = (int) ((jDesc.getPreferredSize().getWidth()/frameWidth)*height);
-		jDesc.setPreferredSize(new Dimension((int)frameWidth, newheight));
-		jDesc.setWrapStyleWord(true);
-		jDesc.setLineWrap(true);
-		gbc.gridy = 0;
-		gbc.insets = new Insets(0, 0, 10, 0);
-		frame.add(jDesc, gbc);
 	}
 	
 	private void updateDataList(List<Map<String, String>> dataList, Map<String, String> value, int index, boolean setDefault) {

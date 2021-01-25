@@ -36,7 +36,7 @@ import ui.Visitor;
 public class CSlider implements Component {
 	private JSlider jSlider;
 	private final String name;
-	private final String title;
+	private final String prompt;
 	private int minVal;
 	private int maxVal;
 	private int defVal;
@@ -46,9 +46,9 @@ public class CSlider implements Component {
 	private final Dimension tooltipDim = new Dimension(30, 20);
 	private int prevValue = -1;
 
-	public CSlider(String name, String title, int minVal, int maxVal, int defVal, List<Constraint> constraints) {
+	public CSlider(String name, String prompt, int minVal, int maxVal, int defVal, List<Constraint> constraints) {
 		this.name = name;
-		this.title = title;
+		this.prompt = prompt;
 		this.minVal = minVal;
 		this.maxVal = maxVal;
 		this.defVal = defVal;
@@ -57,7 +57,7 @@ public class CSlider implements Component {
 
 	public CSlider(ComponentContext ctx) {
 		this.name = extractCompName(ctx);
-		this.title = extractCompTitle(ctx);
+		this.prompt = extractCompTitle(ctx);
 		setMinMaxValues(ctx);
 		setDefaultVal(ctx);
 		this.constraints = extractConstraints(ctx);
@@ -157,7 +157,7 @@ public class CSlider implements Component {
 
 		});
 
-		JPanelWithValue panel = new JPanelWithValue(Id.Slider, getName()) {
+		JPanelWithValue panel = new JPanelWithValue(Id.Slider, getName(), prompt) {
 			@Override
 			public boolean checkForError() {
 				return false;
@@ -182,7 +182,7 @@ public class CSlider implements Component {
 			}
 		});
 		Map<ConstraintId, Constraint> constraints = getMapConstraint(getConstraints());
-		JLabel title = generateTitle(getTitle(), Map.of());
+		JLabel title = generateTitle(prompt, Map.of());
 		DisplayId display = (DisplayId) constraints.get(ConstraintId.DISPLAY);
 		if (display == DisplayId.Non) {
 			display = DisplayId.Block;
@@ -247,8 +247,8 @@ public class CSlider implements Component {
 		return name;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getPrompt() {
+		return prompt;
 	}
 
 	public int getMinVal() {
@@ -274,7 +274,7 @@ public class CSlider implements Component {
 
 	@Override
 	public String toString() {
-		return "Slider [name=" + name + ", title=" + title + ", minVal=" + minVal + ", maxVal=" + maxVal + ", defVal="
+		return "Slider [name=" + name + ", prompt=" + prompt + ", minVal=" + minVal + ", maxVal=" + maxVal + ", defVal="
 				+ defVal + ", constraints=" + constraints + "]";
 	}
 

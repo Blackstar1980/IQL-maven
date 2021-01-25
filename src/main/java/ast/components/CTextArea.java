@@ -24,20 +24,20 @@ import ui.Visitor;
 
 public class CTextArea implements Component, BasicLayout {
 	private final String name;
-	private final String title;
+	private final String prompt;
 	private final String defVal;
 	private final List<Constraint> constraints;
 	
-	public CTextArea(String name, String title, String defVal, List<Constraint> constraints) {
+	public CTextArea(String name, String prompt, String defVal, List<Constraint> constraints) {
 		this.name = name;
-		this.title = title;
+		this.prompt = prompt;
 		this.defVal = defVal;
 		this.constraints = constraints;
 	}
 	
 	public CTextArea(ComponentContext ctx) {
 		name = extractCompName(ctx);
-		title = extractCompTitle(ctx);
+		prompt = extractCompTitle(ctx);
 		defVal = extractCompDefVal(ctx);
 		constraints = extractConstraints(ctx);
 	}
@@ -46,7 +46,7 @@ public class CTextArea implements Component, BasicLayout {
 		PlaceholderTextAreaField textArea = new PlaceholderTextAreaField(5, 27);
 //		textArea.setPreferredSize(new Dimension(250, 22));
 		Map<ConstraintId, Constraint> constraintMap = getMapConstraint(constraints);
-		JPanelWithValue panel = new JPanelWithValue(Id.TextArea, name){
+		JPanelWithValue panel = new JPanelWithValue(Id.TextArea, name, prompt){
 			@Override
 			public boolean checkForError() {
 				String errorMsg = validateConstraints(Id.TextArea, String.valueOf(textArea.getText()), constraintMap);
@@ -70,7 +70,7 @@ public class CTextArea implements Component, BasicLayout {
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 		JScrollPane scroll = new JScrollPane(textArea);
-		JLabel jTitle = generateTitle(title, constraintMap);
+		JLabel jTitle = generateTitle(prompt, constraintMap);
 		JLabel errorMsg = panel.getErrorLabel();
 		DisplayId display = (DisplayId)constraintMap.get(ConstraintId.DISPLAY);
 		if(display == DisplayId.Non) {
@@ -116,8 +116,8 @@ public class CTextArea implements Component, BasicLayout {
 		return name;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getPrompt() {
+		return prompt;
 	}
 
 	public String getDefVal() {
@@ -133,7 +133,7 @@ public class CTextArea implements Component, BasicLayout {
 
 	@Override
 	public String toString() {
-		return "TextArea [name=" + name + ", title=" + title + ", defVal=" + defVal + ", constraints=" + constraints
+		return "TextArea [name=" + name + ", prompt=" + prompt + ", defVal=" + defVal + ", constraints=" + constraints
 				+ "]";
 	}
 	

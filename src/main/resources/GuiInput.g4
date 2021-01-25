@@ -8,7 +8,7 @@ component: NameWord QuotedCharText CompId DefaultValue? compCon?;
 group: QuotedCharText GroupId '{' component+ '}';
 groupOrcomp: group | component;
 tab: QuotedCharText TabId '{'groupOrcomp+ '}';
-dialogCon: '{' (MaxCon | MinCon | ApproveCon | CancelCon | BackgroundlCon)* '}';
+dialogCon: '{' (MaxCon | MinCon | ApproveCon | CancelCon)* '}';
 dialog: QuotedCharText DialogId DefaultValue dialogCon?;
 query: dialog groupOrcomp+ EOF | dialog tab+ EOF;
 
@@ -30,7 +30,7 @@ fragment CharText: (LowerCaseLetter | UpperCaseLetter | Digit
   | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' 
   | '`' | '^' | '_' | '"' | '\\\\' | '\n' | '\\\'' | ')' | '(' | '{' | '}')*;
 Whitespace: [ \t\r\n]-> channel(HIDDEN);
-DialogId: 'Single' | 'Multi' | 'Pages';
+DialogId: 'Single' | 'Tabular' | 'Pages';
 //work 'Working Field' MultiOpt('Computers|Building|Teaching'){selected='Building|Teaching'}
 //to:
 //work 'Working Field' MultiOpt[omputers|Building|Teaching]('Building|Teaching')
@@ -45,7 +45,6 @@ CompId: 'String' | 'Integer' | 'Decimal'
 //		| 'inlineCheckbox' | 'blockCheckbox';
 ApproveCon: 'approve' Whitespace* '=' Whitespace* QuotedCharText;
 CancelCon: 'cancel' Whitespace* '=' Whitespace* QuotedCharText;
-BackgroundlCon: 'background' Whitespace* '=' Whitespace* QuotedCharText;
 MinCon: 'min' Whitespace* '=' Whitespace* Decimal;
 MaxCon: 'max' Whitespace* '=' Whitespace* Decimal;
 RegexCon: 'regex' Whitespace* '=' Whitespace* QuotedCharText;

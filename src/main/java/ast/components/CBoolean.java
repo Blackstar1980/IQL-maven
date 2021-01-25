@@ -24,20 +24,20 @@ import ui.Visitor;
 
 public class CBoolean implements Component {
 	private final String name;
-	private final String title;
+	private final String prompt;
 	private final String defVal;
 	private final List<Constraint> constraints;
 
-	public CBoolean(String name, String title, String defVal, List<Constraint> constraints) {
+	public CBoolean(String name, String prompt, String defVal, List<Constraint> constraints) {
 		this.name = name;
-		this.title = title;
+		this.prompt = prompt;
 		this.defVal = defVal;
 		this.constraints = constraints;
 	}
 
 	public CBoolean(ComponentContext ctx) {
 		name = extractCompName(ctx);
-		title = extractCompTitle(ctx);
+		prompt = extractCompTitle(ctx);
 		defVal = initDefaultVal(ctx);
 		constraints = extractConstraints(ctx);
 	}
@@ -54,7 +54,7 @@ public class CBoolean implements Component {
 
 	public JPanelWithValue make() {
 		Map<ConstraintId, Constraint> constraintMap = getMapConstraint(constraints);
-		JLabel jTitle = generateTitle(title, constraintMap);
+		JLabel jTitle = generateTitle(prompt, constraintMap);
 		DisplayId display = (DisplayId) constraintMap.get(ConstraintId.DISPLAY);
 		if(display == DisplayId.Non) {
 			display = DisplayId.Block;
@@ -76,7 +76,7 @@ public class CBoolean implements Component {
 	private JPanelWithValue setBooleanBlockListDisplay(JLabel title, Map<ConstraintId, Constraint> constraintMap) {
 		String[] optionsArray = new String[]{"", "true", "false"};
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
-		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, name) {
+		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				String errorMsg = validateConstraints(Id.Boolean, getValue(), constraintMap);
@@ -132,7 +132,7 @@ public class CBoolean implements Component {
 	private JPanelWithValue setBooleanInlineListDisplay(JLabel title, Map<ConstraintId, Constraint> constraintMap) {
 		String[] optionsArray = new String[]{"", "true", "false"};
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
-		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, name) {
+		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				String errorMsg = validateConstraints(Id.Boolean, getValue(), constraintMap);
@@ -191,7 +191,7 @@ public class CBoolean implements Component {
 	private JPanelWithValue setBooleanInlineDisplay(JLabel title, Map<ConstraintId, Constraint> constraintMap) {
 		JRadioButton yesButton = new JRadioButton("Yes");
 		JRadioButton noButton = new JRadioButton("No");
-		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, name) {
+		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				return setErrorLabel(validateConstraints(Id.Boolean, getValue(), constraintMap));
@@ -271,7 +271,7 @@ public class CBoolean implements Component {
 	private JPanelWithValue setBooleanBlockDisplay(JLabel title, Map<ConstraintId, Constraint> constraintMap) {
 		JRadioButton yesButton = new JRadioButton("Yes");
 		JRadioButton noButton = new JRadioButton("No");
-		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, name) {
+		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				return setErrorLabel(validateConstraints(Id.Boolean, getValue(), constraintMap));
@@ -353,8 +353,8 @@ public class CBoolean implements Component {
 		return name;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getPrompt() {
+		return prompt;
 	}
 
 	public String getDefVal() {
@@ -372,7 +372,7 @@ public class CBoolean implements Component {
 
 	@Override
 	public String toString() {
-		return "Boolean [name=" + name + ", title=" + title + ", defVal=" + defVal + ", constraints=" + constraints
+		return "Boolean [name=" + name + ", prompt=" + prompt + ", defVal=" + defVal + ", constraints=" + constraints
 				+ "]";
 	}
 }

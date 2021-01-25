@@ -21,20 +21,20 @@ import ui.Visitor;
 
 public class CString implements Component, Placeholder, BasicLayout {
 	private final String name;
-	private final String title;
+	private final String prompt;
 	private final String defVal;
 	private final List<Constraint> constraints;
 	
-	public CString(String name, String title, String defVal, List<Constraint> constraints) {
+	public CString(String name, String prompt, String defVal, List<Constraint> constraints) {
 		this.name = name;
-		this.title = title;
+		this.prompt = prompt;
 		this.defVal = defVal;
 		this.constraints = constraints;
 	}
 	
 	public CString(ComponentContext ctx) {
 		name = extractCompName(ctx);
-		title = extractCompTitle(ctx);
+		prompt = extractCompTitle(ctx);
 		defVal = extractCompDefVal(ctx);
 		constraints = extractConstraints(ctx);
 	}
@@ -42,7 +42,7 @@ public class CString implements Component, Placeholder, BasicLayout {
 	public JPanelWithValue make() {
 		PlaceholderTextField textField = new PlaceholderTextField();
 		Map<ConstraintId, Constraint> constraintMap = getMapConstraint(constraints);
-		JPanelWithValue panel = new JPanelWithValue(Id.String, name) {
+		JPanelWithValue panel = new JPanelWithValue(Id.String, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				String errorMsg = validateConstraints(Id.String, textField.getText(), constraintMap);
@@ -62,7 +62,7 @@ public class CString implements Component, Placeholder, BasicLayout {
 				}
 			}
 		};
-		JLabel jTitle = generateTitle(title, constraintMap);
+		JLabel jTitle = generateTitle(prompt, constraintMap);
 		JLabel errorMsg = panel.getErrorLabel();
 		panel.setValueOrDefault("", true);
 		DisplayId display = (DisplayId)constraintMap.get(ConstraintId.DISPLAY);
@@ -102,8 +102,8 @@ public class CString implements Component, Placeholder, BasicLayout {
 		return name;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getPrompt() {
+		return prompt;
 	}
 
 	public String getDefVal() {
@@ -119,7 +119,7 @@ public class CString implements Component, Placeholder, BasicLayout {
 
 	@Override
 	public String toString() {
-		return "String [name=" + name + ", title=" + title + ", defVal=" + defVal + ", constraints=" + constraints
+		return "String [name=" + name + ", prompt=" + prompt + ", defVal=" + defVal + ", constraints=" + constraints
 				+ "]";
 	}
 	

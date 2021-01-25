@@ -5,7 +5,7 @@ import java.util.Map;
 
 import ast.Ast;
 import parser.Parser;
-import ui.MultiVisitor;
+import ui.TabularVisitor;
 import ui.PagesVisitor;
 import ui.SingleVisitor;
 
@@ -16,7 +16,7 @@ public class IQL {
 		var visitor = switch (queryObj.dialog().getType()) {
 			case Pages -> new PagesVisitor();
 			case Single -> new SingleVisitor();
-			case Multi -> new MultiVisitor();
+			case Tabular -> new TabularVisitor();
 			default ->
 				throw new IllegalArgumentException("Unexpected value: " + queryObj.dialog().getType());
 		};
@@ -345,9 +345,13 @@ public class IQL {
 				""";
 		
 		var exampleIntroduction01 = """
-				'Person data' Single('Please fill your personal data bellow')
+				'Person data' Pages('Please fill your personal data bellow'){max=2 min=2}
 				  name 'Name' String
 				  age 'Age' Integer
+				  weight 'We23232ight' Decimal
+				  nameaaaaa 'N32323ame' String
+				  agea 'Ag1111111e' Integer
+				  weightaaaaa 'Weightsa23232dadas' Decimal
 				""";
 		
 		var exampleIntroduction02 = """
@@ -368,13 +372,75 @@ public class IQL {
 				}
 				""";
 		
+		var exampleSingleDialog01 = """
+				'User Details' Single('Please provide your personal details')
+				name 'Full Name:' String
+				""";
 		
+		var exampleSingleDialog02 = """
+				'Personal details' Single('Please provide your details below'){
+				  approve='Register'
+				  cancel='Exit'
+				}
+				name 'Full Name:' String
+				'Address' Group{
+				  city 'City:' String
+				  street 'Street:' String
+				  }
+				'Additional details' Group{
+				  married 'Married:' Boolean
+				  age 'Age:' Integer
+				  }
+				""";
+		
+		var examplePagesDialog01 = """
+				'User Details' Pages('Please provide your personal details')
+				name 'Full Name:' String
+				""";
+		
+		var examplePagesDialog02 = """
+				'Personal details' Pages('Please provide your details below'){
+				  min=2
+				  max=7
+				  approve='Register'
+				  cancel='Exit'
+				}
+				name 'Full Name:' String
+				'Address' Group{
+				  city 'City:' String
+				  street 'Street:' String
+				  }
+				'Additional details' Group{
+				  married 'Married:' Boolean
+				  age 'Age:' Integer
+				  }
+				""";
+		
+		var exampleTabularDialog01 = """
+				'User Details' Tabular('Please provide your personal details')
+				name 'First Name' String
+				surname 'Surname' String
+				""";
+		
+		var exampleTabularDialog02 = """
+				'Personal details' Tabular('Please provide your details below'){
+					min=2
+					max=8
+					approve='Register'
+					cancel='Exit'
+					}
+				name 'Full Name:' String
+				city 'City' String
+				age 'Age' Integer
+				weight 'Weight' Decimal 
+				occupation 'Current Occupation' SingleOpt['Builder|Farmer|Baker|No occupation'] 
+				""";
 		
 //		run(exampleString03);
 //		run(queryBlock);
 //		run(queryInline);
 //		List<Map<String, String>> results = run(query);
-		List<Map<String, String>> results = run(exampleIntroduction02);
+		List<Map<String, String>> results = run(exampleTabularDialog02);
 		System.out.println(results);
 	}
 

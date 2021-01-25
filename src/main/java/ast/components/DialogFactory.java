@@ -16,7 +16,7 @@ public enum DialogFactory {
 		return switch (id) {
 		case Single -> new DSingle(ctx);
 		case Pages -> new DPages(ctx);
-		case Multi -> new DMulti(ctx);
+		case Tabular -> new DTabular(ctx);
 		default ->
 		throw new IllegalArgumentException(id + " , is invalid dialog type");
 		};

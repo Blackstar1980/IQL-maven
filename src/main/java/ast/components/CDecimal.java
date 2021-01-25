@@ -21,20 +21,20 @@ import ui.Visitor;
 
 public class CDecimal implements Component, Placeholder, BasicLayout {
 	private final String name;
-	private final String title;
+	private final String prompt;
 	private final Double defVal;
 	private final List<Constraint> constraints;
 	
-	public CDecimal(String name, String title, Double defVal, List<Constraint> constraints) {
+	public CDecimal(String name, String prompt, Double defVal, List<Constraint> constraints) {
 		this.name = name;
-		this.title = title;
+		this.prompt = prompt;
 		this.defVal = defVal;
 		this.constraints = constraints;
 	}
 	
 	public CDecimal(ComponentContext ctx) {
 		name = extractCompName(ctx);
-		title = extractCompTitle(ctx);
+		prompt = extractCompTitle(ctx);
 		defVal = initDefVal(ctx);
 		constraints = extractConstraints(ctx);
 	}
@@ -51,7 +51,7 @@ public class CDecimal implements Component, Placeholder, BasicLayout {
 	public JPanelWithValue make() {
 		PlaceholderDecimalField textField = new PlaceholderDecimalField();
 		Map<ConstraintId, Constraint> constraintMap = getMapConstraint(constraints);
-		JPanelWithValue panel = new JPanelWithValue(Id.Decimal, name){
+		JPanelWithValue panel = new JPanelWithValue(Id.Decimal, name, prompt){
 			@Override
 			public boolean checkForError() {
 				String errorMsg = validateConstraints(Id.Decimal, textField.getText(), constraintMap);
@@ -75,7 +75,7 @@ public class CDecimal implements Component, Placeholder, BasicLayout {
 			}
 		};
 		panel.setValueOrDefault("", true);
-		JLabel jTitle = generateTitle(title, constraintMap);
+		JLabel jTitle = generateTitle(prompt, constraintMap);
 		JLabel errorMsg = panel.getErrorLabel();
 		DisplayId display = (DisplayId)constraintMap.get(ConstraintId.DISPLAY);
 		if(display == DisplayId.Non) {
@@ -112,8 +112,8 @@ public class CDecimal implements Component, Placeholder, BasicLayout {
 		return name;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getPrompt() {
+		return prompt;
 	}
 
 	public Double getDefVal() {
@@ -129,7 +129,7 @@ public class CDecimal implements Component, Placeholder, BasicLayout {
 
 	@Override
 	public String toString() {
-		return "Decimal [name=" + name + ", title=" + title + ", defVal=" + defVal + ", constraints=" + constraints
+		return "Decimal [name=" + name + ", prompt=" + prompt + ", defVal=" + defVal + ", constraints=" + constraints
 				+ "]";
 	}
 

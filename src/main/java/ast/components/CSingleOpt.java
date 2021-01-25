@@ -29,14 +29,14 @@ import ui.Visitor;
 
 public class CSingleOpt implements Component {
 	private final String name;
-	private final String title;
+	private final String prompt;
 	private final List<String> options;
 	private final String defValue;
 	private final List<Constraint> constraints;
 
-	public CSingleOpt(String name, String title, List<String> options, String defValue, List<Constraint> constraints) {
+	public CSingleOpt(String name, String prompt, List<String> options, String defValue, List<Constraint> constraints) {
 		this.name = name;
-		this.title = title;
+		this.prompt = prompt;
 		this.options = options;
 		this.defValue = defValue;
 		this.constraints = constraints;
@@ -44,7 +44,7 @@ public class CSingleOpt implements Component {
 
 	public CSingleOpt(ComponentContext ctx) {
 		name = extractCompName(ctx);
-		title = extractCompTitle(ctx);
+		prompt = extractCompTitle(ctx);
 		options = setOptions(ctx);
 		defValue = extractDefValue(ctx);
 		constraints = extractConstraints(ctx);
@@ -84,7 +84,7 @@ public class CSingleOpt implements Component {
 		if(display == DisplayId.Non) {
 			display = DisplayId.BlockRadio;
 		}
-		JLabel title = generateTitle(getTitle(), mapConstraints);
+		JLabel title = generateTitle(prompt, mapConstraints);
 		return switch (display) {
 			case InlineRadio -> setSingleInlineRadioDisplay(title, mapConstraints);
 			case InlineList -> setSingleInlineListDisplay(title, mapConstraints);
@@ -99,7 +99,7 @@ public class CSingleOpt implements Component {
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
 		combo.setPreferredSize(new Dimension(300, 22));
 		combo.setBackground(Color.white);
-		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name) {
+		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				if (combo.getSelectedItem() != null)
@@ -156,7 +156,7 @@ public class CSingleOpt implements Component {
 		String[] optionsArray = toArrayStartWithEmptyValue(options);
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
 		combo.setBackground(Color.white);
-		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name) {
+		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				if (combo.getSelectedItem() != null)
@@ -223,7 +223,7 @@ public class CSingleOpt implements Component {
 	private JPanelWithValue setSingleInlineRadioDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		ButtonGroup buttonGroup = new ButtonGroup();
 		Map<String, JRadioButton> buttons = new HashMap<>();
-		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name) {
+		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				return setErrorLabel(validateConstraints(Id.SingleOpt, getValue(), constraints));
@@ -279,7 +279,7 @@ public class CSingleOpt implements Component {
 	private JPanelWithValue setSingleBlockRadioDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		ButtonGroup buttonGroup = new ButtonGroup();
 		Map<String, JRadioButton> buttons = new HashMap<>();
-		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name) {
+		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				return setErrorLabel(validateConstraints(Id.SingleOpt, getValue(), constraints));
@@ -342,8 +342,8 @@ public class CSingleOpt implements Component {
 		return name;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getPrompt() {
+		return prompt;
 	}
 
 	public List<String> getOptions() {
@@ -370,7 +370,7 @@ public class CSingleOpt implements Component {
 
 	@Override
 	public String toString() {
-		return "SingleOpt [name=" + name + ", title=" + title + ", options=" + options + ", defValue=" + defValue
+		return "SingleOpt [name=" + name + ", prompt=" + prompt + ", options=" + options + ", defValue=" + defValue
 				+ ", constraints=" + constraints + "]";
 	}
 	

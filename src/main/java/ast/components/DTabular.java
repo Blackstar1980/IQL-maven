@@ -11,11 +11,11 @@ import ast.Id;
 import generated.GuiInputParser.DialogContext;
 import ui.Visitor;
 
-public class DMulti implements Dialog {
+public class DTabular implements Dialog {
 	private String title;
 	private String description;
 	private List<Constraint> constraints;
-	public DMulti(DialogContext ctx) {
+	public DTabular(DialogContext ctx) {
 		title = extractDialogTitle(ctx);
 		description = extractDialogDesc(ctx);
 		constraints = extractConstraints(ctx);
@@ -30,7 +30,7 @@ public class DMulti implements Dialog {
 	}
 	
 	@Override
-	public Id getType() { return Id.Multi; }
+	public Id getType() { return Id.Tabular; }
 
 	@Override
 	public String toString() {

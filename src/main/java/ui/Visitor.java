@@ -4,10 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-import ast.Ast;
 import ast.Ast.Dialog;
 import ast.Ast.Query;
 import ast.components.CBoolean;
@@ -19,9 +17,6 @@ import ast.components.CSingleOpt;
 import ast.components.CSlider;
 import ast.components.CString;
 import ast.components.CTextArea;
-import ast.components.DMulti;
-import ast.components.DPages;
-import ast.components.DSingle;
 import ast.components.Group;
 import ast.components.Tab;
 import fields.JPanelContainer;

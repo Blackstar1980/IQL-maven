@@ -32,15 +32,15 @@ import ui.Visitor;
 
 public class CMultiOpt implements Component {
 	private final String name;
-	private final String title;
+	private final String prompt;
 	private final List<String> options;
 	private final List<String> defValues;
 	private final List<Constraint> constraints;
 	
-	public CMultiOpt(String name, String title, List<String> options, List<String> defValues,
+	public CMultiOpt(String name, String prompt, List<String> options, List<String> defValues,
 			List<Constraint> constraints) {
 		this.name = name;
-		this.title = title;
+		this.prompt = prompt;
 		this.options = options;
 		this.defValues = defValues;
 		this.constraints = constraints;
@@ -48,7 +48,7 @@ public class CMultiOpt implements Component {
 	
 	public CMultiOpt(ComponentContext ctx) {
 		this.name = extractCompName(ctx);
-		this.title = extractCompTitle(ctx);
+		this.prompt = extractCompTitle(ctx);
 		this.options = setOptions(ctx);
 		this.defValues = setDefaultValues(ctx);
 		this.constraints = extractConstraints(ctx);
@@ -86,7 +86,7 @@ public class CMultiOpt implements Component {
 		if(display == DisplayId.Non) {
 			display = DisplayId.BlockCheckbox;
 		}
-		JLabel jTitle = generateTitle(title, mapConstraints);
+		JLabel jTitle = generateTitle(prompt, mapConstraints);
 
 		return switch (display) {
 			case InlineCheckbox -> setMultiInlineCheckboxDisplay(jTitle, mapConstraints);
@@ -105,7 +105,7 @@ public class CMultiOpt implements Component {
 		}
 		DefaultComboBoxModel<MultiOptItem> model = new DefaultComboBoxModel<>(items);
 		CheckedComboBox<MultiOptItem> ccb = new CheckedComboBox<>(model);
-		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name){
+		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name, prompt){
 			@Override
 			public boolean checkForError() {
 				String selectedItems = ccb.getSelectedItems();
@@ -177,7 +177,7 @@ public class CMultiOpt implements Component {
 		}
 		DefaultComboBoxModel<MultiOptItem> model = new DefaultComboBoxModel<>(items);
 		CheckedComboBox<MultiOptItem> ccb = new CheckedComboBox<>(model);
-		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name){
+		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name, prompt){
 			@Override
 			public boolean checkForError() {
 				String selectedItems = ccb.getSelectedItems();
@@ -250,7 +250,7 @@ public class CMultiOpt implements Component {
 
 	private JPanelWithValue setMultiBlockCheckboxDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
-		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name){
+		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name, prompt){
 			@Override
 			public boolean checkForError() {
 				String selectedItems = checkBoxes.stream()
@@ -300,7 +300,7 @@ public class CMultiOpt implements Component {
 
 	private JPanelWithValue setMultiInlineCheckboxDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
-		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name){
+		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name, prompt){
 			@Override
 			public boolean checkForError() {
 				String selectedItems = checkBoxes.stream()
@@ -367,8 +367,8 @@ public class CMultiOpt implements Component {
 		return name;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getPrompt() {
+		return prompt;
 	}
 
 	public List<String> getOptions() {
@@ -399,7 +399,7 @@ public class CMultiOpt implements Component {
 
 	@Override
 	public String toString() {
-		return "MultiOpt [name=" + name + ", title=" + title + ", options=" + options + ", defValues=" + defValues
+		return "MultiOpt [name=" + name + ", prompt=" + prompt + ", options=" + options + ", defValues=" + defValues
 				+ ", constraints=" + constraints + "]";
 	}
 	

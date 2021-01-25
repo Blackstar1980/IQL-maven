@@ -11,6 +11,7 @@ public abstract class JPanelWithValue extends JPanelContainer {
 	private boolean hasError = false;
 	private String value = "";
 	private String name = null;
+	private String prompt;
 	private JLabel errorLabel;
 	
 	public abstract void setValueOrDefault(String value, boolean setDefault);
@@ -20,9 +21,10 @@ public abstract class JPanelWithValue extends JPanelContainer {
 		errorLabel = generateErrorLabel(" ");
 	}
 
-	public JPanelWithValue(Id id, String name) {
+	public JPanelWithValue(Id id, String name, String prompt) {
 		this(id);
 		this.name = name;
+		this.prompt = prompt;
 	}
 	
 	public void setValue(String value) {
@@ -45,7 +47,6 @@ public abstract class JPanelWithValue extends JPanelContainer {
 	
 	public void setComponentErrorIndicator(JComponent component, String errorMsg, boolean setBackground) {
 		if(" ".equals(errorMsg)) {
-//			component.setBackground(new Color(238, 238, 238));
 			component.setBackground(Color.WHITE);
 			component.setToolTipText(null);
 		} else if(setBackground) {
@@ -65,6 +66,10 @@ public abstract class JPanelWithValue extends JPanelContainer {
 
 	public String getName() {
 		return name;
+	}
+
+	public String getPrompt() {
+		return prompt;
 	}
 	
 }

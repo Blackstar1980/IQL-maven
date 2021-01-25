@@ -26,6 +26,8 @@ import fields.*;
 public abstract class UiVisitor implements Visitor {
 	private CompletableFuture<List<Map<String, String>>> data = new CompletableFuture<>();
 	private final JTabbedPane tabbedPane = new JTabbedPane();
+	
+	
 	protected abstract void constructDialog(JFrame frame, List<JPanelContainer> panels, String desc);
 	
 	protected void commitData(List<Map<String, String>> res){
@@ -72,7 +74,7 @@ public abstract class UiVisitor implements Visitor {
 		return setNullValues(data);
 	}
 	
-	private Map<String, String> setNullValues(Map<String, String> entries) {
+	protected Map<String, String> setNullValues(Map<String, String> entries) {
 		for (Map.Entry<String, String> entry : entries.entrySet()) {
 		    entry.setValue(null);
 		}
@@ -96,7 +98,7 @@ public abstract class UiVisitor implements Visitor {
 		return data;
 	}
 
-	private boolean checkComponentErrors(Map<String, String> data, boolean haveErrors,
+	protected boolean checkComponentErrors(Map<String, String> data, boolean haveErrors,
 			java.awt.Component comp) {
 		if(comp instanceof JPanelWithValue) {
 			JPanelWithValue panelWithValue = (JPanelWithValue)comp;
@@ -107,7 +109,7 @@ public abstract class UiVisitor implements Visitor {
 		return haveErrors;
 	}
 
-	private boolean checkGroupErrors(Map<String, String> data, boolean haveErrors,
+	protected boolean checkGroupErrors(Map<String, String> data, boolean haveErrors,
 			JPanelContainer panel) {
 		java.awt.Component[] comps = panel.getComponents();
 		for(java.awt.Component comp: comps) {
@@ -116,7 +118,7 @@ public abstract class UiVisitor implements Visitor {
 		return haveErrors;
 	}
 	
-	private boolean checkTabErrors(Map<String, String> data, boolean haveErrors,
+	protected boolean checkTabErrors(Map<String, String> data, boolean haveErrors,
 			JPanelContainer panel) {
 		if(panel.getComponents().length == 0)
 			return false;
