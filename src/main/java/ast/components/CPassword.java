@@ -16,8 +16,10 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JToggleButton;
+import javax.swing.border.EmptyBorder;
 
 import ast.Id;
 import ast.constraints.Constraint;
@@ -52,7 +54,7 @@ public class CPassword implements Component {
 	public JPanelWithValue make() {
 		PlaceholderPasswordField passField = new PlaceholderPasswordField();
 		Map<ConstraintId, Constraint> constraintMap = getMapConstraint(constraints);
-		JPanelWithValue panel = new JPanelWithValue(Id.Password, name, prompt){
+		JPanelWithValue panel = new JPanelWithValue(Id.Password, this, name, prompt){
 			@Override
 			public boolean checkForError() {
 				String errorMsg = validateConstraints(Id.Password, String.valueOf(passField.getPassword()), constraintMap);
@@ -193,21 +195,36 @@ public class CPassword implements Component {
 					showButton.setIcon(showImg2);
 				}
 		});
-
+		JPanel passPanel = new JPanel(new GridBagLayout());
+		passPanel.setPreferredSize(new Dimension(310, 22));
 //		gbc.anchor = GridBagConstraints.WEST;
-		passField.setPreferredSize(new Dimension(278, 22));
+//		passField.setPreferredSize(new Dimension(278, 22));
 		gbc.anchor = GridBagConstraints.WEST;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1.0;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		passPanel.add(passField, gbc);
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.gridx = 1;
+		gbc.weightx = 0.0;
+		passPanel.add(showButton, gbc);
+		
+		
+		
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		panel.add(title, gbc);
 		gbc.gridy = 1;
-		panel.add(passField, gbc);
-		gbc.gridx = 1;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.weightx = 0.0;
-		panel.add(showButton, gbc);
+//		panel.add(passField, gbc);
+		panel.add(passPanel, gbc);
+//		gbc.gridx = 1;
+//		gbc.fill = GridBagConstraints.NONE;
+//		gbc.weightx = 0.0;
+//		panel.add(showButton, gbc);
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		gbc.fill = GridBagConstraints.HORIZONTAL;

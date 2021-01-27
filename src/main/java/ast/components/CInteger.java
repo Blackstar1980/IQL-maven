@@ -51,7 +51,7 @@ public class CInteger implements Component, Placeholder, BasicLayout {
 	public JPanelWithValue make() {
 		PlaceholderIntegerField textField = new PlaceholderIntegerField();
 		Map<ConstraintId, Constraint> constraintMap = getMapConstraint(constraints);
-		JPanelWithValue panel = new JPanelWithValue(Id.Integer, name, prompt){
+		JPanelWithValue panel = new JPanelWithValue(Id.Integer, this, name, prompt){
 			@Override
 			public boolean checkForError() {
 				String errorMsg = validateConstraints(Id.Integer, textField.getText(), constraintMap);

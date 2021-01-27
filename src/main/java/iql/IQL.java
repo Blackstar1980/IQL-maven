@@ -171,8 +171,13 @@ public class IQL {
 				""";
 		
 		var exampleDecimal02 = """
-				'User Details' Single(Please provide your personal details)
-				weight 'Weight:' Decimal(77.4)
+				'User Details' Single('Please provide your personal details')
+				weight 'Weight:' Decimal('67.4'){
+					min=10.1
+					max=220.6
+				placeholder='Enter you weight in Kg'
+				optional
+				}
 			""";
 		var exampleDecimal03 = """
 				'User Details' Single(Please provide your details below)
@@ -204,13 +209,11 @@ public class IQL {
 				""";
 		
 		var exampletextl04 = """
-				'User Details' Single(Please provide your personal details)
-				name 'Full Name:' String{inline placeholder='Enter you name here'}
-				age 'Age:' Integer{inline placeholder='Enter you age here' optional}
+				'User Details' Single('Please provide your personal details')
 				comment 'Comment:' TextArea{
 				  inline
 				  min=10 
-				  max=100 
+				  max=300 
 				  placeholder='Enter your comment here'
 				  optional
 				}
@@ -222,12 +225,12 @@ public class IQL {
 				""";
 		
 		var examplePassl02 = """
-				'Create password' Single(Please provide your details below)
-				password 'Password:' Password(MyPassword)
+				'Create password' Single('Please provide your details below')
+				password 'Password:' Password('MyPassword')
 				""";
 		
 		var examplePassl03 = """
-				'Create password' Single(Please provide your details below)
+				'Create password' Single('Please provide your details below')
 				password 'Password:' Password{
 					min=6
 					max=12
@@ -236,6 +239,7 @@ public class IQL {
 					regex='[A][a-z]+'
 				}
 				""";
+		
 		
 		var examplePassl04 = """
 				'Create password' Single(Please provide your details below)
@@ -250,8 +254,8 @@ public class IQL {
 				""";
 		
 		var exampleBooleanl01 = """
-				'Personal details' Single(Please provide your details below)
-				married 'married?' Boolean{ blockList optional}
+				'Personal details' Single('Please provide your details below')
+				married 'married?' Boolean{ optional}
 				""";
 		
 		var exampleBooleanl02 = """
@@ -266,6 +270,10 @@ public class IQL {
 		var exampleSingleOpt02 = """
 				'Personal details' Single(Please provide your details below)
 				employment 'Employment Status:' SingleOpt[Full Time|Part Time|Self Employed|Not Employed](Part Time)
+				""";
+		var exampleSingleOpt03 = """
+				'Personal details' Single('Please provide your details below')
+				married 'Are you married?' SingleOpt['True|False']
 				""";
 		var exampleMultiOpt01 = """
 				'Personal details' Single(Please provide your details below)
@@ -378,7 +386,7 @@ public class IQL {
 				""";
 		
 		var exampleSingleDialog02 = """
-				'Personal details' Single('Please provide your details below'){
+				'Personal details' Pages('Please provide your details belowaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'){
 				  approve='Register'
 				  cancel='Exit'
 				}
@@ -405,7 +413,8 @@ public class IQL {
 				  approve='Register'
 				  cancel='Exit'
 				}
-				name 'Full Name:' String
+				id 'ID number' Password
+				name 'Full Name' String
 				'Address' Group{
 				  city 'City:' String
 				  street 'Street:' String
@@ -425,22 +434,58 @@ public class IQL {
 		var exampleTabularDialog02 = """
 				'Personal details' Tabular('Please provide your details below'){
 					min=2
-					max=8
+					max=30
 					approve='Register'
 					cancel='Exit'
 					}
-				name 'Full Name:' String
-				city 'City' String
-				age 'Age' Integer
-				weight 'Weight' Decimal 
-				occupation 'Current Occupation' SingleOpt['Builder|Farmer|Baker|No occupation'] 
+				name 'Full Name:' String{optional}
+				id 'ID number' Password{optional}
+				city 'City' String{optional}
+				age 'Age' Integer{optional}
+				weight 'Weight' Decimal{optional} 
+				occupation 'Occupation' SingleOpt['Builder|Farmer|Baker|No occupation']{optional} 
+				""";
+		
+		var all = """
+				'title' Pages('This is the descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+				'Tab1' Tab{
+				string 'String' String
+				password 'Password' Password
+					'Group' Group {
+					integer 'Integer' Integer
+					decimal 'Decimal' Decimal
+					textarea 'TextArea' TextArea
+					}
+				}
+				'Tab2' Tab{
+				boolean 'Boolean' Boolean{blockList}
+				slider 'Slider' Slider['3,22']
+				singleOpt 'SingleOpt' SingleOpt['option1|option2']
+				multiOpt 'MultiOpt' MultiOpt['option1|option2']{blockList}
+				}
+				""";
+		
+		var allTabular = """
+				'title' Tabular('This is the descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+				string 'String' String{optional}
+				password 'Password' Password{optional}
+				integer 'Integer' Integer{optional}
+				decimal 'Decimal' Decimal{optional}
+				boolean 'Boolean' Boolean{optional}
+				singleOpt 'SingleOpt' SingleOpt['option1|option2']{optional}
+				multiOpt 'MultiOpt' MultiOpt['option1|option2']{optional}
+				""";
+		var related1 = """
+				'User Details' Single('Provide your details below')
+				name 'Name' String{placeholder='Enter your name here'}
+				pets 'Have pets?' Boolean('true')
 				""";
 		
 //		run(exampleString03);
 //		run(queryBlock);
 //		run(queryInline);
 //		List<Map<String, String>> results = run(query);
-		List<Map<String, String>> results = run(exampleTabularDialog02);
+		List<Map<String, String>> results = run(related1);
 		System.out.println(results);
 	}
 

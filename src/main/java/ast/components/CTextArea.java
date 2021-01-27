@@ -46,7 +46,7 @@ public class CTextArea implements Component, BasicLayout {
 		PlaceholderTextAreaField textArea = new PlaceholderTextAreaField(5, 27);
 //		textArea.setPreferredSize(new Dimension(250, 22));
 		Map<ConstraintId, Constraint> constraintMap = getMapConstraint(constraints);
-		JPanelWithValue panel = new JPanelWithValue(Id.TextArea, name, prompt){
+		JPanelWithValue panel = new JPanelWithValue(Id.TextArea, this, name, prompt){
 			@Override
 			public boolean checkForError() {
 				String errorMsg = validateConstraints(Id.TextArea, String.valueOf(textArea.getText()), constraintMap);

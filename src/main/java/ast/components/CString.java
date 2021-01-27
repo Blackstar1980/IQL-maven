@@ -42,7 +42,7 @@ public class CString implements Component, Placeholder, BasicLayout {
 	public JPanelWithValue make() {
 		PlaceholderTextField textField = new PlaceholderTextField();
 		Map<ConstraintId, Constraint> constraintMap = getMapConstraint(constraints);
-		JPanelWithValue panel = new JPanelWithValue(Id.String, name, prompt) {
+		JPanelWithValue panel = new JPanelWithValue(Id.String, this, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				String errorMsg = validateConstraints(Id.String, textField.getText(), constraintMap);

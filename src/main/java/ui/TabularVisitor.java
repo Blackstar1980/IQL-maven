@@ -32,6 +32,8 @@ import fields.*;
 public class TabularVisitor extends UiVisitor {
 	private static final String BLOCK = "block";
 	private static final String BLOCK_LIST = "blockList";
+	private static final int PROMPT = 0;
+	private static final int FIELD = 1;
 	private static final int HEIGHT = 640;
 	private static final int MAX_WIDTH = 800;
 	private int minEntries = 1;
@@ -237,9 +239,9 @@ public class TabularVisitor extends UiVisitor {
 		gbc.anchor = GridBagConstraints.PAGE_START;
 		ImageIcon trashImg = new ImageIcon(this.getClass().getResource("/images/trash.png"));
 		Image trashDim = trashImg.getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT);
-		ImageIcon y = new ImageIcon(trashDim);
+		ImageIcon deleteIcon = new ImageIcon(trashDim);
 		JButton deleteButton = new JButton();
-		deleteButton.setIcon(y);
+		deleteButton.setIcon(deleteIcon);
 		deleteButton.setPreferredSize(new Dimension(22, 22));
 
 		row.add(deleteButton, gbc);
@@ -326,8 +328,13 @@ public class TabularVisitor extends UiVisitor {
 	
 	private void setMultiComponentLayout(JPanelWithValue panelWithValue) {
 		panelWithValue.getErrorLabel().setVisible(false);
-		panelWithValue.getComponent(0).setVisible(false);
-		panelWithValue.getComponent(1).setPreferredSize(new Dimension(140, 22));
+		panelWithValue.getComponent(PROMPT).setVisible(false);
+		if(panelWithValue.getComponent(FIELD) instanceof PlaceholderPasswordField)
+			panelWithValue.getComponent(FIELD).setPreferredSize(new Dimension(128, 22));
+		else
+			panelWithValue.getComponent(FIELD).setPreferredSize(new Dimension(140, 22));
+		
+//		System.out.println(panelWithValue.getName() + " " +panelWithValue.getComponent(1).getPreferredSize());
 	}
 
 	@Override
@@ -365,12 +372,12 @@ public class TabularVisitor extends UiVisitor {
 
 	@Override
 	public JPanelWithValue visitPassword(CPassword component) {
-		throw new IllegalArgumentException("Password is not supported in Tabular dialog");
-//		Id id = component.getType();
-//		List<Constraint> constraints = component.getConstraints();
-//		List<Constraint> newConstraints = setMultiDisplay(id, constraints, BLOCK);
-//		CPassword cPassword = new CPassword(component.getName(), component.getPrompt(), component.getDefVal() , newConstraints);
-//		return cPassword.make();
+//		throw new IllegalArgumentException("Password is not supported in Tabular dialog");
+		Id id = component.getType();
+		List<Constraint> constraints = component.getConstraints();
+		List<Constraint> newConstraints = setTabularDisplay(id, constraints, BLOCK);
+		CPassword cPassword = new CPassword(component.getName(), component.getPrompt(), component.getDefVal() , newConstraints);
+		return cPassword.make();
 	}
 
 	@Override

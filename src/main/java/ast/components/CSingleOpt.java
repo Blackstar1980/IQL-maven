@@ -99,7 +99,7 @@ public class CSingleOpt implements Component {
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
 		combo.setPreferredSize(new Dimension(300, 22));
 		combo.setBackground(Color.white);
-		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name, prompt) {
+		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, this, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				if (combo.getSelectedItem() != null)
@@ -156,7 +156,7 @@ public class CSingleOpt implements Component {
 		String[] optionsArray = toArrayStartWithEmptyValue(options);
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
 		combo.setBackground(Color.white);
-		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name, prompt) {
+		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, this, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				if (combo.getSelectedItem() != null)
@@ -223,7 +223,7 @@ public class CSingleOpt implements Component {
 	private JPanelWithValue setSingleInlineRadioDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		ButtonGroup buttonGroup = new ButtonGroup();
 		Map<String, JRadioButton> buttons = new HashMap<>();
-		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name, prompt) {
+		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, this, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				return setErrorLabel(validateConstraints(Id.SingleOpt, getValue(), constraints));
@@ -279,7 +279,7 @@ public class CSingleOpt implements Component {
 	private JPanelWithValue setSingleBlockRadioDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		ButtonGroup buttonGroup = new ButtonGroup();
 		Map<String, JRadioButton> buttons = new HashMap<>();
-		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, name, prompt) {
+		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, this, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				return setErrorLabel(validateConstraints(Id.SingleOpt, getValue(), constraints));
@@ -288,15 +288,23 @@ public class CSingleOpt implements Component {
 			@Override
 			public void setValueOrDefault(String value, boolean setDefault) {
 				if(setDefault) {
+					if("".equals(value)) {
+						clearSelection(buttonGroup);
+					} else {
 					setValue(defValue);
 					buttons.get(defValue).setSelected(true);
+					}
 				} else if ("".equals(value)) {
-						buttonGroup.clearSelection();
-						setValue("");
+						clearSelection(buttonGroup);
 					} else {
 						setValue(value);
 						buttons.get(value).setSelected(true);
 					}
+			}
+
+			private void clearSelection(ButtonGroup buttonGroup) {
+				buttonGroup.clearSelection();
+				setValue("");
 			}
 		};
 		panel.setLayout(new GridBagLayout());

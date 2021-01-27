@@ -105,7 +105,7 @@ public class CMultiOpt implements Component {
 		}
 		DefaultComboBoxModel<MultiOptItem> model = new DefaultComboBoxModel<>(items);
 		CheckedComboBox<MultiOptItem> ccb = new CheckedComboBox<>(model);
-		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name, prompt){
+		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, this, name, prompt){
 			@Override
 			public boolean checkForError() {
 				String selectedItems = ccb.getSelectedItems();
@@ -154,19 +154,23 @@ public class CMultiOpt implements Component {
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
+		JPanel comboBoxPanel = new JPanel(new GridBagLayout());
+//		comboBoxPanel.setPreferredSize(new Dimension(300, 22));
+		comboBoxPanel.add(ccb, gbc);
 		MultiOptComboBox comboBox = new MultiOptComboBox();
-		comboBox.setPreferredSize(new Dimension(300, 22));
+		comboBoxPanel.setPreferredSize(new Dimension(300, 22));
+//		comboBox.setPreferredSize(new Dimension(300, 22));
 		comboBox.setEditable(true);
 		comboBox.addItems(options);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		panel.add(title, gbc);
 		gbc.gridy = 1;
-		panel.add(ccb, gbc);
+		panel.add(comboBoxPanel, gbc);
 		gbc.gridy = 2;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		panel.add(panel.getErrorLabel(), gbc);
-		panel.setPreferredSize(new Dimension(300, (int) panel.getPreferredSize().getHeight()));
+//		panel.setPreferredSize(new Dimension(300, (int) panel.getPreferredSize().getHeight()));
 		return panel;
 	}
 
@@ -177,7 +181,7 @@ public class CMultiOpt implements Component {
 		}
 		DefaultComboBoxModel<MultiOptItem> model = new DefaultComboBoxModel<>(items);
 		CheckedComboBox<MultiOptItem> ccb = new CheckedComboBox<>(model);
-		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name, prompt){
+		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, this, name, prompt){
 			@Override
 			public boolean checkForError() {
 				String selectedItems = ccb.getSelectedItems();
@@ -250,7 +254,7 @@ public class CMultiOpt implements Component {
 
 	private JPanelWithValue setMultiBlockCheckboxDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
-		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name, prompt){
+		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, this, name, prompt){
 			@Override
 			public boolean checkForError() {
 				String selectedItems = checkBoxes.stream()
@@ -300,7 +304,7 @@ public class CMultiOpt implements Component {
 
 	private JPanelWithValue setMultiInlineCheckboxDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
-		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, name, prompt){
+		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, this, name, prompt){
 			@Override
 			public boolean checkForError() {
 				String selectedItems = checkBoxes.stream()

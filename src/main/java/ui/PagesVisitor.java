@@ -119,7 +119,7 @@ public class PagesVisitor extends UiVisitor {
 		JButton deleteButton = new JButton("Delete");
 		JLabel pagesIndex = new JLabel(getPageIndex());
 		JPanel pagesPanel = new JPanel(new GridBagLayout());
-		deleteButton.setBackground(Color.red);
+		deleteButton.setBackground(new Color(223, 71, 89));
 		deleteButton.setForeground(Color.white);
 		deleteButton.setEnabled(false);
 		prevButton.setEnabled(false);

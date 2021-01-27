@@ -51,7 +51,7 @@ public class CDecimal implements Component, Placeholder, BasicLayout {
 	public JPanelWithValue make() {
 		PlaceholderDecimalField textField = new PlaceholderDecimalField();
 		Map<ConstraintId, Constraint> constraintMap = getMapConstraint(constraints);
-		JPanelWithValue panel = new JPanelWithValue(Id.Decimal, name, prompt){
+		JPanelWithValue panel = new JPanelWithValue(Id.Decimal, this, name, prompt){
 			@Override
 			public boolean checkForError() {
 				String errorMsg = validateConstraints(Id.Decimal, textField.getText(), constraintMap);

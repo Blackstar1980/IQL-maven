@@ -139,7 +139,6 @@ public abstract class UiVisitor implements Visitor {
 		return haveErrors;
 	}
 	
-
 	@Override
 	public JFrame visitSingle(Dialog frame) {
 		JFrame jFrame = new JFrame();

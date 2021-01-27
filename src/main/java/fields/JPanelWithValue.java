@@ -6,6 +6,7 @@ import java.awt.Font;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import ast.Id;
+import ast.components.Component;
 
 public abstract class JPanelWithValue extends JPanelContainer {
 	private boolean hasError = false;
@@ -13,6 +14,7 @@ public abstract class JPanelWithValue extends JPanelContainer {
 	private String name = null;
 	private String prompt;
 	private JLabel errorLabel;
+	private Component component;
 	
 	public abstract void setValueOrDefault(String value, boolean setDefault);
 	
@@ -21,10 +23,11 @@ public abstract class JPanelWithValue extends JPanelContainer {
 		errorLabel = generateErrorLabel(" ");
 	}
 
-	public JPanelWithValue(Id id, String name, String prompt) {
+	public JPanelWithValue(Id id, Component component, String name, String prompt) {
 		this(id);
 		this.name = name;
 		this.prompt = prompt;
+		this.component = component;
 	}
 	
 	public void setValue(String value) {
@@ -62,6 +65,10 @@ public abstract class JPanelWithValue extends JPanelContainer {
 		label.setForeground(Color.red);
 		label.setText(msg);
 		return label;
+	}
+
+	public Component getComponent() {
+		return component;
 	}
 
 	public String getName() {

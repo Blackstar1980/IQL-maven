@@ -157,7 +157,7 @@ public class CSlider implements Component {
 
 		});
 
-		JPanelWithValue panel = new JPanelWithValue(Id.Slider, getName(), prompt) {
+		JPanelWithValue panel = new JPanelWithValue(Id.Slider, this, getName(), prompt) {
 			@Override
 			public boolean checkForError() {
 				return false;

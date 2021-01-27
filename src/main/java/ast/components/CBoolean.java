@@ -1,5 +1,6 @@
 package ast.components;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -76,7 +77,9 @@ public class CBoolean implements Component {
 	private JPanelWithValue setBooleanBlockListDisplay(JLabel title, Map<ConstraintId, Constraint> constraintMap) {
 		String[] optionsArray = new String[]{"", "true", "false"};
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
-		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, name, prompt) {
+		combo.setPreferredSize(new Dimension(300, 22));
+		combo.setBackground(Color.white);
+		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, this, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				String errorMsg = validateConstraints(Id.Boolean, getValue(), constraintMap);
@@ -123,16 +126,18 @@ public class CBoolean implements Component {
 		gbc.gridy = 1;
 		panel.add(combo, gbc);
 		gbc.gridy = 2;
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
+//		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		panel.add(panel.getErrorLabel(), gbc);
-		panel.setPreferredSize(new Dimension(300, (int) panel.getPreferredSize().getHeight()));
+//		panel.setPreferredSize(new Dimension(300, (int) panel.getPreferredSize().getHeight()));
 		return panel;
 	}
 
 	private JPanelWithValue setBooleanInlineListDisplay(JLabel title, Map<ConstraintId, Constraint> constraintMap) {
 		String[] optionsArray = new String[]{"", "true", "false"};
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
-		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, name, prompt) {
+		combo.setPreferredSize(new Dimension(300, 22));
+		combo.setBackground(Color.white);
+		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, this, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				String errorMsg = validateConstraints(Id.Boolean, getValue(), constraintMap);
@@ -173,7 +178,7 @@ public class CBoolean implements Component {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.EAST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		combo.setPreferredSize(new Dimension(300, 22));
+//		combo.setPreferredSize(new Dimension(300, 22));
 //		gbc.insets = new Insets(0, 20, 0, 0);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -191,7 +196,7 @@ public class CBoolean implements Component {
 	private JPanelWithValue setBooleanInlineDisplay(JLabel title, Map<ConstraintId, Constraint> constraintMap) {
 		JRadioButton yesButton = new JRadioButton("Yes");
 		JRadioButton noButton = new JRadioButton("No");
-		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, name, prompt) {
+		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, this, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				return setErrorLabel(validateConstraints(Id.Boolean, getValue(), constraintMap));
@@ -271,7 +276,7 @@ public class CBoolean implements Component {
 	private JPanelWithValue setBooleanBlockDisplay(JLabel title, Map<ConstraintId, Constraint> constraintMap) {
 		JRadioButton yesButton = new JRadioButton("Yes");
 		JRadioButton noButton = new JRadioButton("No");
-		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, name, prompt) {
+		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, this, name, prompt) {
 			@Override
 			public boolean checkForError() {
 				return setErrorLabel(validateConstraints(Id.Boolean, getValue(), constraintMap));
