@@ -1,5 +1,6 @@
 package fields;
 
+import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
 import javax.swing.text.AttributeSet;
@@ -15,7 +16,7 @@ public class DecimalDocument extends PlainDocument {
     	if (!Pattern.matches("^(-?[0-9]+\\.?[0-9]*|-?[0-9]*\\.[0-9]+)$", allString)) return;
     	try {
     		if(!"-".equals(allString))
-    			Double.valueOf(allString);
+    			new BigDecimal(allString);
     	} catch (Exception e) {
 			return;
 		}

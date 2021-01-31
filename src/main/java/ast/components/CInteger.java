@@ -4,6 +4,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +23,10 @@ import ui.Visitor;
 public class CInteger implements Component, Placeholder, BasicLayout {
 	private final String name;
 	private final String prompt;
-	private final Integer defVal;
+	private final BigInteger defVal;
 	private final List<Constraint> constraints;
 	
-	public CInteger(String name, String prompt, Integer defVal, List<Constraint> constraints) {
+	public CInteger(String name, String prompt, BigInteger defVal, List<Constraint> constraints) {
 		this.name = name;
 		this.prompt = prompt;
 		this.defVal = defVal;
@@ -39,10 +40,10 @@ public class CInteger implements Component, Placeholder, BasicLayout {
 		constraints = extractConstraints(ctx);
 	}
 	
-	private Integer initDefVal(ComponentContext ctx) {
+	private BigInteger initDefVal(ComponentContext ctx) {
 		String value = extractCompDefVal(ctx);
 		try {
-			return value.isEmpty()? null :Integer.valueOf(value);
+			return value.isEmpty()? null :new BigInteger(value);
 		} catch (NumberFormatException e) {
 			throw new NumberFormatException(value + " is not a valid integer");
 		}
@@ -116,7 +117,7 @@ public class CInteger implements Component, Placeholder, BasicLayout {
 		return prompt;
 	}
 
-	public Integer getDefVal() {
+	public BigInteger getDefVal() {
 		return defVal;
 	}
 

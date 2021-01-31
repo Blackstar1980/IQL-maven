@@ -2,6 +2,7 @@ package ast.components.test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -20,7 +21,7 @@ public class DecimalTest {
 		var frame = new JFrame();
 		Constraint constraint = DisplayId.from(Id.Decimal, "block");
 		List<Constraint> constraints = List.of(constraint);
-		var cd = new CDecimal("name", "title", 3.0, constraints);
+		var cd = new CDecimal("name", "title", new BigDecimal("3.0"), constraints);
 		JPanelWithValue decimalPanel = cd.make();
 		assertEquals("3.0", decimalPanel.getValue());
 		decimalPanel.setValueOrDefault("5.0", false);
@@ -37,7 +38,7 @@ public class DecimalTest {
 		var frame = new JFrame();
 		Constraint constraint = DisplayId.from(Id.Decimal, "inline");
 		List<Constraint> constraints = List.of(constraint);
-		var cd = new CDecimal("name", "title", 3.0, constraints);
+		var cd = new CDecimal("name", "title", new BigDecimal("3.0"), constraints);
 		JPanelWithValue decimalPanel = cd.make();
 		assertEquals("3.0", decimalPanel.getValue());
 		decimalPanel.setValueOrDefault("5.0", false);

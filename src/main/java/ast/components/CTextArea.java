@@ -69,7 +69,8 @@ public class CTextArea implements Component, BasicLayout {
 		panel.setValueOrDefault("", true);
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
-		JScrollPane scroll = new JScrollPane(textArea);
+		JScrollPane scroll = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		JLabel jTitle = generateTitle(prompt, constraintMap);
 		JLabel errorMsg = panel.getErrorLabel();
 		DisplayId display = (DisplayId)constraintMap.get(ConstraintId.DISPLAY);

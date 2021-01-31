@@ -1,5 +1,6 @@
 package fields;
 
+import java.math.BigInteger;
 import java.util.regex.Pattern;
 
 import javax.swing.text.AttributeSet;
@@ -15,7 +16,7 @@ public class IntegerDocument extends PlainDocument {
     	if (!Pattern.matches("^-?[\\d]*$", allString)) return;
     	try {
     		if(!"-".equals(allString))
-    			Integer.valueOf(allString);
+    			new BigInteger(allString);
     	} catch (Exception e) {
 			return;
 		}

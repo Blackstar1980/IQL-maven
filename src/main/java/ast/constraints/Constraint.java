@@ -1,5 +1,8 @@
 package ast.constraints;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 public interface Constraint {
 	public ConstraintId getID();
 
@@ -14,12 +17,13 @@ public interface Constraint {
 		}
 
 		public String validateInt(String text) {
-			return text.isEmpty() || Integer.valueOf(text) > value ? "Input must smaller or equals to " + (int) value
-					: " ";
+			return text.isEmpty() || new BigInteger(text).compareTo(BigInteger.valueOf((long)value))>0 ?
+					"Input must smaller or equals to " + (long) value : " ";
 		}
 
 		public String validateDec(String text) {
-			return text.isEmpty() || Double.valueOf(text) > value ? "Input must smaller or equals to " + value : " ";
+			return text.isEmpty() || new BigDecimal(text).compareTo(BigDecimal.valueOf((long)value))>0 ?
+					"Input must smaller or equals to " + value : " ";
 		}
 	};
 
@@ -34,13 +38,13 @@ public interface Constraint {
 		}
 
 		public String validateInt(String text) {
-			return text.isEmpty() || "-".equals(text) || Integer.valueOf(text) < value
-					? "Input must greater or equals to " + (int) value
+			return text.isEmpty() || "-".equals(text) || new BigInteger(text).compareTo(BigInteger.valueOf((long)value))<0
+					? "Input must greater or equals to " + (long) value
 					: " ";
 		}
-
+		
 		public String validateDec(String text) {
-			return text.isEmpty() || "-".equals(text) || Double.valueOf(text) < value
+			return text.isEmpty() || "-".equals(text) || new BigDecimal(text).compareTo(BigDecimal.valueOf((long)value))<0
 					? "Input must greater or equals to " + value
 					: " ";
 		}

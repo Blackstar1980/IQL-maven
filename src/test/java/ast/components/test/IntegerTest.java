@@ -2,6 +2,7 @@ package ast.components.test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -20,7 +21,7 @@ public class IntegerTest {
 		var frame = new JFrame();
 		Constraint constraint = DisplayId.from(Id.Integer, "block");
 		List<Constraint> constraints = List.of(constraint);
-		var ci = new CInteger("name", "title", 3, constraints);
+		var ci = new CInteger("name", "title", new BigInteger("3"), constraints);
 		JPanelWithValue integerPanel = ci.make();
 		assertEquals("3", integerPanel.getValue());
 		integerPanel.setValueOrDefault("5", false);
@@ -37,7 +38,7 @@ public class IntegerTest {
 		var frame = new JFrame();
 		Constraint constraint = DisplayId.from(Id.Integer, "inline");
 		List<Constraint> constraints = List.of(constraint);
-		var ci = new CInteger("name", "title", 3, constraints);
+		var ci = new CInteger("name", "title", new BigInteger("3"), constraints);
 		JPanelWithValue integerPanel = ci.make();
 		assertEquals("3", integerPanel.getValue());
 		integerPanel.setValueOrDefault("5", false);

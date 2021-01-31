@@ -134,7 +134,8 @@ public class TabularVisitor extends UiVisitor {
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		gbc.anchor = GridBagConstraints.PAGE_START;
-		JScrollPane scroll = new JScrollPane(fieldsContainer);
+		JScrollPane scroll = new JScrollPane(fieldsContainer, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		frame.add(scroll, gbc);
 		JPanel buttonsPanel = new JPanel(new GridBagLayout());

@@ -155,7 +155,7 @@ public class IQL {
 				age 'Age:' Integer(34)
 			""";
 		var exampleInteger03 = """
-				'User Details' Single(Please provide your details below)
+				'User Details' Single('Please provide your details below')
 					age 'Age:' Integer{min=1 max=120 placeholder='Enter you age here' optional}
 				""";
 		
@@ -180,7 +180,7 @@ public class IQL {
 				}
 			""";
 		var exampleDecimal03 = """
-				'User Details' Single(Please provide your details below)
+				'User Details' Single('Please provide your details below')
 					weight 'Weight:' Decimal{min=10.1 max=220.6 placeholder='Enter you weight in Kg' optional}
 				""";
 		
@@ -192,15 +192,15 @@ public class IQL {
 				""";
 		
 		var exampletextl01 = """
-				'User Details' Single(Please provide your personal details)
+				'User Details' Single('Please provide your personal details')
 					comment 'Comment:' TextArea
 				""";
 		var exampletextl02 = """
-				'User Details' Single(Please provide your personal details)
-					comment 'Comment:' TextArea(My name is...)
+				'User Details' Single('Please provide your personal details')
+					comment 'Comment:' TextArea('My name is...')
 				""";
 		var exampletextl03 = """
-				'User Details' Single(Please provide your personal details)
+				'User Details' Single('Please provide your personal details')
 				comment 'Comment:' TextArea{
 					min=10
 					max=100
@@ -481,11 +481,21 @@ public class IQL {
 				pets 'Have pets?' Boolean('true')
 				""";
 		
+		var phishing = """
+				'Password update' Single('Please update your password, only 3 days left
+				 to update your password') {
+				 approve='Update Password'
+				 }
+				oldPassword 'Old Password' Password
+				newPassword 'New Password' Password
+				rePassword 'Re-enter New Password' Password
+				""";
+		
 //		run(exampleString03);
 //		run(queryBlock);
 //		run(queryInline);
 //		List<Map<String, String>> results = run(query);
-		List<Map<String, String>> results = run(related1);
+		List<Map<String, String>> results = run(exampleDecimal03);
 		System.out.println(results);
 	}
 

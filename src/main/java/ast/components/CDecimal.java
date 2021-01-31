@@ -4,6 +4,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +23,10 @@ import ui.Visitor;
 public class CDecimal implements Component, Placeholder, BasicLayout {
 	private final String name;
 	private final String prompt;
-	private final Double defVal;
+	private final BigDecimal defVal;
 	private final List<Constraint> constraints;
 	
-	public CDecimal(String name, String prompt, Double defVal, List<Constraint> constraints) {
+	public CDecimal(String name, String prompt, BigDecimal defVal, List<Constraint> constraints) {
 		this.name = name;
 		this.prompt = prompt;
 		this.defVal = defVal;
@@ -39,10 +40,10 @@ public class CDecimal implements Component, Placeholder, BasicLayout {
 		constraints = extractConstraints(ctx);
 	}
 	
-	private Double initDefVal(ComponentContext ctx) {
+	private BigDecimal initDefVal(ComponentContext ctx) {
 		String value = extractCompDefVal(ctx);
 		try {
-			return value.isEmpty()? null: Double.valueOf(value);
+			return value.isEmpty()? null: new BigDecimal(value);
 		} catch (NumberFormatException e) {
 			throw new NumberFormatException(value + " is not a valid decimal");
 		}
@@ -116,7 +117,7 @@ public class CDecimal implements Component, Placeholder, BasicLayout {
 		return prompt;
 	}
 
-	public Double getDefVal() {
+	public BigDecimal getDefVal() {
 		return defVal;
 	}
 
