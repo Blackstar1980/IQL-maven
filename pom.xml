@@ -45,9 +45,11 @@
 							<goal>single</goal>
 						</goals>
 						<configuration>
-							<descriptorRefs>
-								<descriptorRef>jar-with-dependencies</descriptorRef>
-							</descriptorRefs>
+							<finalName>iql-${project.version}-with-dependencies</finalName>
+							<descriptors>
+								<descriptor>src/main/resources/exclude.xml</descriptor>
+							</descriptors>
+							<appendAssemblyId>false</appendAssemblyId>
 						</configuration>
 					</execution>
 				</executions>
