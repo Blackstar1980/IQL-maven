@@ -118,7 +118,7 @@ public class ConstraintTests {
 			"""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
-			containers=[Slider [name=cats, title=Have cats?, minVal=2, \
+			containers=[Slider [name=cats, prompt=Have cats?, minVal=2, \
 			maxVal=4, defVal=2, constraints=[Inline]]]]\
 			""");
 	}
@@ -132,7 +132,7 @@ public class ConstraintTests {
 			"""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
-			containers=[Slider [name=cats, title=Have cats?, \
+			containers=[Slider [name=cats, prompt=Have cats?, \
 			minVal=2, maxVal=44, defVal=7, constraints=[Inline]]]]\
 			""");
 	}
@@ -171,9 +171,9 @@ public class ConstraintTests {
 			"""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
-			containers=[Boolean [name=cats, title=Have cats?, \
+			containers=[Boolean [name=cats, prompt=Have cats?, \
 			defVal=true, constraints=[Inline]], Boolean [name=dogs, \
-			title=Have dogs?, defVal=false, constraints=[Block]]]]\
+			prompt=Have dogs?, defVal=false, constraints=[Block]]]]\
 			""");
 	}
 }

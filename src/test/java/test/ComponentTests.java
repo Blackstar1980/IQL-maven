@@ -58,10 +58,10 @@ public class ComponentTests {
 				Query[dialog=Single[title=Dialog Title, \
 				description=dialog description, constraints=[]], \
 				containers=[Tab [title=First Tab:, \
-				containers=[String [name=name, title=Name:, defVal=John, constraints=[]]]], \
+				containers=[String [name=name, prompt=Name:, defVal=John, constraints=[]]]], \
 				Tab [title=Second Tab:, containers=[Group [title=new group, \
-				components=[Integer [name=age, title=Age, defVal=null, \
-				constraints=[]]]], String [name=surname, title=Surname:, \
+				components=[Integer [name=age, prompt=Age, defVal=null, \
+				constraints=[]]]], String [name=surname, prompt=Surname:, \
 				defVal=Doe, constraints=[]]]]]]\
 				""");
 	}
@@ -77,7 +77,7 @@ public class ComponentTests {
 				Query[dialog=Single[title=Dialog Title, \
 				description=dialog description, constraints=[]], \
 				containers=[Group [title=First Group:, \
-				components=[String [name=name, title=Name:, \
+				components=[String [name=name, prompt=Name:, \
 				defVal=John, constraints=[]]]]]]\
 				""");
 	}
@@ -150,7 +150,7 @@ public class ComponentTests {
 			"""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
-			containers=[String [name=name, title=Name:, defVal=John, \
+			containers=[String [name=name, prompt=Name:, defVal=John, \
 			constraints=[MinCon[value=1.0], MaxCon[value=6.0], Inline]]]]\
 			""");
 	}
@@ -164,9 +164,9 @@ public class ComponentTests {
 			"""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
-			containers=[Boolean [name=cats, title=Have cats?, \
+			containers=[Boolean [name=cats, prompt=Have cats?, \
 			defVal=true, constraints=[]], Boolean [name=dogs, \
-			title=Have dogs?, defVal=false, constraints=[]]]]\
+			prompt=Have dogs?, defVal=false, constraints=[]]]]\
 			""");
 	}
 	
@@ -179,9 +179,9 @@ public class ComponentTests {
 			"""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
-			containers=[Boolean [name=cats, title=Have cats?, \
+			containers=[Boolean [name=cats, prompt=Have cats?, \
 			defVal=, constraints=[]], Boolean [name=dogs, \
-			title=Have dogs?, defVal=, constraints=[]]]]\
+			prompt=Have dogs?, defVal=, constraints=[]]]]\
 			""");
 	}
 	
@@ -202,7 +202,7 @@ public class ComponentTests {
 			"""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
-			containers=[String [name=cats, title=Have cats?, defVal=My default value, \
+			containers=[String [name=cats, prompt=Have cats?, defVal=My default value, \
 			constraints=[MaxCon[value=4.0], MinCon[value=2.0], \
 			HolderCon[value=my holder], Inline]]]]\
 			""");
@@ -217,7 +217,7 @@ public class ComponentTests {
 			"""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
-			containers=[TextArea [name=cats, title=Have cats?, defVal=My default value, \
+			containers=[TextArea [name=cats, prompt=Have cats?, defVal=My default value, \
 			constraints=[MaxCon[value=4.0], MinCon[value=2.0], \
 			HolderCon[value=my holder], Inline, Optional]]]]\
 			""");
@@ -232,7 +232,7 @@ public class ComponentTests {
 			"""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
-			containers=[Password [name=password, title=Password:, defVal=My default value, \
+			containers=[Password [name=password, prompt=Password:, defVal=My default value, \
 			constraints=[MaxCon[value=8.0], MinCon[value=2.0], \
 			HolderCon[value=my holder], Inline]]]]\
 			""");
@@ -247,7 +247,7 @@ public class ComponentTests {
 			"""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
-			containers=[Integer [name=phone, title=Phone:, defVal=988643, \
+			containers=[Integer [name=phone, prompt=Phone:, defVal=988643, \
 			constraints=[MaxCon[value=8.0], MinCon[value=2.0], \
 			HolderCon[value=87654], Inline]]]]\
 			""");
@@ -262,7 +262,7 @@ public class ComponentTests {
 			"""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
-			containers=[Decimal [name=height, title=Height:, defVal=1.45, \
+			containers=[Decimal [name=height, prompt=Height:, defVal=1.45, \
 			constraints=[MaxCon[value=8.0], MinCon[value=2.0], \
 			HolderCon[value=enter your height], Inline]]]]\
 			""");
@@ -277,7 +277,7 @@ public class ComponentTests {
 			"""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
-			containers=[Slider [name=height, title=Height:, minVal=-5, \
+			containers=[Slider [name=height, prompt=Height:, minVal=-5, \
 			maxVal=5, defVal=-5, \
 			constraints=[MajorTicksCon[value=3], \
 			MinorTicksCon[value=1], Inline]]]]\
@@ -292,7 +292,7 @@ public class ComponentTests {
 			""","""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
-			containers=[Slider [name=height, title=Height:, \
+			containers=[Slider [name=height, prompt=Height:, \
 			minVal=0, maxVal=5, defVal=1, \
 			constraints=[MajorTicksCon[value=3], \
 			MinorTicksCon[value=1], Inline]]]]\
@@ -325,7 +325,7 @@ public class ComponentTests {
 			"""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
-			containers=[SingleOpt [name=height, title=Height:, options=[Red, Blue, Green], \
+			containers=[SingleOpt [name=height, prompt=Height:, options=[Red, Blue, Green], \
 			defValue=Red, constraints=[InlineList]]]]\
 			""");
 	}
@@ -339,7 +339,7 @@ public class ComponentTests {
 			"""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
-			containers=[MultiOpt [name=height, title=Height:, \
+			containers=[MultiOpt [name=height, prompt=Height:, \
 			options=[Red, Blue, Green], defValues=[Red, Blue], constraints=[InlineList]]]]\
 			""");
 	}
@@ -353,7 +353,7 @@ public class ComponentTests {
 			"""
 			Query[dialog=Single[title=Single Dialog, \
 			description=single my description, constraints=[]], \
-			containers=[SingleOpt [name=height, title=Height:, options=[Red, Blue, Green], \
+			containers=[SingleOpt [name=height, prompt=Height:, options=[Red, Blue, Green], \
 			defValue=Red, constraints=[InlineList]]]]\
 			""");
 	}

@@ -53,8 +53,8 @@ public class DialogTests {
 	
 	@Test public void wrongDialogInformation06() {
 		TestHelper.arrgumentException(
-				"'Dialog Title' Multi('dialog description'){max=-2}  name 'Name:' String",
-				"Multi max constraint, must be bigger than 0");
+				"'Dialog Title' Tabular('dialog description'){max=-2}  name 'Name:' String",
+				"Tabular max constraint, must be bigger than 0");
 	}
 	
 	@Test public void wrongDialogInformation07() {
@@ -76,7 +76,7 @@ public class DialogTests {
 				"""
 				Query[dialog=Single[title=Dialog Title, \
 				description=dialog description, constraints=[]], \
-				containers=[String [name=name, title=Name:, defVal=, constraints=[]]]]\
+				containers=[String [name=name, prompt=Name:, defVal=, constraints=[]]]]\
 				""");
 	}
 	
@@ -90,7 +90,7 @@ public class DialogTests {
 				Query[dialog=Pages[title=Dialog Title, \
 				description=dialog description, \
 				constraints=[MinCon[value=4.0], MaxCon[value=6.0]]], \
-				containers=[String [name=name, title=Name:, defVal=, constraints=[]]]]\
+				containers=[String [name=name, prompt=Name:, defVal=, constraints=[]]]]\
 				""");
 	}
 	
@@ -102,7 +102,7 @@ public class DialogTests {
 				"""
 				Query[dialog=Single[title=Dialog Title, \
 				description=dialog description, constraints=[]], \
-				containers=[String [name=name, title=Name:, defVal=default value, constraints=[]]]]\
+				containers=[String [name=name, prompt=Name:, defVal=default value, constraints=[]]]]\
 				""");
 	}
 	
@@ -117,7 +117,7 @@ public class DialogTests {
 				Query[dialog=Single[title=Dialog Title, \
 				description=dialog description, constraints=[]], \
 				containers=[Group [title=My group:, \
-				components=[String [name=name, title=Name:, \
+				components=[String [name=name, prompt=Name:, \
 				defVal=default value, constraints=[]]]]]]\
 				""");
 	}
@@ -136,9 +136,9 @@ public class DialogTests {
 				Query[dialog=Single[title=Dialog Title, \
 				description=dialog description, constraints=[]], \
 				containers=[Tab [title=First Tab:, \
-				containers=[String [name=name, title=Name:, defVal=John, \
+				containers=[String [name=name, prompt=Name:, defVal=John, \
 				constraints=[]]]], Tab [title=Second Tab:, \
-				containers=[String [name=surname, title=Surname:, \
+				containers=[String [name=surname, prompt=Surname:, \
 				defVal=Doe, constraints=[]]]]]]\
 				""");
 	}
@@ -153,7 +153,7 @@ public class DialogTests {
 			"""
 			Query[dialog=Single[title=Single Dialog, description=single my
 			description, constraints=[]], containers=[Slider [name=cats, \
-			title=Have cats?, minVal=2, maxVal=44, defVal=7, constraints=[Inline]]]]\
+			prompt=Have cats?, minVal=2, maxVal=44, defVal=7, constraints=[Inline]]]]\
 			""");
 	}
 }

@@ -62,8 +62,6 @@ public class SingleOptTest {
 		assertEquals("option1", single.getValue());
 		single.setValueOrDefault("option4", false);
 		assertEquals("option4", single.getValue());
-		single.setValueOrDefault("", true);
-		assertEquals("option1", single.getValue());
 		single.setValueOrDefault("", false);
 		assertEquals("", single.getValue());
 		TestHelper.withGui(frame, single, false);

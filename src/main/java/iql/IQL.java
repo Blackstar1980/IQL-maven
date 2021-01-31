@@ -213,7 +213,7 @@ public class IQL {
 				comment 'Comment:' TextArea{
 				  inline
 				  min=10 
-				  max=300 
+				  max=300
 				  placeholder='Enter your comment here'
 				  optional
 				}
@@ -274,6 +274,10 @@ public class IQL {
 		var exampleSingleOpt03 = """
 				'Personal details' Single('Please provide your details below')
 				married 'Are you married?' SingleOpt['True|False']
+				""";
+		var exampleSingleOpt04 = """
+				'Personal details' Tabular('Please provide your details below')
+				employment 'Employment Status:' SingleOpt['Full Time|Part Time|Self Employed|Not Employed']('Part Time')
 				""";
 		var exampleMultiOpt01 = """
 				'Personal details' Single(Please provide your details below)
@@ -495,7 +499,7 @@ public class IQL {
 //		run(queryBlock);
 //		run(queryInline);
 //		List<Map<String, String>> results = run(query);
-		List<Map<String, String>> results = run(exampleDecimal03);
+		List<Map<String, String>> results = run(exampleSingleOpt04);
 		System.out.println(results);
 	}
 
