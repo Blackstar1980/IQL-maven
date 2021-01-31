@@ -111,22 +111,22 @@ public class TabularVisitor extends UiVisitor {
 		gbc.gridy = 0;
 		gbc.insets = new Insets(0, 10, 0, 0);
 		frame.add(jDesc, gbc);
-		List<JLabel> titles = getComponentsPrompts(panels);
+		List<JLabel> titles = getComponentsTitles(panels);
 		JPanel titlePanel = new JPanel(new GridBagLayout());
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.weightx = 1;
-		gbc.insets = new Insets(0, 8, 0, 0);
+		gbc.insets = new Insets(0, 7, 0, 0);
 		for(JLabel title : titles) {
-			title.setPreferredSize(new Dimension(110, 22));
+			title.setPreferredSize(new Dimension(138, 22));
 			gbc.gridx++;
 			titlePanel.add(title, gbc);	
 		}
 		gbc.gridx = 0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		titlePanel.setBorder(new EmptyBorder(0,32,0,15));
+		titlePanel.setBorder(new EmptyBorder(0,34,0,10));
 		frame.add(titlePanel, gbc);
 		JPanel fieldsContainer = new JPanel(new GridBagLayout());
 		gbc.weighty = 1.0;
@@ -292,14 +292,21 @@ public class TabularVisitor extends UiVisitor {
 		return data;
 	}
 	
-	private List<JLabel> getComponentsPrompts(List<JPanelContainer> panels) {
-		List<JLabel> labels = new ArrayList<>();
+	private List<JLabel> getComponentsTitles(List<JPanelContainer> panels) {
+		List<JLabel> titles = new ArrayList<>();
 		for(JPanelContainer panel: panels)
 		if(panel instanceof JPanelWithValue panelWithValue) {
-				JLabel label = new JLabel(panelWithValue.getPrompt());
-				labels.add(label);
+			ast.components.Component component = panelWithValue.getComponent();
+			String prompt = component.getPrompt();
+			List<Constraint> constraints = component.getConstraints();
+			JLabel title = component.generateTitle(prompt, component.getMapConstraint(constraints));
+			title.setBackground(Color.blue);
+			title.setOpaque(true);
+//			panelWithValue.getComponent().generateTitle(panelWithValue.getPrompt(),)
+//			JLabel label = new JLabel(panelWithValue.getPrompt());
+			titles.add(title);
 		}
-		return labels;
+		return titles;
 	}
 	
 	private void setMultiLayout(List<JPanelContainer> panels) {

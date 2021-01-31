@@ -19,6 +19,7 @@ import generated.GuiInputParser.ComponentContext;
 
 public interface Component extends Attributable<JPanelContainer>, Ast.Tabable {
 	String getPrompt();
+	List<Constraint> getConstraints();
 	
 	default List<Constraint> extractConstraints(ComponentContext ctx) {
 		return ctx.compCon() == null ? List.of() : extractConstraints(getType(), ctx.compCon().children);

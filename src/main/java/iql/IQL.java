@@ -499,7 +499,7 @@ public class IQL {
 //		run(queryBlock);
 //		run(queryInline);
 //		List<Map<String, String>> results = run(query);
-		List<Map<String, String>> results = run(exampleSingleOpt04);
+		List<Map<String, String>> results = run(allTabular);
 		System.out.println(results);
 	}
 
