@@ -19,7 +19,7 @@ public interface Ast<T> {
 	default String extractTitle(TerminalNode titleNode) {
 		if(titleNode == null)
 			throw new IllegalArgumentException("Invalid title name: " + titleNode);
-		return checkNewLine(subString(titleNode.getText(), 1, 1));
+		return checkNewLine(changeEscapeCaracters(subString(titleNode.getText(), 1, 1)));
 	}
 	
 	default String checkNewLine(String text) {
@@ -30,6 +30,18 @@ public interface Ast<T> {
 	
 	default String subString(String text, int offsetBegining, int offsetEnd) {
 		return text.substring(offsetBegining, text.length()-offsetEnd);
+	}
+	
+	default String changeEscapeCaracters(String subString) {
+		subString = subString.replaceAll("\\\\'", "'");
+		subString = subString.replaceAll("\\\\\"", "\"");
+		subString = subString.replaceAll("\\\\\\[", "[");
+		subString = subString.replaceAll("\\\\\\]", "]");
+		subString = subString.replaceAll("\\\\\\(", "(");
+		subString = subString.replaceAll("\\\\\\)", ")");
+		subString = subString.replaceAll("\\\\\\{", "{");
+		subString = subString.replaceAll("\\\\\\}", "}");
+		return subString;
 	}
 
 	record Query (Dialog dialog, List<Containable> containers) implements Ast<JFrame>{
@@ -57,7 +69,9 @@ public interface Ast<T> {
 		}
 		
 		default String extractDialogDesc(DialogContext ctx) {
-			return ctx.DefaultValue() == null? "": subString(ctx.DefaultValue().getText(), 2, 2);
+			if(ctx.DefaultValue() == null)
+				return "";
+			return changeEscapeCaracters(subString(ctx.DefaultValue().getText(), 2, 2));
 		}
 	}
 	interface Containable extends Ast<JPanelContainer>{}

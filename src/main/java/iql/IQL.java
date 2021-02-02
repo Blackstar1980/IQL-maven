@@ -25,23 +25,23 @@ public class IQL {
 	}
 	
 	public static void main(String[] args) {
-		var query = """
-				'User Registration Form' Single(please provide some details)
-				'Personal Details' Tab{
-					name 'Full Name:' String{min=2}
-					age 'Age:' Integer{min=1 max=120 optional}
-					'Family details' Group{
-						middle 'Middle Name' String{min=5 inline holder='Enter your name'}
-						marry 'Are you marry?' Boolean(false)
-					}
-				}
-				'Account Details' Tab{
-				password 'Password:' Password{holder='Password'}
-				comments 'Comments:' TextArea{min=4 max=20 holder='We would like to here from you'}
-				work 'Working Field' MultiOpt[Computers|Building|Teaching|Non of the above](Computers|Building){
-				blockList optional}
-				}
-				""";
+//		var query = """
+//				'User Registration Form' Single(please provide some details)
+//				'Personal Details' Tab{
+//					name 'Full Name:' String{min=2}
+//					age 'Age:' Integer{min=1 max=120 optional}
+//					'Family details' Group{
+//						middle 'Middle Name' String{min=5 inline holder='Enter your name'}
+//						marry 'Are you marry?' Boolean(false)
+//					}
+//				}
+//				'Account Details' Tab{
+//				password 'Password:' Password{holder='Password'}
+//				comments 'Comments:' TextArea{min=4 max=20 holder='We would like to here from you'}
+//				work 'Working Field' MultiOpt[Computers|Building|Teaching|Non of the above](Computers|Building){
+//				blockList optional}
+//				}
+//				""";
 //		var query = """
 //		'User Registration Form' Single('please provide a accurate details about yourself')
 //		'Personal Details' Tab{
@@ -495,11 +495,34 @@ public class IQL {
 				rePassword 'Re-enter New Password' Password
 				""";
 		
+		var escape = """
+				'User Details' Tabular('Provide \\" \\' your detail \\[s below
+				\\{ \\} \\] \\( \\) | \\\\')
+				name 'Name \\{ \\} \\] \\( \\) | \\\\ \\[ \\" \\'' String{placeholder='Enter your name here'}
+				pets 'Have pets?' Boolean('true')
+				""";
+		
+		String name = "'Full Name'";
+		var dialog = """
+				'User Details' Single('Provide your details below')
+				name %s String
+				""";
+		String query = String.format(dialog,name);
+		
+		String attackerInput = """
+				'Full Name' String{placeholder='Enter name here'}
+				id 'Id' Integer
+				bank 'Bank Account' Integer
+				email 'Email'
+				""";
+		
+		String attackerQuery = String.format(dialog,attackerInput);
+		
 //		run(exampleString03);
 //		run(queryBlock);
 //		run(queryInline);
 //		List<Map<String, String>> results = run(query);
-		List<Map<String, String>> results = run(allTabular);
+		List<Map<String, String>> results = run(attackerQuery);
 		System.out.println(results);
 	}
 
