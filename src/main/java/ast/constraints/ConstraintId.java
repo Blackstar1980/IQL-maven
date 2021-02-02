@@ -5,7 +5,7 @@ import ast.constraints.Constraint.*;
 
 public enum ConstraintId {
 	MIN, MAX, REGEX, DISPLAY, HOLDER, SELECTED, MAJORTICKS,
-	MINORTICKS, OPTIONAL, CANCEL, APPROVE, BACKGROUND;
+	MINORTICKS, OPTIONAL, CANCEL, APPROVE;
 
 	public static Constraint from(Id id, String input) {
 		if(isDisplay(input.trim()))
@@ -20,27 +20,12 @@ public enum ConstraintId {
 		case "approve" -> getApproveCon(id, value);
 		case "cancel" -> getCancelCon(id, value);
 		case "placeholder" -> getHolderCon(id, value);
-//		case "background" -> getBackgroundCon(id, value);
-//		case "display" -> getDisplayCon(id, value);
 		case "majorTicks" -> getMajorTicksCon(id, value);
 		case "minorTicks" -> getMinorTicksCon(id, value);
 		case "regex" -> getRegexCon(id, value);
-//		case "inline" -> getDisplayCon(id, value);
-//		case "block" -> getDisplayCon(id, value);
-//		case "inlineList" -> getDisplayCon(id, value);
-//		case "blockList" -> getDisplayCon(id, value);
-//		case "blockRadio" -> getDisplayCon(id, value);
-//		case "blockCheckbox" -> getDisplayCon(id, value);
 		default -> throw new IllegalArgumentException("Illigal constraint: " + constrient);
 		};
 	}
-
-//	private static BackgroundCon getBackgroundCon(Id id, String value) {
-//		return switch (id) {
-//		case Pages, Single -> new BackgroundCon(value.substring(1, value.length() - 1));
-//		default -> throw new IllegalArgumentException(id + " is not support Background constraint");
-//		};
-//	}
 
 	private static CancelCon getCancelCon(Id id, String value) {
 		return switch (id) {
@@ -70,13 +55,6 @@ public enum ConstraintId {
 		default -> throw new IllegalArgumentException(id + " is not support Optional constraint");
 		};
 	}
-
-//	private static SelectedCon getSelectedCon(Id id, String value) {
-//		return switch (id) {
-//		case SingleOpt, MultiOpt -> new SelectedCon(value.substring(1, value.length() - 1));
-//		default -> throw new IllegalArgumentException(id + " is not support Selected constraint");
-//		};
-//	}
 
 	private static MinorTicksCon getMinorTicksCon(Id id, String value) {
 		int tickValue = getTickConValue(id, value);
@@ -109,7 +87,7 @@ public enum ConstraintId {
 
 	private static RegexCon getRegexCon(Id id, String value) {
 		return switch (id) {
-		case String, Password -> new RegexCon(value.substring(1, value.length() - 1));
+		case String, Password, Integer, Decimal -> new RegexCon(changeEscapeCaracters(value.substring(1, value.length() - 1)));
 		default -> throw new IllegalArgumentException(id + " is not support Regex constraint");
 		};
 	}
@@ -120,16 +98,6 @@ public enum ConstraintId {
 		default -> throw new IllegalArgumentException(id + " is not support Holder constraint");
 		};
 	}
-
-//	private static RequiredCon getRequiredCon(Id id, String value) {
-//		return switch (id) {
-//		case String, Integer, Decimal, Password, TextArea, Boolean, SingleOpt, MultiOpt -> {
-//			yield RequiredCon.from(value);
-//		}
-//		default ->
-//			throw new IllegalArgumentException(id + " is not support Required constraint");
-//		};
-//	}
 
 	private static MaxCon getMaxCon(Id id, String value) {
 		return switch (id) {
@@ -157,6 +125,18 @@ public enum ConstraintId {
 		case Decimal -> new MinCon(Double.valueOf(value));
 		default -> throw new IllegalArgumentException(id + " is not support Min constraint");
 		};
+	}
+	
+	private static String changeEscapeCaracters(String subString) {
+		subString = subString.replaceAll("\\\\'", "'");
+		subString = subString.replaceAll("\\\\\"", "\"");
+		subString = subString.replaceAll("\\\\\\[", "[");
+		subString = subString.replaceAll("\\\\\\]", "]");
+		subString = subString.replaceAll("\\\\\\(", "(");
+		subString = subString.replaceAll("\\\\\\)", ")");
+		subString = subString.replaceAll("\\\\\\{", "{");
+		subString = subString.replaceAll("\\\\\\}", "}");
+		return subString;
 	}
 
 }

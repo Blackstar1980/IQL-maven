@@ -27,7 +27,7 @@ fragment Slider: 'Slider[' QuotedCharText ']';
 //  | '`' | '^' | '_' | '"' | '\n' | ')' | '(' | '{' | '}')* ;
 fragment CharText: (LowerCaseLetter | UpperCaseLetter | Digit 
   | '<' | '>' | '&' | '|' | '*' | '+' | '-' | '=' | '!' | '%' | '\\[' | '\\]'
-  | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '`' | '^'
+  | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '`' | '^' | '\\'
   | '_' | '\\"' | '\\\\' | '\n' | '\\\'' | '\\)' | '\\(' | '\\{' | '\\}')*;
 Whitespace: [ \t\r\n]-> channel(HIDDEN);
 DialogId: 'Single' | 'Tabular' | 'Pages';

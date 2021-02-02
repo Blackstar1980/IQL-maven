@@ -70,13 +70,6 @@ public interface Constraint {
 			return ConstraintId.CANCEL;
 		}
 	};
-	
-	record BackgroundCon(String value) implements Constraint {
-		@Override
-		public ConstraintId getID() {
-			return ConstraintId.BACKGROUND;
-		}
-	};
 
 	record MinorTicksCon(int value) implements Constraint {
 		@Override

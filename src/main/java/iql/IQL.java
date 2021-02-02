@@ -496,7 +496,7 @@ public class IQL {
 				""";
 		
 		var escape = """
-				'User Details' Tabular('Provide \\" \\' your detail \\[s below
+				'User Details' Tabular('Provide \\ \\" \\' your detail \\[s below
 				\\{ \\} \\] \\( \\) | \\\\')
 				name 'Name \\{ \\} \\] \\( \\) | \\\\ \\[ \\" \\'' String{placeholder='Enter your name here'}
 				pets 'Have pets?' Boolean('true')
@@ -518,11 +518,16 @@ public class IQL {
 		
 		String attackerQuery = String.format(dialog,attackerInput);
 		
+		var decRegex = """
+				'User Details' Single('Provide your detail')
+				name 'Name' Decimal{regex='\\[0-9\\]*\\.\\[0-9\\]\\{2\\}'}
+				""";
+		
 //		run(exampleString03);
 //		run(queryBlock);
 //		run(queryInline);
 //		List<Map<String, String>> results = run(query);
-		List<Map<String, String>> results = run(attackerQuery);
+		List<Map<String, String>> results = run(decRegex);
 		System.out.println(results);
 	}
 
