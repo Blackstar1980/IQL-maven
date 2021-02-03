@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -353,14 +354,13 @@ public abstract class UiVisitor implements Visitor {
 		return component.make();
 	}
 	
-//	private JLabel generateGroupTitle(String title) {
-//		JLabel label = new JLabel();
-//		label.setBorder(new EmptyBorder(0, 0, 0, 10));
-//		Font font = label.getFont().deriveFont(16.0f);
-//		label.setFont(font.deriveFont(font.getStyle() | Font.BOLD));
-//		label.setText(title);
-//		return label;
-//	}
+	protected int getDialogMaxHeight() {
+		return (int) (Toolkit.getDefaultToolkit().getScreenSize().height*0.95);
+	}
+	
+	protected int getDialogMaxWidth() {
+		return (int) (Toolkit.getDefaultToolkit().getScreenSize().width*0.95);
+	}
 	
 	protected JTextArea generateDesc(String title) {
 		JTextArea label = new JTextArea();

@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+
+import org.w3c.dom.ranges.RangeException;
+
 import ast.Ast.Containable;
 import ast.Ast.Dialog;
 import ast.Ast.Query;
@@ -114,6 +117,9 @@ public class SingleVisitor extends UiVisitor {
 		gbc.gridy++;
 		gbc.anchor = GridBagConstraints.CENTER;
 		frame.add(buttonsPanel, gbc);
+		int frameHeight = frame.getPreferredSize().height;
+		if(frameHeight > getDialogMaxHeight())
+			throw new RangeException(RangeException.BAD_BOUNDARYPOINTS_ERR, "Dialog height is bigger than the screen height");
 	}
 	
 }

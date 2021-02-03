@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.*;
+
+import org.w3c.dom.ranges.RangeException;
+
 import ast.Ast.Containable;
 import ast.Ast.Dialog;
 import ast.Ast.Query;
@@ -246,6 +249,9 @@ public class PagesVisitor extends UiVisitor {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(10, 0, 0, 0);
 		frame.add(pagesPanel, gbc);
+		int frameHeight = frame.getPreferredSize().height;
+		if(frameHeight > getDialogMaxHeight())
+			throw new RangeException(RangeException.BAD_BOUNDARYPOINTS_ERR, "Dialog height is bigger than the screen height");
 	}
 	
 	private void updateDataList(List<Map<String, String>> dataList, Map<String, String> value, int index, boolean setDefault) {

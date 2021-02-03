@@ -8,6 +8,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -19,6 +20,9 @@ import java.util.stream.Collectors;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+
+import org.w3c.dom.ranges.RangeException;
+
 import ast.Ast.Containable;
 import ast.Ast.Dialog;
 import ast.Ast.Query;
@@ -34,8 +38,6 @@ public class TabularVisitor extends UiVisitor {
 	private static final String BLOCK_LIST = "blockList";
 	private static final int PROMPT = 0;
 	private static final int FIELD = 1;
-	private static final int HEIGHT = 640;
-	private static final int MAX_WIDTH = 800;
 	private int minEntries = 1;
 	private int maxEntries = Integer.MAX_VALUE;
 	private String approveBtnLabel = "Approve";
@@ -115,18 +117,22 @@ public class TabularVisitor extends UiVisitor {
 		JPanel titlePanel = new JPanel(new GridBagLayout());
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.fill = GridBagConstraints.NONE;
 		gbc.anchor = GridBagConstraints.WEST;
-		gbc.weightx = 1;
+//		gbc.weightx = 1.0;
 		gbc.insets = new Insets(0, 7, 0, 0);
 		for(JLabel title : titles) {
 			title.setPreferredSize(new Dimension(138, 22));
 			gbc.gridx++;
 			titlePanel.add(title, gbc);	
 		}
+		titlePanel.setMinimumSize(new Dimension(1000, 22));
 		gbc.gridx = 0;
+//		gbc.fill = GridBagConstraints.HORIZONTAL;
+		titlePanel.setBorder(new EmptyBorder(0,14,0,10));
+//		titlePanel.setBackground(Color.GREEN);
+//		titlePanel.setOpaque(true);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		titlePanel.setBorder(new EmptyBorder(0,34,0,10));
 		frame.add(titlePanel, gbc);
 		JPanel fieldsContainer = new JPanel(new GridBagLayout());
 		gbc.weighty = 1.0;
@@ -136,7 +142,8 @@ public class TabularVisitor extends UiVisitor {
 		gbc.anchor = GridBagConstraints.PAGE_START;
 		JScrollPane scroll = new JScrollPane(fieldsContainer, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+		scroll.setMaximumSize(new Dimension(100, 150));
+//		gbc.fill = GridBagConstraints.HORIZONTAL;
 		frame.add(scroll, gbc);
 		JPanel buttonsPanel = new JPanel(new GridBagLayout());
 		buttonsPanel.setBorder(new EmptyBorder(5, 0, 0, 0));
@@ -205,9 +212,12 @@ public class TabularVisitor extends UiVisitor {
 		gbc.ipady = 0; 
 		gbc.anchor = GridBagConstraints.PAGE_END;
 		frame.add(buttonsPanel, gbc);
-		int width = frame.getPreferredSize().width+40;
-		scroll.setMinimumSize(new Dimension(width, HEIGHT- 150));
-		frame.setPreferredSize(new Dimension(width, HEIGHT));
+		int height = getDialogMaxHeight();
+		int frameWidth = frame.getPreferredSize().width;
+		if(frameWidth > getDialogMaxWidth())
+			throw new RangeException(RangeException.BAD_BOUNDARYPOINTS_ERR, "Dialog width is bigger than the screen width");
+		scroll.setMinimumSize(new Dimension(frameWidth, (int) (height*0.7-150)));
+		frame.setMinimumSize(new Dimension(frameWidth, (int) (height*0.7)));
 	}
 
 	private boolean updateData(Component[] components, List<Map<String, String>> results) {
@@ -261,11 +271,11 @@ public class TabularVisitor extends UiVisitor {
 			disableButton(fieldsContainer);
 			fieldsRowsCounter--;
 			addButton.setEnabled(true);
-			frame.revalidate();
+//			frame.revalidate();
 			frame.validate();
 		});
 		fieldsRowsCounter++;
-		frame.revalidate();
+//		frame.revalidate();
 		frame.validate();
 	}
 	
@@ -300,8 +310,8 @@ public class TabularVisitor extends UiVisitor {
 			String prompt = component.getPrompt();
 			List<Constraint> constraints = component.getConstraints();
 			JLabel title = component.generateTitle(prompt, component.getMapConstraint(constraints));
-			title.setBackground(Color.blue);
-			title.setOpaque(true);
+//			title.setBackground(Color.blue);
+//			title.setOpaque(true);
 //			panelWithValue.getComponent().generateTitle(panelWithValue.getPrompt(),)
 //			JLabel label = new JLabel(panelWithValue.getPrompt());
 			titles.add(title);

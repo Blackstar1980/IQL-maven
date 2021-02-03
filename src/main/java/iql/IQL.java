@@ -1,5 +1,6 @@
 package iql;
 
+import java.awt.Toolkit;
 import java.util.List;
 import java.util.Map;
 
@@ -470,9 +471,18 @@ public class IQL {
 				""";
 		
 		var allTabular = """
-				'title' Tabular('This is the descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+				'title' Tabular('This is the description')
+				stringeeee 'String' String{optional}
+				stringeee 'String' String{optional}
+				stringee 'String' String{optional}
+				stringe 'String' String{optional}
 				string 'String' String{optional}
-				password 'Password' Password{optional}
+				stri 'String' String{optional}
+				strin 'String' String{optional}
+				stringggg 'String' String{optional}
+				stringgg 'String' String{optional}
+				stringg 'String' String{optional}
+				password 'Passwordsddssdsdsdsdsdd' Password{optional}
 				integer 'Integer' Integer{optional}
 				decimal 'Decimal' Decimal{optional}
 				boolean 'Boolean' Boolean{optional}
@@ -527,7 +537,8 @@ public class IQL {
 //		run(queryBlock);
 //		run(queryInline);
 //		List<Map<String, String>> results = run(query);
-		List<Map<String, String>> results = run(decRegex);
+		System.out.println(Toolkit. getDefaultToolkit().getScreenSize().height);
+		List<Map<String, String>> results = run(exampleTabularDialog01);
 		System.out.println(results);
 	}
 
