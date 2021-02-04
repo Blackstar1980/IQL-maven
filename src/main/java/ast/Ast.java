@@ -2,7 +2,6 @@ package ast;
 
 import java.util.List;
 
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -33,14 +32,16 @@ public interface Ast<T> {
 	}
 	
 	default String changeEscapeCaracters(String subString) {
-		subString = subString.replaceAll("\\\\'", "'");
-		subString = subString.replaceAll("\\\\\"", "\"");
-		subString = subString.replaceAll("\\\\\\[", "[");
-		subString = subString.replaceAll("\\\\\\]", "]");
-		subString = subString.replaceAll("\\\\\\(", "(");
-		subString = subString.replaceAll("\\\\\\)", ")");
-		subString = subString.replaceAll("\\\\\\{", "{");
-		subString = subString.replaceAll("\\\\\\}", "}");
+		subString = subString.replace("\\\'", "'");
+		subString = subString.replace("\\|", "|");
+		subString = subString.replace("\\\\", "\\");
+//		subString = subString.replaceAll("\\\\\"", "\"");
+//		subString = subString.replaceAll("\\\\\\[", "[");
+//		subString = subString.replaceAll("\\\\\\]", "]");
+//		subString = subString.replaceAll("\\\\\\(", "(");
+//		subString = subString.replaceAll("\\\\\\)", ")");
+//		subString = subString.replaceAll("\\\\\\{", "{");
+//		subString = subString.replaceAll("\\\\\\}", "}");
 		return subString;
 	}
 

@@ -5,10 +5,6 @@ import java.util.function.Function;
 import ast.Id;
 import generated.GuiInputParser.ComponentContext;
 
-// TODO ask if it right to do it this way or it is better to use enum methods!!!!
-// Why not just doing "case String ->new CString(ctx) "
-// instead of "case String -> String.operation.apply(ctx);"
-// There is any benefits by using "String(){public Component make(Ctx ctx) {... }}"?
 public enum ComponentFactory {
 	String(ctx -> new CString(ctx)),
 	Integer(ctx -> new CInteger(ctx)),
@@ -31,7 +27,6 @@ public enum ComponentFactory {
 			throw new IllegalArgumentException("ComponentContext and Id cannot be null");
 		String idText = ctx.CompId().getText();
 		Id id = idText.indexOf("[") == -1? Id.from(idText) : Id.from(idText.substring(0, idText.indexOf("[")));
-//		Id id = Id.from(idText.substring(0, idText.indexOf("[")));
 		return switch(id){
 		case String -> String.createComp.apply(ctx);
 		case Integer -> Integer.createComp.apply(ctx);

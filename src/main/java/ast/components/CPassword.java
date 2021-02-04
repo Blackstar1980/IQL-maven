@@ -19,8 +19,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JToggleButton;
-import javax.swing.border.EmptyBorder;
-
 import ast.Id;
 import ast.constraints.Constraint;
 import ast.constraints.ConstraintId;
@@ -129,7 +127,6 @@ public class CPassword implements Component {
 	
 	private JPanelWithValue setPasswordInlineDisplay(JLabel title, JPasswordField passField,
 			JLabel errorMsg, JPanelWithValue panel) {
-//		panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		JToggleButton showButton = new JToggleButton();
@@ -197,8 +194,6 @@ public class CPassword implements Component {
 		});
 		JPanel passPanel = new JPanel(new GridBagLayout());
 		passPanel.setPreferredSize(new Dimension(310, 22));
-//		gbc.anchor = GridBagConstraints.WEST;
-//		passField.setPreferredSize(new Dimension(278, 22));
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1.0;
@@ -209,22 +204,12 @@ public class CPassword implements Component {
 		gbc.gridx = 1;
 		gbc.weightx = 0.0;
 		passPanel.add(showButton, gbc);
-		
-		
-		
-//		gbc.anchor = GridBagConstraints.WEST;
-//		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		panel.add(title, gbc);
 		gbc.gridy = 1;
-//		panel.add(passField, gbc);
 		panel.add(passPanel, gbc);
-//		gbc.gridx = 1;
-//		gbc.fill = GridBagConstraints.NONE;
-//		gbc.weightx = 0.0;
-//		panel.add(showButton, gbc);
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		gbc.fill = GridBagConstraints.HORIZONTAL;

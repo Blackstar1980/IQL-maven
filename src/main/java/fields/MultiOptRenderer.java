@@ -12,9 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
 public class MultiOptRenderer extends JPanel implements ListCellRenderer<String> {
-//	private String[] items;
-//	private boolean[] selected;
-//	private boolean clicked = false;
     private JLabel item = new JLabel();
     private JCheckBox status = new JCheckBox();
     private Color background = new Color(238, 238, 238);

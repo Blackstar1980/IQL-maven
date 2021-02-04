@@ -28,7 +28,6 @@ public enum DisplayId implements Constraint{
 	
 	private static DisplayId getSingleDisplay(String value) {
 		return switch (value) {
-//		case "inlineRadio" -> InlineRadio;
 		case "inlineList" -> InlineList;
 		case "blockRadio" -> BlockRadio;
 		case "blockList" -> BlockList;
@@ -40,7 +39,6 @@ public enum DisplayId implements Constraint{
 		return switch (value) {
 		case "blockList" -> BlockList;
 		case "inlineList" -> InlineList;
-//		case "inlineCheckbox" -> InlineCheckbox;
 		case "blockCheckbox" -> BlockCheckbox;
 		default -> throw new IllegalArgumentException(value + " is not a valide component display");
 		};

@@ -126,9 +126,7 @@ public class CBoolean implements Component {
 		gbc.gridy = 1;
 		panel.add(combo, gbc);
 		gbc.gridy = 2;
-//		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		panel.add(panel.getErrorLabel(), gbc);
-//		panel.setPreferredSize(new Dimension(300, (int) panel.getPreferredSize().getHeight()));
 		return panel;
 	}
 

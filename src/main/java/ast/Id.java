@@ -23,24 +23,5 @@ public enum Id{String,Integer,Decimal,Boolean,
 		default -> throw new IllegalArgumentException(input + " is not a valide id");
 		};
 	}
-	
-//	private List<String> supportedConstraints() {
-//		return switch (this) {
-//		case Multi, Pages -> Arrays.asList(MIN, MAX);
-//		case String -> Arrays.asList(MIN, MAX, REGEX, STYLE, HOLDER, REQUIRED);
-//		case Integer -> Arrays.asList(MIN, MAX, REGEX, STYLE, HOLDER, REQUIRED);
-//		case Decimal -> Arrays.asList(MIN, MAX, REGEX, STYLE, HOLDER, REQUIRED);
-//		case Boolean -> throw new IllegalArgumentException("No constraints are supported for Boolean Id");
-//		case Group -> throw new IllegalArgumentException("No constraints are supported for Group Id");
-//		case Tab -> throw new IllegalArgumentException("No constraints are supported for Tab Id");
-//		case Single -> throw new IllegalArgumentException("No constraints are supported for Single Id");
-//		case SingleOpt -> Arrays.asList(STYLE, SELECTED, REQUIRED);
-//		case MultiOpt -> Arrays.asList(STYLE, SELECTED);
-//		case Password -> Arrays.asList(MIN, MAX, REGEX, STYLE, HOLDER, REQUIRED);
-//		case Slider -> Arrays.asList(MAJORTICKS, MINORTICKS, STYLE);
-//		case TextArea -> Arrays.asList(MIN, MAX, REGEX, STYLE, HOLDER, REQUIRED);
-//		default -> throw new IllegalArgumentException(this.toString() + " is not a valide id");
-//		};
-//	}
 
 }

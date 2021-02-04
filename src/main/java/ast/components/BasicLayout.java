@@ -29,17 +29,13 @@ public interface BasicLayout {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.anchor = GridBagConstraints.NORTHEAST;
-//		gbc.weightx = 1.0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		panel.add(title, gbc);
 		gbc.gridx = 1;
-//		gbc.weightx = 0;
 		gbc.anchor = GridBagConstraints.WEST;
-//		gbc.fill = GridBagConstraints.NONE;
 		panel.add(component, gbc);
 		gbc.gridy = 1;
-//		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		panel.add(errorMsg, gbc);
 		return panel;
 	}

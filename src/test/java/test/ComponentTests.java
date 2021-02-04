@@ -366,4 +366,81 @@ public class ComponentTests {
 			""",
 			"'Green|Blue' is not a valid option");
 	}
+	
+	
+	@Test public void eascape1() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single \\') my description')
+			name 'Name:' String('John') {min=1 max=6 inline}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single ') my description, constraints=[]], \
+			containers=[String [name=name, prompt=Name:, defVal=John, \
+			constraints=[MinCon[value=1.0], MaxCon[value=6.0], Inline]]]]\
+			""");
+	}
+	
+	@Test public void eascape2() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single \\') my description')
+			options 'Options' MultiOpt['yes \\|no | Yes | no ]']('yes \\|no | no ]')
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single ') my description, constraints=[]], \
+			containers=[MultiOpt [name=options, prompt=Options, \
+			options=[yes |no, Yes, no], defValues=[yes |no, no ]], constraints=[]]]]\
+			""");
+	}
+	
+	@Test public void eascape3() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single \\\\[ []{}()"\n\\\'\\| my description')
+			options 'Options' MultiOpt['yes \\|no | Yes | no ]']('yes \\|no | no ]')
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single \\[ []{}()"
+			'| my description, constraints=[]], \
+			containers=[MultiOpt [name=options, prompt=Options, \
+			options=[yes |no, Yes, no], defValues=[yes |no, no ]], constraints=[]]]]\
+			""");
+	}
+	
+	@Test public void eascape4() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single \\\\[ []{}()"\n\\\'\\| my description')
+			options 'Options' MultiOpt['(yes) \\|no | {\\\'no\\\'}']('(yes) \\|no | {\\\'no\\\'}')
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single \\[ []{}()"
+			'| my description, constraints=[]], \
+			containers=[MultiOpt [name=options, prompt=Options, \
+			options=[(yes) |no, {'no'}], defValues=[(yes) |no, {'no'}], constraints=[]]]]\
+			""");
+	}
+	
+	@Test public void eascape5() {
+		TestHelper.checkAst("""
+			'User Details' Single('Provide your detail')
+			name 'Name' Decimal{regex='[0-9]*\\\\.[0-9]{2}'}
+			""",
+			"""
+			Query[dialog=Single[title=User Details, \
+			description=Provide your detail, constraints=[]], \
+			containers=[Decimal [name=name, prompt=Name, defVal=null, \
+			constraints=[RegexCon[value=[0-9]*\\.[0-9]{2}]]]]]\
+			""");
+	}
+	
+	
+	
+	// if you write either \\\' or \\' they are interpreted as \'
+	// if you write either \' or ' they are interpreted as '
+	// 
+	
+	
+	
 }

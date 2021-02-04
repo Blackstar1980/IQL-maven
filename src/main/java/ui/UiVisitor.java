@@ -40,21 +40,6 @@ public abstract class UiVisitor implements Visitor {
 	public CompletableFuture<List<Map<String, String>>> getData() {
 		return data;
 	}
-
-//	@Override
-//	public JFrame visitQuery(Query query) {
-//		JFrame jFrame = new JFrame();
-//		jFrame = visitSingle((DSingle)query.dialog());
-//		List<Containable> containers = query.containers();
-//		List<JPanelContainer> panels = new ArrayList<>();
-//		for(Containable container:containers)
-//			panels.add(getPanel(container));
-//		constructDialog(jFrame, panels);
-//		jFrame.pack();
-//		jFrame.setVisible(true);
-//		System.out.println("in Single");
-//		return jFrame;
-//	}
 	
 	protected JPanelContainer getPanel(Containable container) {
 		return container.accept(this);
@@ -152,8 +137,6 @@ public abstract class UiVisitor implements Visitor {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		jFrame.setTitle(frame.getTitle());
-//		JTextArea desc = generateDesc(frame.getDescription());
-//		jFrame.add(desc, gbc);
 		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		jFrame.setResizable(false);
 		return jFrame;
@@ -171,8 +154,6 @@ public abstract class UiVisitor implements Visitor {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		jFrame.setTitle(frame.getTitle());
-//		JLabel desc = generateDesc(frame.getDescription());
-//		jDialog.add(desc, gbc);
 		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		jFrame.setResizable(false);
 		return jFrame;
@@ -190,8 +171,6 @@ public abstract class UiVisitor implements Visitor {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		jFrame.setTitle(frame.getTitle());
-//		JTextArea desc = generateDesc(frame.getDescription());
-//		jFrame.add(desc, gbc);
 		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		jFrame.setResizable(false);
 		return jFrame;
@@ -223,18 +202,13 @@ public abstract class UiVisitor implements Visitor {
 		};
 		groupPanel.setBorder(new TitledBorder(new EtchedBorder(), title));
 		groupPanel.setLayout(new GridBagLayout());
-//		groupPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.GRAY));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-//		gbc.insets = new Insets(10, 0, 5, 0);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.weightx = 1.0;
 		gbc.gridwidth = 3;
-//		JLabel jTitle = generateGroupTitle(title);
-//		groupPanel.add(jTitle, gbc);
-//		gbc.insets.set(0, 0, 0, 0);
 		for(JPanelWithValue panel : panels) {
 			gbc.gridy++;
 			groupPanel.add(panel, gbc);
@@ -266,13 +240,8 @@ public abstract class UiVisitor implements Visitor {
 		tabPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.weightx = 1.0;
-//		gbc.insets = new Insets(10, 10, 10, 10);
-//		tabPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
-//		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		tabPanel.add(tabbedPane, gbc);
-//		tabPanel.setBackground(Color.green);
-//		tabPanel.setOpaque(true);
 		return tabPanel;
 	}
 
@@ -298,14 +267,10 @@ public abstract class UiVisitor implements Visitor {
 		gbc.weightx = 1.0;
 		
 		// Align all the component in the tab to the top right corner
-		for(int i=0; i<panels.size(); i++) {
-//			if(i == panels.size()-1)
-//				gbc.weighty = 1.0;
+		for(int i=0; i<panels.size(); i++) {;
 			gbc.gridy++;
 			tabPanel.add(panels.get(i), gbc);
 		}
-//		tabPanel.setBackground(Color.blue);
-//		tabPanel.setOpaque(true);
 		return tabPanel;
 	}
 

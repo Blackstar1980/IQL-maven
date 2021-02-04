@@ -102,21 +102,6 @@ public interface Constraint {
 			return text.matches(value) ? " " : "Input don't match to the pattern '" + value + "'";
 		}
 	};
-//	enum RequiredCon implements Constraint{
-//		Required,NotRequired;
-//		public static RequiredCon from(String value) {
-//			if("true".contentEquals(value)) return RequiredCon.Required;
-//			if("false".contentEquals(value)) return RequiredCon.NotRequired;
-//			throw new IllegalArgumentException("Illigal constraint value: " + value);	
-//		}
-//		@Override
-//		public ConstraintId getID() {
-//			return ConstraintId.REQUIRED;
-//		}
-//		public String validate(String text) {
-//			return text == null || text.isEmpty()? "This field is required": " ";
-//		}
-//	}
 
 	enum OptionalCon implements Constraint {
 		Required, Optional;
@@ -126,8 +111,6 @@ public interface Constraint {
 				return OptionalCon.Optional;
 			else
 				return OptionalCon.Required;
-//			if("false".contentEquals(value)) return RequiredCon.NotRequired;
-//			throw new IllegalArgumentException("Illigal constraint value: " + value);	
 		}
 
 		@Override

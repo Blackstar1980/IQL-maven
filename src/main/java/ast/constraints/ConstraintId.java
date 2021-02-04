@@ -128,14 +128,17 @@ public enum ConstraintId {
 	}
 	
 	private static String changeEscapeCaracters(String subString) {
-		subString = subString.replaceAll("\\\\'", "'");
-		subString = subString.replaceAll("\\\\\"", "\"");
-		subString = subString.replaceAll("\\\\\\[", "[");
-		subString = subString.replaceAll("\\\\\\]", "]");
-		subString = subString.replaceAll("\\\\\\(", "(");
-		subString = subString.replaceAll("\\\\\\)", ")");
-		subString = subString.replaceAll("\\\\\\{", "{");
-		subString = subString.replaceAll("\\\\\\}", "}");
+		subString = subString.replace("\\\'", "'");
+		subString = subString.replace("\\|", "|");
+		subString = subString.replace("\\\\", "\\");
+//		subString = subString.replaceAll("\\\\'", "'");
+//		subString = subString.replaceAll("\\\\\"", "\"");
+//		subString = subString.replaceAll("\\\\\\[", "[");
+//		subString = subString.replaceAll("\\\\\\]", "]");
+//		subString = subString.replaceAll("\\\\\\(", "(");
+//		subString = subString.replaceAll("\\\\\\)", ")");
+//		subString = subString.replaceAll("\\\\\\{", "{");
+//		subString = subString.replaceAll("\\\\\\}", "}");
 		return subString;
 	}
 

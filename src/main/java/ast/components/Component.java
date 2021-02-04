@@ -39,7 +39,6 @@ public interface Component extends Attributable<JPanelContainer>, Ast.Tabable {
 		return ctx.NameWord().getText();
 	}
 	
-	/*Share to all components*/
 	default Map<ConstraintId, Constraint> getMapConstraint(List<Constraint> constraints) {
 		Map<ConstraintId, Constraint> constraintMap = new HashMap<>();
 		if(constraints == null)
@@ -68,7 +67,6 @@ public interface Component extends Attributable<JPanelContainer>, Ast.Tabable {
 		return constraintMap;	
 	}
 	
-	/*Share to all components*/
 	default JLabel generateTitle(String title, Map<ConstraintId, Constraint> constraints) {
 		JLabel label = new JLabel();
 		label.setBorder(new EmptyBorder(0, 0, 0, 10));
@@ -80,14 +78,12 @@ public interface Component extends Attributable<JPanelContainer>, Ast.Tabable {
 		return label;
 	}
 	
-	/*Share to all components*/
 	default JLabel addRequiredToLabel(JLabel label, Map<ConstraintId, Constraint> constraints) {
 		if(constraints.get(ConstraintId.OPTIONAL) == OptionalCon.Required) {
 			label.setText("<html>" + label.getText() + "<span  color='red'> *</span ></html>" );
 		} else {
 			label.setText(label.getText() + "  ");
 		}
-//		("<html>Text color: <font color='red'>red</font></html>"
 		return label;
 	}
 	

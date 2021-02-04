@@ -530,7 +530,7 @@ public class IQL {
 		
 		var decRegex = """
 				'User Details' Single('Provide your detail')
-				name 'Name' Decimal{regex='\\[0-9\\]*\\.\\[0-9\\]\\{2\\}'}
+				name 'Name' Decimal{regex='[0-9]*\\\\.[0-9]{2}'}
 				""";
 		
 //		run(exampleString03);
@@ -538,7 +538,7 @@ public class IQL {
 //		run(queryInline);
 //		List<Map<String, String>> results = run(query);
 		System.out.println(Toolkit. getDefaultToolkit().getScreenSize().height);
-		List<Map<String, String>> results = run(exampleTabularDialog01);
+		List<Map<String, String>> results = run(decRegex);
 		System.out.println(results);
 	}
 

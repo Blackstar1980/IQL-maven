@@ -1,13 +1,9 @@
 package ui;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -22,7 +18,6 @@ import ast.Ast.Containable;
 import ast.Ast.Dialog;
 import ast.Ast.Query;
 import ast.Id;
-import ast.components.*;
 import ast.constraints.Constraint;
 import ast.constraints.ConstraintId;
 import fields.*;

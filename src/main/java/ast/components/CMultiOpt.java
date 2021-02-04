@@ -68,7 +68,10 @@ public class CMultiOpt implements Component {
 	private List<String> extractOptions(String input) {
 		if(input == null || input.isEmpty() || input.endsWith("|") || input.startsWith("|"))
 			throw new IllegalArgumentException("'"+input + "' are not a valid options");
+		input=input.replace("\\|", "\t");
+		input = changeEscapeCaracters(input);
 		List<String> values= Stream.of(input.split("\\|"))
+			     .map(s->s.replace("\t", "|"))
 			     .map(String::trim)
 			     .collect(Collectors.toList());
 		for(String value : values) {
@@ -155,11 +158,9 @@ public class CMultiOpt implements Component {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
 		JPanel comboBoxPanel = new JPanel(new GridBagLayout());
-//		comboBoxPanel.setPreferredSize(new Dimension(300, 22));
 		comboBoxPanel.add(ccb, gbc);
 		MultiOptComboBox comboBox = new MultiOptComboBox();
 		comboBoxPanel.setPreferredSize(new Dimension(300, 22));
-//		comboBox.setPreferredSize(new Dimension(300, 22));
 		comboBox.setEditable(true);
 		comboBox.addItems(options);
 		gbc.gridx = 0;
@@ -170,7 +171,6 @@ public class CMultiOpt implements Component {
 		gbc.gridy = 2;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		panel.add(panel.getErrorLabel(), gbc);
-//		panel.setPreferredSize(new Dimension(300, (int) panel.getPreferredSize().getHeight()));
 		return panel;
 	}
 
@@ -238,9 +238,7 @@ public class CMultiOpt implements Component {
 		comboBox.addItems(options);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-//		gbc.insets = new Insets(0, 0, 0, 10);
 		panel.add(title, gbc);
-//		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.gridx = 1;
 		gbc.weightx = 1.0;
@@ -283,7 +281,6 @@ public class CMultiOpt implements Component {
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.weightx = 1.0;
-//		gbc.insets = new Insets(0, 20, 0, 0);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		panel.add(title, gbc);
@@ -389,12 +386,6 @@ public class CMultiOpt implements Component {
 	
 	@Override
 	public Id getType() { return Id.MultiOpt; }
-
-//	@Override
-//	public String toString() {
-//		return "MultiOpt [name=" + name + ", title=" + title + ", options=" + options + ", constraints=" + constraints
-//				+ "]";
-//	}
 
 	@Override
 	public JPanelWithValue accept(Visitor v) {

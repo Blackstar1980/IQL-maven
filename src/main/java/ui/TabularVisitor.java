@@ -1,21 +1,17 @@
 package ui;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import javax.swing.*;
@@ -26,7 +22,6 @@ import org.w3c.dom.ranges.RangeException;
 import ast.Ast.Containable;
 import ast.Ast.Dialog;
 import ast.Ast.Query;
-import ast.Ast.Tabable;
 import ast.Id;
 import ast.components.*;
 import ast.constraints.Constraint;
@@ -119,7 +114,6 @@ public class TabularVisitor extends UiVisitor {
 		gbc.gridy = 1;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.anchor = GridBagConstraints.WEST;
-//		gbc.weightx = 1.0;
 		gbc.insets = new Insets(0, 7, 0, 0);
 		for(JLabel title : titles) {
 			title.setPreferredSize(new Dimension(138, 22));
@@ -128,10 +122,7 @@ public class TabularVisitor extends UiVisitor {
 		}
 		titlePanel.setMinimumSize(new Dimension(1000, 22));
 		gbc.gridx = 0;
-//		gbc.fill = GridBagConstraints.HORIZONTAL;
 		titlePanel.setBorder(new EmptyBorder(0,14,0,10));
-//		titlePanel.setBackground(Color.GREEN);
-//		titlePanel.setOpaque(true);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		frame.add(titlePanel, gbc);
 		JPanel fieldsContainer = new JPanel(new GridBagLayout());
@@ -143,7 +134,6 @@ public class TabularVisitor extends UiVisitor {
 		JScrollPane scroll = new JScrollPane(fieldsContainer, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.setMaximumSize(new Dimension(100, 150));
-//		gbc.fill = GridBagConstraints.HORIZONTAL;
 		frame.add(scroll, gbc);
 		JPanel buttonsPanel = new JPanel(new GridBagLayout());
 		buttonsPanel.setBorder(new EmptyBorder(5, 0, 0, 0));
@@ -198,7 +188,6 @@ public class TabularVisitor extends UiVisitor {
 		gbc.weightx = 0;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.anchor = GridBagConstraints.CENTER;
-		
 		buttonsPanel.add(approveButton, gbc);
 		gbc.insets = new Insets(5, 5, 5, 0);
 		gbc.gridx = 1;
@@ -310,10 +299,6 @@ public class TabularVisitor extends UiVisitor {
 			String prompt = component.getPrompt();
 			List<Constraint> constraints = component.getConstraints();
 			JLabel title = component.generateTitle(prompt, component.getMapConstraint(constraints));
-//			title.setBackground(Color.blue);
-//			title.setOpaque(true);
-//			panelWithValue.getComponent().generateTitle(panelWithValue.getPrompt(),)
-//			JLabel label = new JLabel(panelWithValue.getPrompt());
 			titles.add(title);
 		}
 		return titles;
@@ -351,8 +336,6 @@ public class TabularVisitor extends UiVisitor {
 			panelWithValue.getComponent(FIELD).setPreferredSize(new Dimension(128, 22));
 		else
 			panelWithValue.getComponent(FIELD).setPreferredSize(new Dimension(140, 22));
-		
-//		System.out.println(panelWithValue.getName() + " " +panelWithValue.getComponent(1).getPreferredSize());
 	}
 
 	@Override
@@ -390,7 +373,6 @@ public class TabularVisitor extends UiVisitor {
 
 	@Override
 	public JPanelWithValue visitPassword(CPassword component) {
-//		throw new IllegalArgumentException("Password is not supported in Tabular dialog");
 		Id id = component.getType();
 		List<Constraint> constraints = component.getConstraints();
 		List<Constraint> newConstraints = setTabularDisplay(id, constraints, BLOCK);
