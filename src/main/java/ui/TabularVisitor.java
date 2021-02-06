@@ -42,10 +42,10 @@ public class TabularVisitor extends UiVisitor {
 
 	@Override
 	public JFrame visitQuery(Query query) {
-		JFrame jFrame = new JFrame();
+//		JFrame jFrame = new JFrame();
 		Dialog dialog = query.dialog();
 		String desc = dialog.getDescription();
-		jFrame = visitMulti(dialog);
+		JFrame jFrame = makeFrame(dialog);
 		setDialogConstraits(dialog.getConstraints());
 		containers = query.containers();
 		List<JPanelContainer> panels = new ArrayList<>();

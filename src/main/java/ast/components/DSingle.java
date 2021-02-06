@@ -37,9 +37,11 @@ public class DSingle implements Dialog {
 		return "Single[title=" + title + ", description=" + description + ", constraints=" + constraints + "]";
 	}
 
+	// Support future operations
 	@Override
 	public JFrame accept(Visitor v) {
-		return v.visitSingle(this);
-	}}
+		return null;
+	}
+}
 
 

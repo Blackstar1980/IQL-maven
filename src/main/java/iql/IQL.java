@@ -452,36 +452,27 @@ public class IQL {
 				""";
 		
 		var all = """
-				'title' Pages('This is the descriptionaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+				'title' Single('This is the descriptionaaaaaaaaa')
 				'Tab1' Tab{
-				string 'String' String
-				password 'Password' Password
+				string 'String' String{optional}
+				password 'Password' Password{optional}
 					'Group' Group {
-					integer 'Integer' Integer
-					decimal 'Decimal' Decimal
-					textarea 'TextArea' TextArea
+					integer 'Integer' Integer{optional}
+					decimal 'Decimal' Decimal{optional}
+					textarea 'TextArea' TextArea{optional}
 					}
 				}
 				'Tab2' Tab{
-				boolean 'Boolean' Boolean{blockList}
+				boolean 'Boolean' Boolean{blockList optional}
 				slider 'Slider' Slider['3,22']
-				singleOpt 'SingleOpt' SingleOpt['option1|option2']
-				multiOpt 'MultiOpt' MultiOpt['option1|option2']{blockList}
+				singleOpt 'SingleOpt' SingleOpt['option1|option2']{optional}
+				multiOpt 'MultiOpt' MultiOpt['option1|option2']{blockList optional}
 				}
 				""";
 		
 		var allTabular = """
 				'title' Tabular('This is the description')
-				stringeeee 'String' String{optional}
-				stringeee 'String' String{optional}
-				stringee 'String' String{optional}
-				stringe 'String' String{optional}
 				string 'String' String{optional}
-				stri 'String' String{optional}
-				strin 'String' String{optional}
-				stringggg 'String' String{optional}
-				stringgg 'String' String{optional}
-				stringg 'String' String{optional}
 				password 'Passwordsddssdsdsdsdsdd' Password{optional}
 				integer 'Integer' Integer{optional}
 				decimal 'Decimal' Decimal{optional}
@@ -512,33 +503,51 @@ public class IQL {
 				pets 'Have pets?' Boolean('true')
 				""";
 		
-		String name = "'Full Name'";
+		String name = "Full Name";
+//		var dialog = """
+//				'User Details' Single('Provide your details below')
+//				name %s String
+//				""";
+		
 		var dialog = """
-				'User Details' Single('Provide your details below')
-				name %s String
-				""";
+				  'User Details' Single('Provide your details below')
+				  name \'%s\' String
+				  """;
+		
 		String query = String.format(dialog,name);
 		
-		String attackerInput = """
-				'Full Name' String{placeholder='Enter name here'}
+		name = """
+				Full Name' String{placeholder='Enter name here'}
 				id 'Id' Integer
 				bank 'Bank Account' Integer
-				email 'Email'
-				""";
+				email 'Email""";
 		
-		String attackerQuery = String.format(dialog,attackerInput);
+		String attackerQuery = String.format(dialog,name);
 		
 		var decRegex = """
 				'User Details' Single('Provide your detail')
 				name 'Name' Decimal{regex='[0-9]*\\\\.[0-9]{2}'}
 				""";
 		
+		var l42Example = """
+				'Provide some points' Single('please provide a point')
+				x 'x coordinate =' Integer{optional}
+				y 'y coordinate =' Integer{optional}
+				""";
+		
+		
+//		  |'Provide some points'
+//		  |      Pages(@msg)
+//		  |x 'x coordinate =' Integer
+//		  |y 'y coordinate =' Integer
+		
+		
 //		run(exampleString03);
 //		run(queryBlock);
 //		run(queryInline);
 //		List<Map<String, String>> results = run(query);
-		System.out.println(Toolkit. getDefaultToolkit().getScreenSize().height);
-		List<Map<String, String>> results = run(decRegex);
+		
+		List<Map<String, String>> results = run(allTabular);
 		System.out.println(results);
 	}
 

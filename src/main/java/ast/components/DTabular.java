@@ -37,7 +37,9 @@ public class DTabular implements Dialog {
 		return "Multi[title=" + title + ", description=" + description + ", constraints=" + constraints + "]";
 	}
 
+	// Support future operations
 	@Override
 	public JFrame accept(Visitor v) {
-		return v.visitMulti(this);
-	}}
+		return null;
+	}
+}

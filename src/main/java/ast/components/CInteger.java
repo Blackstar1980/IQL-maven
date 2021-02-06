@@ -63,12 +63,14 @@ public class CInteger implements Component, Placeholder, BasicLayout {
 			@Override
 			public void setValueOrDefault(String value, boolean setDefault) {
 				if(setDefault) {
-					textField.setText(String.valueOf(defVal));
-					setValue(String.valueOf(defVal));
+					textField.setText(defVal == null? "": String.valueOf(defVal));
+					setValue(defVal == null? "": String.valueOf(defVal));
 				} else {
 					try {
-						textField.setText(String.valueOf(value));
-						setValue(String.valueOf(value));
+						textField.setText(value == null? "": String.valueOf(value));
+						setValue(value == null? "": String.valueOf(value));
+//						textField.setText(String.valueOf(value));
+//						setValue(String.valueOf(value));
 					} catch (Exception e) {
 						throw new NumberFormatException(value + " is not a valid integer");
 					}

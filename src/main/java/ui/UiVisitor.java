@@ -89,7 +89,7 @@ public abstract class UiVisitor implements Visitor {
 		if(comp instanceof JPanelWithValue) {
 			JPanelWithValue panelWithValue = (JPanelWithValue)comp;
 			haveErrors |=panelWithValue.checkForError();
-			String value = panelWithValue.getValue() == null || panelWithValue.getValue().isEmpty()? null: panelWithValue.getValue();
+			String value = panelWithValue.getValue() == null || panelWithValue.getValue().isEmpty()? "": panelWithValue.getValue();
 			data.put(panelWithValue.getName(), value);
 		}
 		return haveErrors;
@@ -125,8 +125,7 @@ public abstract class UiVisitor implements Visitor {
 		return haveErrors;
 	}
 	
-	@Override
-	public JFrame visitSingle(Dialog frame) {
+	public JFrame makeFrame(Dialog dialog) {
 		JFrame jFrame = new JFrame();
 		jFrame.setLayout(new GridBagLayout());
 		JPanel panel = (JPanel)jFrame.getContentPane();
@@ -136,45 +135,62 @@ public abstract class UiVisitor implements Visitor {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		jFrame.setTitle(frame.getTitle());
+		jFrame.setTitle(dialog.getTitle());
 		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		jFrame.setResizable(false);
 		return jFrame;
 	}
-
-	@Override
-	public JFrame visitMulti(Dialog frame) {
-		JFrame jFrame = new JFrame();
-		jFrame.setLayout(new GridBagLayout());
-		JPanel panel = (JPanel)jFrame.getContentPane();
-		panel.setBorder(new EmptyBorder(0, 15, 5, 15));
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		jFrame.setTitle(frame.getTitle());
-		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		jFrame.setResizable(false);
-		return jFrame;
-	}
-
-	@Override
-	public JFrame visitPages(Dialog frame) {
-		JFrame jFrame = new JFrame();
-		jFrame.setLayout(new GridBagLayout());
-		JPanel panel = (JPanel)jFrame.getContentPane();
-		panel.setBorder(new EmptyBorder(0, 15, 5, 15));
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		jFrame.setTitle(frame.getTitle());
-		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		jFrame.setResizable(false);
-		return jFrame;
-	}
+	
+//	@Override
+//	public JFrame visitSingle(Dialog dialog) {
+//		JFrame jFrame = new JFrame();
+//		jFrame.setLayout(new GridBagLayout());
+//		JPanel panel = (JPanel)jFrame.getContentPane();
+//		panel.setBorder(new EmptyBorder(0, 15, 5, 15));
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.fill = GridBagConstraints.HORIZONTAL;
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		jFrame.setTitle(dialog.getTitle());
+//		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+//		jFrame.setResizable(false);
+//		return jFrame;
+//	}
+//
+//	@Override
+//	public JFrame visitMulti(Dialog frame) {
+//		JFrame jFrame = new JFrame();
+//		jFrame.setLayout(new GridBagLayout());
+//		JPanel panel = (JPanel)jFrame.getContentPane();
+//		panel.setBorder(new EmptyBorder(0, 15, 5, 15));
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.fill = GridBagConstraints.HORIZONTAL;
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		jFrame.setTitle(frame.getTitle());
+//		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+//		jFrame.setResizable(false);
+//		return jFrame;
+//	}
+//
+//	@Override
+//	public JFrame visitPages(Dialog frame) {
+//		JFrame jFrame = new JFrame();
+//		jFrame.setLayout(new GridBagLayout());
+//		JPanel panel = (JPanel)jFrame.getContentPane();
+//		panel.setBorder(new EmptyBorder(0, 15, 5, 15));
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		gbc.anchor = GridBagConstraints.WEST;
+//		gbc.fill = GridBagConstraints.HORIZONTAL;
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		jFrame.setTitle(frame.getTitle());
+//		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+//		jFrame.setResizable(false);
+//		return jFrame;
+//	}
 
 	@Override
 	public JPanelContainer visitGroup(Group group) {

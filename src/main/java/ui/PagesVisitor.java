@@ -32,10 +32,10 @@ public class PagesVisitor extends UiVisitor {
 
 	@Override
 	public JFrame visitQuery(Query query) {
-		JFrame jFrame = new JFrame();
+//		JFrame jFrame = new JFrame();
 		Dialog dialog = query.dialog();
 		String desc = dialog.getDescription();
-		jFrame = visitPages(dialog);
+		JFrame jFrame = makeFrame(dialog);
 		setDialogConstraits(dialog.getConstraints());
 		List<Containable> containers = query.containers();
 		List<JPanelContainer> panels = new ArrayList<>();

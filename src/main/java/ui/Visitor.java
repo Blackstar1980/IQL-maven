@@ -24,9 +24,9 @@ import fields.JPanelWithValue;
 
 public interface Visitor {
 	CompletableFuture<List<Map<String, String>>> getData();
-	JFrame visitSingle(Dialog dialog);
-	JFrame visitMulti(Dialog dialog);
-	JFrame visitPages(Dialog dialog);
+//	JFrame visitSingle(Dialog dialog);
+//	JFrame visitMulti(Dialog dialog);
+//	JFrame visitPages(Dialog dialog);
 	JPanelContainer visitGroup(Group group);
 	JPanelContainer visitTab(Tab tab);
 	JPanelWithValue visitString(CString component);

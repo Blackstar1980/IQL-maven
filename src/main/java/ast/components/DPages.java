@@ -37,9 +37,10 @@ public class DPages implements Dialog {
 		return "Pages[title=" + title + ", description=" + description + ", constraints=" + constraints + "]";
 	}
 
+	// Support future operations
 	@Override
 	public JFrame accept(Visitor v) {
-		return v.visitPages(this);
+		return null;
 	}}
 
 
