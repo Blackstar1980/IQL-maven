@@ -288,7 +288,7 @@ public class TabularVisitor extends UiVisitor {
 		for(JPanelContainer panel: panels) {
 			checkComponentErrors(data, false, panel);
 		}
-		return data;
+		return setNullValues(data);
 	}
 	
 	private List<JLabel> getComponentsTitles(List<JPanelContainer> panels) {
