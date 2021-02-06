@@ -125,7 +125,7 @@ public abstract class UiVisitor implements Visitor {
 		return haveErrors;
 	}
 	
-	public JFrame makeFrame(Dialog dialog) {
+	public JFrame makeFrame(String title) {
 		JFrame jFrame = new JFrame();
 		jFrame.setLayout(new GridBagLayout());
 		JPanel panel = (JPanel)jFrame.getContentPane();
@@ -135,7 +135,7 @@ public abstract class UiVisitor implements Visitor {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		jFrame.setTitle(dialog.getTitle());
+		jFrame.setTitle(title);
 		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		jFrame.setResizable(false);
 		return jFrame;

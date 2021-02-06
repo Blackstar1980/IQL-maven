@@ -108,35 +108,7 @@ public class CMultiOpt implements Component {
 		}
 		DefaultComboBoxModel<MultiOptItem> model = new DefaultComboBoxModel<>(items);
 		CheckedComboBox<MultiOptItem> ccb = new CheckedComboBox<>(model);
-		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, this, name, prompt){
-			@Override
-			public boolean checkForError() {
-				String selectedItems = ccb.getSelectedItems();
-				setValue(selectedItems);		
-				String errorMsg = validateConstraints(Id.MultiOpt, selectedItems, constraints);
-				boolean haveError = setErrorLabel(errorMsg);
-				setComponentErrorIndicator(ccb, errorMsg, true);
-				return haveError;
-			}
-
-			@Override
-			public void setValueOrDefault(String values, boolean setDefault) {
-				if(setDefault) {
-					for(int i=0; i<options.size(); i++) {
-						items[i].setSelected(defValues.contains(options.get(i)));
-						setValue(removeParentheses(defValues.toString()));
-					}
-					ccb.updateUI();
-				}
-				else {
-					for(int i=0; i<options.size(); i++) {
-						items[i].setSelected(values.contains(options.get(i)));
-						setValue(values);
-					}
-					ccb.updateUI();
-				}
-			}
-		};
+		JPanelWithValue panel = getListDisplayPanel(constraints, items, ccb);
 		
 		ccb.addActionListener(new ActionListener() {
 			@Override
@@ -181,34 +153,7 @@ public class CMultiOpt implements Component {
 		}
 		DefaultComboBoxModel<MultiOptItem> model = new DefaultComboBoxModel<>(items);
 		CheckedComboBox<MultiOptItem> ccb = new CheckedComboBox<>(model);
-		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, this, name, prompt){
-			@Override
-			public boolean checkForError() {
-				String selectedItems = ccb.getSelectedItems();
-				setValue(selectedItems);		
-				String errorMsg = validateConstraints(Id.MultiOpt, selectedItems, constraints);
-				boolean haveError = setErrorLabel(errorMsg);
-				setComponentErrorIndicator(ccb, errorMsg, true);
-				return haveError;
-			}
-
-			@Override
-			public void setValueOrDefault(String values, boolean setDefault) {
-				if(setDefault) {
-					for(int i=0; i<options.size(); i++) {
-						items[i].setSelected(defValues.contains(options.get(i)));
-						setValue(removeParentheses(defValues.toString()));
-					}
-					ccb.updateUI();
-				} else {
-					for(int i=0; i<options.size(); i++) {
-						items[i].setSelected(values.contains(options.get(i)));
-						setValue(values);
-					}
-					ccb.updateUI();
-				}
-			}
-		};
+		JPanelWithValue panel = getListDisplayPanel(constraints, items, ccb);
 		
 		ccb.setBackground(Color.white);
 		ccb.addActionListener(new ActionListener() {
@@ -252,29 +197,7 @@ public class CMultiOpt implements Component {
 
 	private JPanelWithValue setMultiBlockCheckboxDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
-		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, this, name, prompt){
-			@Override
-			public boolean checkForError() {
-				String selectedItems = checkBoxes.stream()
-						.filter(c -> c.isSelected())
-						.map(c -> c.getText())
-						.collect(Collectors.toList()).toString();
-				setValue(removeParentheses(selectedItems));
-				return setErrorLabel(validateConstraints(Id.MultiOpt, removeParentheses(selectedItems), constraints));
-			}
-
-			@Override
-			public void setValueOrDefault(String value, boolean setDefault) {
-				if(setDefault) {
-					setCheckBoxValues(checkBoxes, defValues);
-					setValue(removeParentheses(defValues.toString()));
-				} else {
-					List<String> values = Arrays.stream(value.split(",")).map(String::trim).collect(Collectors.toList());
-					setCheckBoxValues(checkBoxes, values);
-					setValue(value);
-				}
-			}
-		};
+		JPanelWithValue panel = getCheckboxDisplayPanel(constraints, checkBoxes);
 		panel.setValueOrDefault("", true);
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -301,29 +224,7 @@ public class CMultiOpt implements Component {
 
 	private JPanelWithValue setMultiInlineCheckboxDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
-		JPanelWithValue panel = new JPanelWithValue(Id.MultiOpt, this, name, prompt){
-			@Override
-			public boolean checkForError() {
-				String selectedItems = checkBoxes.stream()
-						.filter(c -> c.isSelected())
-						.map(c -> c.getText())
-						.collect(Collectors.toList()).toString();
-				setValue(removeParentheses(selectedItems));
-				return setErrorLabel(validateConstraints(Id.MultiOpt, selectedItems, constraints));
-			}
-
-			@Override
-			public void setValueOrDefault(String value, boolean setDefault) {
-				if(setDefault) {
-					setCheckBoxValues(checkBoxes, defValues);
-					setValue(removeParentheses(defValues.toString()));
-				} else {
-					List<String> values = Arrays.stream(value.split(",")).map(String::trim).collect(Collectors.toList());
-					setCheckBoxValues(checkBoxes, values);
-					setValue(value);
-				}
-			}
-		};
+		JPanelWithValue panel = getCheckboxDisplayPanel(constraints, checkBoxes);
 		panel.setValueOrDefault("", true);
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -349,6 +250,65 @@ public class CMultiOpt implements Component {
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		panel.add(panel.getErrorLabel(), gbc);		
 		return panel;
+	}
+
+	private JPanelWithValue getListDisplayPanel(Map<ConstraintId, Constraint> constraints, MultiOptItem[] items,
+			CheckedComboBox<MultiOptItem> ccb) {
+		return new JPanelWithValue(Id.MultiOpt, this, name, prompt){
+			@Override
+			public boolean checkForError() {
+				String selectedItems = ccb.getSelectedItems();
+				setValue(selectedItems);		
+				String errorMsg = validateConstraints(Id.MultiOpt, selectedItems, constraints);
+				boolean haveError = setErrorLabel(errorMsg);
+				setComponentErrorIndicator(ccb, errorMsg, true);
+				return haveError;
+			}
+
+			@Override
+			public void setValueOrDefault(String values, boolean setDefault) {
+				if(setDefault) {
+					for(int i=0; i<options.size(); i++) {
+						items[i].setSelected(defValues.contains(options.get(i)));
+						setValue(removeParentheses(defValues.toString()));
+					}
+					ccb.updateUI();
+				} else {
+					for(int i=0; i<options.size(); i++) {
+						items[i].setSelected(values.contains(options.get(i)));
+						setValue(values);
+					}
+					ccb.updateUI();
+				}
+			}
+		};
+	}
+	
+	private JPanelWithValue getCheckboxDisplayPanel(Map<ConstraintId, Constraint> constraints,
+			List<JCheckBox> checkBoxes) {
+		return new JPanelWithValue(Id.MultiOpt, this, name, prompt){
+			@Override
+			public boolean checkForError() {
+				String selectedItems = checkBoxes.stream()
+						.filter(c -> c.isSelected())
+						.map(c -> c.getText())
+						.collect(Collectors.toList()).toString();
+				setValue(removeParentheses(selectedItems));
+				return setErrorLabel(validateConstraints(Id.MultiOpt, removeParentheses(selectedItems), constraints));
+			}
+
+			@Override
+			public void setValueOrDefault(String value, boolean setDefault) {
+				if(setDefault) {
+					setCheckBoxValues(checkBoxes, defValues);
+					setValue(removeParentheses(defValues.toString()));
+				} else {
+					List<String> values = Arrays.stream(value.split(",")).map(String::trim).collect(Collectors.toList());
+					setCheckBoxValues(checkBoxes, values);
+					setValue(value);
+				}
+			}
+		};
 	}
 	
 	private void setCheckBoxValues(List<JCheckBox> checkBoxes , List<String> values) {

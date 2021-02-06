@@ -535,6 +535,14 @@ public class IQL {
 				y 'y coordinate =' Integer{optional}
 				""";
 		
+		var multi = """
+				'Provide some points' Single('please provide a point')
+				x 'x' Boolean{optional inlineList}
+				y 'y' Boolean{optional blockList}
+				z 'z' Boolean{}
+				t 't' Boolean{inline}
+				""";
+		
 		
 //		  |'Provide some points'
 //		  |      Pages(@msg)
@@ -547,7 +555,7 @@ public class IQL {
 //		run(queryInline);
 //		List<Map<String, String>> results = run(query);
 		
-		List<Map<String, String>> results = run(allTabular);
+		List<Map<String, String>> results = run(multi);
 		System.out.println(results);
 	}
 

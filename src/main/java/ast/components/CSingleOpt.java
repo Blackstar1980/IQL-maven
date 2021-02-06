@@ -99,31 +99,7 @@ public class CSingleOpt implements Component {
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
 		combo.setPreferredSize(new Dimension(300, 22));
 		combo.setBackground(Color.white);
-		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, this, name, prompt) {
-			@Override
-			public boolean checkForError() {
-				if (combo.getSelectedItem() != null)
-					setValue(combo.getSelectedItem().toString());
-				String errorMsg = validateConstraints(Id.SingleOpt, getValue(), constraints);
-				boolean haveError = setErrorLabel(errorMsg);
-				setComponentErrorIndicator(combo, errorMsg, true);
-				return haveError;
-			}
-
-			@Override
-			public void setValueOrDefault(String value, boolean setDefault) {
-				if(setDefault) {
-					combo.setSelectedItem(defValue);
-					setValue(defValue);
-				} else if ("".equals(value)) {
-					combo.setSelectedIndex(-1);
-					setValue(value);
-					} else {
-						combo.setSelectedItem(value);
-						setValue(value);
-					}
-			}
-		};
+		JPanelWithValue panel = getListDisplayPanel(constraints, combo);
 		panel.setValueOrDefault("", true);
 		panel.setLayout(new GridBagLayout());
 		combo.addActionListener(new ActionListener() {
@@ -156,31 +132,7 @@ public class CSingleOpt implements Component {
 		String[] optionsArray = toArrayStartWithEmptyValue(options);
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
 		combo.setBackground(Color.white);
-		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, this, name, prompt) {
-			@Override
-			public boolean checkForError() {
-				if (combo.getSelectedItem() != null)
-					setValue(combo.getSelectedItem().toString());
-				String errorMsg = validateConstraints(Id.SingleOpt, getValue(), constraints);
-				boolean haveError = setErrorLabel(errorMsg);
-				setComponentErrorIndicator(combo, errorMsg, true);
-				return haveError;
-			}
-
-			@Override
-			public void setValueOrDefault(String value, boolean setDefault) {
-				if(setDefault) {
-					combo.setSelectedItem(defValue);
-					setValue(defValue);
-				} else if ("".equals(value)) {
-					combo.setSelectedIndex(-1);
-					setValue(value);
-					} else {
-						combo.setSelectedItem(value);
-						setValue(value);
-					}
-			}
-		};
+		JPanelWithValue panel = getListDisplayPanel(constraints, combo);
 		panel.setValueOrDefault("", true);
 		panel.setLayout(new GridBagLayout());
 		combo.addActionListener(new ActionListener() {
@@ -223,26 +175,7 @@ public class CSingleOpt implements Component {
 	private JPanelWithValue setSingleInlineRadioDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		ButtonGroup buttonGroup = new ButtonGroup();
 		Map<String, JRadioButton> buttons = new HashMap<>();
-		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, this, name, prompt) {
-			@Override
-			public boolean checkForError() {
-				return setErrorLabel(validateConstraints(Id.SingleOpt, getValue(), constraints));
-			}
-
-			@Override
-			public void setValueOrDefault(String value, boolean setDefault) {
-				if(setDefault) {
-					setValue(defValue);
-					buttons.get(defValue).setSelected(true);
-				} else if ("".equals(value)) {
-						buttonGroup.clearSelection();
-						setValue("");
-					} else {
-						setValue(value);
-						buttons.get(value).setSelected(true);
-					}
-			}
-		};
+		JPanelWithValue panel = getRadioDisplayPanel(constraints, buttonGroup, buttons);
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
@@ -279,34 +212,7 @@ public class CSingleOpt implements Component {
 	private JPanelWithValue setSingleBlockRadioDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		ButtonGroup buttonGroup = new ButtonGroup();
 		Map<String, JRadioButton> buttons = new HashMap<>();
-		JPanelWithValue panel = new JPanelWithValue(Id.SingleOpt, this, name, prompt) {
-			@Override
-			public boolean checkForError() {
-				return setErrorLabel(validateConstraints(Id.SingleOpt, getValue(), constraints));
-			}
-
-			@Override
-			public void setValueOrDefault(String value, boolean setDefault) {
-				if(setDefault) {
-					if("".equals(value)) {
-						clearSelection(buttonGroup);
-					} else {
-					setValue(defValue);
-					buttons.get(defValue).setSelected(true);
-					}
-				} else if ("".equals(value)) {
-						clearSelection(buttonGroup);
-					} else {
-						setValue(value);
-						buttons.get(value).setSelected(true);
-					}
-			}
-
-			private void clearSelection(ButtonGroup buttonGroup) {
-				buttonGroup.clearSelection();
-				setValue("");
-			}
-		};
+		JPanelWithValue panel = getRadioDisplayPanel(constraints, buttonGroup, buttons);
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
@@ -344,6 +250,66 @@ public class CSingleOpt implements Component {
 		panel.add(panel.getErrorLabel(), gbc);
 		panel.setPreferredSize(new Dimension(300, (int) panel.getPreferredSize().getHeight()));
 		return panel;
+	}
+
+	private JPanelWithValue getRadioDisplayPanel(Map<ConstraintId, Constraint> constraints, ButtonGroup buttonGroup,
+			Map<String, JRadioButton> buttons) {
+		return new JPanelWithValue(Id.SingleOpt, this, name, prompt) {
+			@Override
+			public boolean checkForError() {
+				return setErrorLabel(validateConstraints(Id.SingleOpt, getValue(), constraints));
+			}
+
+			@Override
+			public void setValueOrDefault(String value, boolean setDefault) {
+				if(setDefault) {
+					if("".equals(value)) {
+						clearSelection(buttonGroup);
+					} else {
+					setValue(defValue);
+					buttons.get(defValue).setSelected(true);
+					}
+				} else if ("".equals(value)) {
+						clearSelection(buttonGroup);
+					} else {
+						setValue(value);
+						buttons.get(value).setSelected(true);
+					}
+			}
+
+			private void clearSelection(ButtonGroup buttonGroup) {
+				buttonGroup.clearSelection();
+				setValue("");
+			}
+		};
+	}
+	
+	private JPanelWithValue getListDisplayPanel(Map<ConstraintId, Constraint> constraints, JComboBox<String> combo) {
+		return new JPanelWithValue(Id.SingleOpt, this, name, prompt) {
+			@Override
+			public boolean checkForError() {
+				if (combo.getSelectedItem() != null)
+					setValue(combo.getSelectedItem().toString());
+				String errorMsg = validateConstraints(Id.SingleOpt, getValue(), constraints);
+				boolean haveError = setErrorLabel(errorMsg);
+				setComponentErrorIndicator(combo, errorMsg, true);
+				return haveError;
+			}
+
+			@Override
+			public void setValueOrDefault(String value, boolean setDefault) {
+				if(setDefault) {
+					combo.setSelectedItem(defValue);
+					setValue(defValue);
+				} else if ("".equals(value)) {
+					combo.setSelectedIndex(-1);
+					setValue(value);
+					} else {
+						combo.setSelectedItem(value);
+						setValue(value);
+					}
+			}
+		};
 	}
 
 	public String getName() {

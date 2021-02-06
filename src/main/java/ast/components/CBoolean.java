@@ -79,29 +79,7 @@ public class CBoolean implements Component {
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
 		combo.setPreferredSize(new Dimension(300, 22));
 		combo.setBackground(Color.white);
-		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, this, name, prompt) {
-			@Override
-			public boolean checkForError() {
-				String errorMsg = validateConstraints(Id.Boolean, getValue(), constraintMap);
-				boolean haveError = setErrorLabel(errorMsg);
-				setComponentErrorIndicator(combo, errorMsg, true);
-				return haveError;
-			}
-
-			@Override
-			public void setValueOrDefault(String value, boolean setDefault) {
-				if(setDefault) {
-					combo.setSelectedItem(defVal);
-					setValue(defVal);
-				} else if ("".equals(value)) {
-					combo.setSelectedIndex(-1);
-					setValue(value);
-					} else {
-						combo.setSelectedItem(value);
-						setValue(value);
-					}
-			}
-		};
+		JPanelWithValue panel = getListDisplayPanel(constraintMap, combo);
 		panel.setValueOrDefault("", true);
 		panel.setLayout(new GridBagLayout());
 		combo.addActionListener(new ActionListener() {
@@ -135,29 +113,7 @@ public class CBoolean implements Component {
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
 		combo.setPreferredSize(new Dimension(300, 22));
 		combo.setBackground(Color.white);
-		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, this, name, prompt) {
-			@Override
-			public boolean checkForError() {
-				String errorMsg = validateConstraints(Id.Boolean, getValue(), constraintMap);
-				boolean haveError = setErrorLabel(errorMsg);
-				setComponentErrorIndicator(combo, errorMsg, true);
-				return haveError;
-			}
-
-			@Override
-			public void setValueOrDefault(String value, boolean setDefault) {
-				if(setDefault) {
-					combo.setSelectedItem(defVal);
-					setValue(defVal);
-				} else if ("".equals(value)) {
-					combo.setSelectedIndex(-1);
-					setValue(value);
-					} else {
-						combo.setSelectedItem(value);
-						setValue(value);
-					}
-			}
-		};
+		JPanelWithValue panel = getListDisplayPanel(constraintMap, combo);
 		panel.setValueOrDefault("", true);
 		panel.setLayout(new GridBagLayout());
 		combo.addActionListener(new ActionListener() {
@@ -194,33 +150,7 @@ public class CBoolean implements Component {
 	private JPanelWithValue setBooleanInlineDisplay(JLabel title, Map<ConstraintId, Constraint> constraintMap) {
 		JRadioButton yesButton = new JRadioButton("Yes");
 		JRadioButton noButton = new JRadioButton("No");
-		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, this, name, prompt) {
-			@Override
-			public boolean checkForError() {
-				return setErrorLabel(validateConstraints(Id.Boolean, getValue(), constraintMap));
-			}
-
-			@Override
-			public void setValueOrDefault(String value, boolean setDefault) {
-				if (setDefault)
-					value = defVal;
-				if ("".equals(value)) {
-					yesButton.setSelected(false);
-					noButton.setSelected(false);
-					setValue("");
-				}
-				if ("true".equals(value)) {
-					yesButton.setSelected(true);
-					noButton.setSelected(false);
-					setValue("true");
-				}
-				if ("false".equals(value)) {
-					noButton.setSelected(true);
-					yesButton.setSelected(false);
-					setValue("false");
-				}
-			}
-		};
+		JPanelWithValue panel = getRadioDisplayPanel(constraintMap, yesButton, noButton);
 		panel.setValueOrDefault("", true);
 		yesButton.addActionListener(new ActionListener() {
 			@Override
@@ -274,33 +204,7 @@ public class CBoolean implements Component {
 	private JPanelWithValue setBooleanBlockDisplay(JLabel title, Map<ConstraintId, Constraint> constraintMap) {
 		JRadioButton yesButton = new JRadioButton("Yes");
 		JRadioButton noButton = new JRadioButton("No");
-		JPanelWithValue panel = new JPanelWithValue(Id.Boolean, this, name, prompt) {
-			@Override
-			public boolean checkForError() {
-				return setErrorLabel(validateConstraints(Id.Boolean, getValue(), constraintMap));
-			}
-
-			@Override
-			public void setValueOrDefault(String value, boolean setDefault) {
-				if (setDefault)
-					value = defVal;
-				if ("".equals(value)) {
-					yesButton.setSelected(false);
-					noButton.setSelected(false);
-					setValue("");
-				}
-				if ("true".equals(value)) {
-					yesButton.setSelected(true);
-					noButton.setSelected(false);
-					setValue("true");
-				}
-				if ("false".equals(value)) {
-					noButton.setSelected(true);
-					yesButton.setSelected(false);
-					setValue("false");
-				}
-			}
-		};
+		JPanelWithValue panel = getRadioDisplayPanel(constraintMap, yesButton, noButton);
 		panel.setValueOrDefault("", true);
 		yesButton.addActionListener(new ActionListener() {
 			@Override
@@ -345,6 +249,64 @@ public class CBoolean implements Component {
 		panel.add(panel.getErrorLabel(), gbc);
 		panel.setPreferredSize(new Dimension(300, (int) panel.getPreferredSize().getHeight()));
 		return panel;
+	}
+
+	private JPanelWithValue getRadioDisplayPanel(Map<ConstraintId, Constraint> constraintMap, JRadioButton yesButton,
+			JRadioButton noButton) {
+		return new JPanelWithValue(Id.Boolean, this, name, prompt) {
+			@Override
+			public boolean checkForError() {
+				return setErrorLabel(validateConstraints(Id.Boolean, getValue(), constraintMap));
+			}
+
+			@Override
+			public void setValueOrDefault(String value, boolean setDefault) {
+				if (setDefault)
+					value = defVal;
+				if ("".equals(value)) {
+					yesButton.setSelected(false);
+					noButton.setSelected(false);
+					setValue("");
+				}
+				if ("true".equals(value)) {
+					yesButton.setSelected(true);
+					noButton.setSelected(false);
+					setValue("true");
+				}
+				if ("false".equals(value)) {
+					noButton.setSelected(true);
+					yesButton.setSelected(false);
+					setValue("false");
+				}
+			}
+		};
+	}
+	
+
+	private JPanelWithValue getListDisplayPanel(Map<ConstraintId, Constraint> constraintMap, JComboBox<String> combo) {
+		return new JPanelWithValue(Id.Boolean, this, name, prompt) {
+			@Override
+			public boolean checkForError() {
+				String errorMsg = validateConstraints(Id.Boolean, getValue(), constraintMap);
+				boolean haveError = setErrorLabel(errorMsg);
+				setComponentErrorIndicator(combo, errorMsg, true);
+				return haveError;
+			}
+
+			@Override
+			public void setValueOrDefault(String value, boolean setDefault) {
+				if(setDefault) {
+					combo.setSelectedItem(defVal);
+					setValue(defVal);
+				} else if ("".equals(value)) {
+					combo.setSelectedIndex(-1);
+					setValue(value);
+					} else {
+						combo.setSelectedItem(value);
+						setValue(value);
+					}
+			}
+		};
 	}
 
 	@Override

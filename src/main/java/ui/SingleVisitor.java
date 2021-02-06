@@ -28,8 +28,9 @@ public class SingleVisitor extends UiVisitor {
 	public JFrame visitQuery(Query query) {
 //		JFrame jFrame = new JFrame();
 		Dialog dialog = query.dialog();
+		String title = dialog.getTitle();
 		String desc = dialog.getDescription();
-		JFrame jFrame = makeFrame(dialog);
+		JFrame jFrame = makeFrame(title);
 		setDialogConstraits(dialog.getConstraints());
 		List<Containable> containers = query.containers();
 		List<JPanelContainer> panels = new ArrayList<>();
