@@ -1,6 +1,5 @@
 package iql;
 
-import java.awt.Toolkit;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +11,11 @@ import ui.SingleVisitor;
 
 public class IQL {
 
+	/**
+	* A method that accepts a IQL grammar as a String, create a dialog and returns the user inputs. 
+	* @param query a IQL grammar for the dialog creation.
+	* @return a List<Map<String, String>>, the keys contains the components name and the values contains the user inputs. 
+	*/
 	public static List<Map<String, String>> run(String query) {
 		Ast.Query queryObj = Parser.parse(query);
 		var visitor = switch (queryObj.dialog().getType()) {

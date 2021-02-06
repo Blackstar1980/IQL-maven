@@ -59,7 +59,7 @@ public interface Component extends Attributable<JPanelContainer>, Ast.Tabable {
 					throw new IllegalArgumentException("Unexpected String constraint: " + id);
 			}
 		});
-		// If not exist then apply those default setting
+		// If not exist then apply default setting
 		if (!constraintMap.containsKey(ConstraintId.DISPLAY))
 			constraintMap.put(ConstraintId.DISPLAY, DisplayId.Non);
 		if (!constraintMap.containsKey(ConstraintId.OPTIONAL))

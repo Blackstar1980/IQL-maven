@@ -18,7 +18,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import ast.Ast.Containable;
-import ast.Ast.Dialog;
 import ast.Ast.Tabable;
 import ast.Id;
 import ast.components.*;
@@ -141,57 +140,6 @@ public abstract class UiVisitor implements Visitor {
 		return jFrame;
 	}
 	
-//	@Override
-//	public JFrame visitSingle(Dialog dialog) {
-//		JFrame jFrame = new JFrame();
-//		jFrame.setLayout(new GridBagLayout());
-//		JPanel panel = (JPanel)jFrame.getContentPane();
-//		panel.setBorder(new EmptyBorder(0, 15, 5, 15));
-//		GridBagConstraints gbc = new GridBagConstraints();
-//		gbc.anchor = GridBagConstraints.WEST;
-//		gbc.fill = GridBagConstraints.HORIZONTAL;
-//		gbc.gridx = 0;
-//		gbc.gridy = 0;
-//		jFrame.setTitle(dialog.getTitle());
-//		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//		jFrame.setResizable(false);
-//		return jFrame;
-//	}
-//
-//	@Override
-//	public JFrame visitMulti(Dialog frame) {
-//		JFrame jFrame = new JFrame();
-//		jFrame.setLayout(new GridBagLayout());
-//		JPanel panel = (JPanel)jFrame.getContentPane();
-//		panel.setBorder(new EmptyBorder(0, 15, 5, 15));
-//		GridBagConstraints gbc = new GridBagConstraints();
-//		gbc.anchor = GridBagConstraints.WEST;
-//		gbc.fill = GridBagConstraints.HORIZONTAL;
-//		gbc.gridx = 0;
-//		gbc.gridy = 0;
-//		jFrame.setTitle(frame.getTitle());
-//		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//		jFrame.setResizable(false);
-//		return jFrame;
-//	}
-//
-//	@Override
-//	public JFrame visitPages(Dialog frame) {
-//		JFrame jFrame = new JFrame();
-//		jFrame.setLayout(new GridBagLayout());
-//		JPanel panel = (JPanel)jFrame.getContentPane();
-//		panel.setBorder(new EmptyBorder(0, 15, 5, 15));
-//		GridBagConstraints gbc = new GridBagConstraints();
-//		gbc.anchor = GridBagConstraints.WEST;
-//		gbc.fill = GridBagConstraints.HORIZONTAL;
-//		gbc.gridx = 0;
-//		gbc.gridy = 0;
-//		jFrame.setTitle(frame.getTitle());
-//		jFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//		jFrame.setResizable(false);
-//		return jFrame;
-//	}
-
 	@Override
 	public JPanelContainer visitGroup(Group group) {
 		String title = group.getTitle();

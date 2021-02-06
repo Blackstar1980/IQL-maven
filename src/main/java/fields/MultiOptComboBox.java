@@ -15,7 +15,6 @@ public class MultiOptComboBox extends JComboBox<String>{
         setEditor(new MultiOptEditor());
     }
      
-    // Add an array items to this combo box.
     public void addItems(List<String> items) {
         for (String item : items) {
             model.addElement(item);

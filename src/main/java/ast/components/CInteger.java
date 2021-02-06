@@ -69,8 +69,6 @@ public class CInteger implements Component, Placeholder, BasicLayout {
 					try {
 						textField.setText(value == null? "": String.valueOf(value));
 						setValue(value == null? "": String.valueOf(value));
-//						textField.setText(String.valueOf(value));
-//						setValue(String.valueOf(value));
 					} catch (Exception e) {
 						throw new NumberFormatException(value + " is not a valid integer");
 					}

@@ -32,7 +32,6 @@ public class PagesVisitor extends UiVisitor {
 
 	@Override
 	public JFrame visitQuery(Query query) {
-//		JFrame jFrame = new JFrame();
 		Dialog dialog = query.dialog();
 		String title = dialog.getTitle();
 		String desc = dialog.getDescription();

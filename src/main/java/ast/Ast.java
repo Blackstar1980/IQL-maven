@@ -35,13 +35,6 @@ public interface Ast<T> {
 		subString = subString.replace("\\\'", "'");
 		subString = subString.replace("\\|", "|");
 		subString = subString.replace("\\\\", "\\");
-//		subString = subString.replaceAll("\\\\\"", "\"");
-//		subString = subString.replaceAll("\\\\\\[", "[");
-//		subString = subString.replaceAll("\\\\\\]", "]");
-//		subString = subString.replaceAll("\\\\\\(", "(");
-//		subString = subString.replaceAll("\\\\\\)", ")");
-//		subString = subString.replaceAll("\\\\\\{", "{");
-//		subString = subString.replaceAll("\\\\\\}", "}");
 		return subString;
 	}
 

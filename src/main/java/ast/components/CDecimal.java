@@ -65,14 +65,10 @@ public class CDecimal implements Component, Placeholder, BasicLayout {
 				if(setDefault) {
 					textField.setText(defVal == null? "": String.valueOf(defVal));
 					setValue(defVal == null? "": String.valueOf(defVal));
-//					textField.setText(String.valueOf(defVal));
-//					setValue(String.valueOf(defVal));
 				} else {
 					try {
 						textField.setText(value == null? "": String.valueOf(value));
 						setValue(value == null? "": String.valueOf(value));
-//						textField.setText(value);
-//						setValue(String.valueOf(value));
 					} catch (NumberFormatException e) {
 						throw new NumberFormatException(value + " is not a valid decimal");
 					}

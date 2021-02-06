@@ -132,8 +132,6 @@ public class CBoolean implements Component {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.EAST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-//		combo.setPreferredSize(new Dimension(300, 22));
-//		gbc.insets = new Insets(0, 20, 0, 0);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		panel.add(title, gbc);
