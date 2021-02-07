@@ -1,4 +1,4 @@
-package ast.components.test;
+package test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -13,8 +13,69 @@ import ast.components.CSingleOpt;
 import ast.constraints.Constraint;
 import ast.constraints.DisplayId;
 import fields.JPanelWithValue;
+import test.TestHelper;
 
 public class SingleOptTest {
+	
+	@Test public void singleOpt1() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single my description')
+			height 'Height:' SingleOpt['Red|Blue|Green']
+			{inlineList optional}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single my description, constraints=[]], \
+			containers=[SingleOpt [name=height, prompt=Height:, options=[Red, Blue, Green], \
+			defValue=, constraints=[InlineList, Optional]]]]\
+			""");
+	}
+	
+	@Test public void singleOpt2() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single my description')
+			height 'Height:' SingleOpt['Red|Blue|Green']('')
+			{blockList}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single my description, constraints=[]], \
+			containers=[SingleOpt [name=height, prompt=Height:, options=[Red, Blue, Green], \
+			defValue=, constraints=[BlockList]]]]\
+			""");
+	}
+	
+	@Test public void singleOpt3() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single my description')
+			height 'Height:' SingleOpt['Red|Blue|Green']('Red')
+			{blockRadio}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single my description, constraints=[]], \
+			containers=[SingleOpt [name=height, prompt=Height:, options=[Red, Blue, Green], \
+			defValue=Red, constraints=[BlockRadio]]]]\
+			""");
+	}
+	
+	@Test public void singleOpt4() {
+		TestHelper.arrgumentException("""
+			'Single Dialog' Single('single my description')
+			height 'Height:' SingleOpt['Red|Blue|Green']('Green|Blue')
+			{inlineList}
+			""",
+			"'Green|Blue' is not a valid option");
+	}
+	
+	@Test public void singleOpt5() {
+		TestHelper.checkParseError("""
+			'Single Dialog' Single('single my description')
+			height 'Height:' SingleOpt[Red|Blue|Green]
+			{inlineList}
+			""");
+	}
+	
 	@Test
 	public void testSingleOptBlockListDisplay() {
 		var frame = new JFrame();

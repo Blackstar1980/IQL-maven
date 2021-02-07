@@ -66,6 +66,16 @@ public class DialogTests {
 	@Test public void wrongDialogInformation08() {
 		TestHelper.checkParseError("'Dialog Title' Single('dialog description'){holder = 'my holder'} name 'Name:' String");
 	}
+	
+	@Test public void wrongDialogInformation09() {
+		TestHelper.checkParseError(
+				"'Dialog Title' Tabular('dialog description'){cancel=Exit}  name 'Name:' String");
+	}
+	
+	@Test public void wrongDialogInformation10() {
+		TestHelper.checkParseError(
+				"'Dialog Title' Tabular('dialog description'){approve=Approve}  name 'Name:' String");
+	}
 		
 	@Test public void dialog01() {
 		TestHelper.checkAst(
@@ -154,6 +164,32 @@ public class DialogTests {
 			Query[dialog=Single[title=Single Dialog, description=single my
 			description, constraints=[]], containers=[Slider [name=cats, \
 			prompt=Have cats?, minVal=2, maxVal=44, defVal=7, constraints=[Inline]]]]\
+			""");
+	}
+	
+	@Test public void dialog07() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single my description'){approve='Accept'}
+			name 'Name' String{optional}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single my description, constraints=[ApproveCon[value=Accept]]], \
+			containers=[String [name=name, prompt=Name, defVal=, \
+			constraints=[Optional]]]]\
+			""");
+	}
+	
+	@Test public void dialog08() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single my description'){cancel='Exit'}
+			name 'Name' String{optional}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single my description, constraints=[CancelCon[value=Exit]]], \
+			containers=[String [name=name, prompt=Name, defVal=, \
+			constraints=[Optional]]]]\
 			""");
 	}
 }

@@ -1,4 +1,4 @@
-package ast.components.test;
+package test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -13,8 +13,82 @@ import ast.components.CMultiOpt;
 import ast.constraints.Constraint;
 import ast.constraints.DisplayId;
 import fields.JPanelWithValue;
+import test.TestHelper;
 
-public class MultiOptTest {	
+public class MultiOptTest {
+	
+	@Test public void multiOpt1() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single my description')
+			height 'Height:' MultiOpt['Red|Blue|Green']
+			{ inlineList optional}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single my description, constraints=[]], \
+			containers=[MultiOpt [name=height, prompt=Height:, \
+			options=[Red, Blue, Green], defValues=[], constraints=[InlineList, Optional]]]]\
+			""");
+	}
+	
+	@Test public void multiOpt2() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single my description')
+			height 'Height:' MultiOpt['Red|Blue|Green']('Red|Blue')
+			{ blockList}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single my description, constraints=[]], \
+			containers=[MultiOpt [name=height, prompt=Height:, \
+			options=[Red, Blue, Green], defValues=[Red, Blue], constraints=[BlockList]]]]\
+			""");
+	}
+	
+	@Test public void multiOpt3() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single my description')
+			height 'Height:' MultiOpt['Red|Blue|Green']('Red|Blue')
+			{ blockCheckbox}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single my description, constraints=[]], \
+			containers=[MultiOpt [name=height, prompt=Height:, \
+			options=[Red, Blue, Green], defValues=[Red, Blue], constraints=[BlockCheckbox]]]]\
+			""");
+	}
+	
+	@Test public void multiOpt4() {
+		TestHelper.arrgumentException("""
+			'Single Dialog' Single('single my description')
+			height 'Height:' MultiOpt['Red|Blue|Green']('Yellow')
+			{inlineList}
+			""",
+			"'Yellow' is not a valid option");
+	}
+	
+	@Test public void multiOpt5() {
+		TestHelper.checkAst("""
+				'Single Dialog' Single('single my description')
+				height 'Height:' MultiOpt['Red|Blue|Green']('')
+				{ inlineList}
+				""",
+				"""
+				Query[dialog=Single[title=Single Dialog, \
+				description=single my description, constraints=[]], \
+				containers=[MultiOpt [name=height, prompt=Height:, \
+				options=[Red, Blue, Green], defValues=[], constraints=[InlineList]]]]\
+				""");
+	}
+	
+	@Test public void multiOpt6() {
+		TestHelper.checkParseError("""
+				'Single Dialog' Single('single my description')
+				height 'Height:' MultiOpt[Red|Blue|Green]
+				{ inlineList}
+				""");
+	}
 	
 	@Test
 	public void testMultiOptBlockListDisplay() {

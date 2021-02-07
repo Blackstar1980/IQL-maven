@@ -37,7 +37,7 @@ public enum ComponentFactory {
 		case Password -> Password.createComp.apply(ctx);
 		case Slider -> Slider.createComp.apply(ctx);
 		case TextArea -> TextArea.createComp.apply(ctx);
-		default -> throw new Error(id + " is not a valide id");
+		default -> throw new IllegalArgumentException(id + " is not a valide id");
 		};
 	}
 }

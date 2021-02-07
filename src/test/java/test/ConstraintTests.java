@@ -176,4 +176,110 @@ public class ConstraintTests {
 			prompt=Have dogs?, defVal=false, constraints=[Block]]]]\
 			""");
 	}
+	
+	@Test public void con18() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single my description')
+			cats 'Have cats?' Boolean{optional}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single my description, constraints=[]], \
+			containers=[Boolean [name=cats, prompt=Have cats?, defVal=, \
+			constraints=[Optional]]]]\
+			""");
+	}
+	
+	@Test public void con19() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single my description')
+			name 'Name' String{optional}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single my description, constraints=[]], \
+			containers=[String [name=name, prompt=Name, defVal=, \
+			constraints=[Optional]]]]\
+			""");
+	}
+		
+	@Test public void con20() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single my description')
+			password 'Password' Password{optional}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single my description, constraints=[]], \
+			containers=[Password [name=password, prompt=Password, defVal=, \
+			constraints=[Optional]]]]\
+			""");
+	}
+	
+	@Test public void con21() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single my description')
+			comments 'Comments' TextArea{optional}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single my description, constraints=[]], \
+			containers=[TextArea [name=comments, prompt=Comments, defVal=, \
+			constraints=[Optional]]]]\
+			""");
+	}
+	
+	@Test public void con22() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single my description')
+			age 'Age' Integer{optional}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single my description, constraints=[]], \
+			containers=[Integer [name=age, prompt=Age, defVal=null, \
+			constraints=[Optional]]]]\
+			""");
+	}
+	
+	@Test public void con23() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single my description')
+			weight 'Weight' Decimal{optional}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single my description, constraints=[]], \
+			containers=[Decimal [name=weight, prompt=Weight, defVal=null, \
+			constraints=[Optional]]]]\
+			""");
+	}
+	
+	@Test public void con24() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single my description')
+			work 'Work' SingleOpt['Building|Programming|Farming']{optional}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single my description, constraints=[]], \
+			containers=[SingleOpt [name=work, prompt=Work, \
+			options=[Building, Programming, Farming], defValue=, \
+			constraints=[Optional]]]]\
+			""");
+	}
+	
+	@Test public void con25() {
+		TestHelper.checkAst("""
+			'Single Dialog' Single('single my description')
+			work 'Work' MultiOpt['Building|Programming|Farming']{optional}
+			""",
+			"""
+			Query[dialog=Single[title=Single Dialog, \
+			description=single my description, constraints=[]], \
+			containers=[MultiOpt [name=work, prompt=Work, \
+			options=[Building, Programming, Farming], defValues=[], \
+			constraints=[Optional]]]]\
+			""");
+	}
 }

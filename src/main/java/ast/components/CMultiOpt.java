@@ -56,13 +56,20 @@ public class CMultiOpt implements Component {
 	
 	private List<String> setOptions(ComponentContext ctx) {
 		String idText = ctx.CompId().getText();
-		String options = idText.substring(idText.indexOf("[")+2, idText.indexOf("]")-1).trim();
+		String options = idText.substring(idText.indexOf("[")+2, idText.length()-2).trim();
 		return extractOptions(options);
 	}
 	
 	private List<String> setDefaultValues(ComponentContext ctx) {
 		String input = extractCompDefVal(ctx);
-		return "".equals(input)? List.of():extractOptions(input);
+		List<String> defaultVals = "".equals(input)? List.of():extractOptions(input);
+		if(defaultVals.isEmpty())
+				return defaultVals;
+		for(String defaultVal: defaultVals) {
+			if(!options.contains(defaultVal.trim()))
+				throw new IllegalArgumentException("'"+defaultVal + "' is not a valid option");
+		}		
+		return defaultVals;
 	}
 
 	private List<String> extractOptions(String input) {
