@@ -129,6 +129,11 @@ public class CMultiOpt implements Component {
 				panel.setErrorLabel(errorMsg);
 			}
 		});
+		return setBlockListDisplay(title, ccb, panel);
+	}
+
+	private JPanelWithValue setBlockListDisplay(JLabel title, CheckedComboBox<MultiOptItem> ccb,
+			JPanelWithValue panel) {
 		ccb.setBackground(Color.white);
 		panel.setValueOrDefault("", true);
 		panel.setLayout(new GridBagLayout());
@@ -176,6 +181,11 @@ public class CMultiOpt implements Component {
 			}
 		});
 		
+		return setInlineListDisplay(title, ccb, panel);
+	}
+
+	private JPanelWithValue setInlineListDisplay(JLabel title, CheckedComboBox<MultiOptItem> ccb,
+			JPanelWithValue panel) {
 		panel.setValueOrDefault("", true);
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -205,6 +215,10 @@ public class CMultiOpt implements Component {
 	private JPanelWithValue setMultiBlockCheckboxDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
 		JPanelWithValue panel = getCheckboxDisplayPanel(constraints, checkBoxes);
+		return setBlockCheckboxDisplay(title, checkBoxes, panel);
+	}
+
+	private JPanelWithValue setBlockCheckboxDisplay(JLabel title, List<JCheckBox> checkBoxes, JPanelWithValue panel) {
 		panel.setValueOrDefault("", true);
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -232,6 +246,10 @@ public class CMultiOpt implements Component {
 	private JPanelWithValue setMultiInlineCheckboxDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>();
 		JPanelWithValue panel = getCheckboxDisplayPanel(constraints, checkBoxes);
+		return setInlineCheckboxDisplay(title, checkBoxes, panel);
+	}
+
+	private JPanelWithValue setInlineCheckboxDisplay(JLabel title, List<JCheckBox> checkBoxes, JPanelWithValue panel) {
 		panel.setValueOrDefault("", true);
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();

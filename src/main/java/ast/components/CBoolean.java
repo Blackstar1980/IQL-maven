@@ -94,6 +94,10 @@ public class CBoolean implements Component {
 				panel.setErrorLabel(errorMsg);
 			}
 		});
+		return setBlockListDisplay(title, combo, panel);
+	}
+
+	private JPanelWithValue setBlockListDisplay(JLabel title, JComboBox<String> combo, JPanelWithValue panel) {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -128,7 +132,10 @@ public class CBoolean implements Component {
 				panel.setErrorLabel(errorMsg);
 			}
 		});
+		return setInlineListDisplay(title, combo, panel);
+	}
 
+	private JPanelWithValue setInlineListDisplay(JLabel title, JComboBox<String> combo, JPanelWithValue panel) {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.EAST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -176,6 +183,11 @@ public class CBoolean implements Component {
 				panel.setErrorLabel(errorMsg);
 			}
 		});
+		return setInlineDisplay(title, yesButton, noButton, panel);
+	}
+
+	private JPanelWithValue setInlineDisplay(JLabel title, JRadioButton yesButton, JRadioButton noButton,
+			JPanelWithValue panel) {
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.EAST;
@@ -230,6 +242,11 @@ public class CBoolean implements Component {
 				panel.setErrorLabel(errorMsg);
 			}
 		});
+		return setBlockDisplay(title, yesButton, noButton, panel);
+	}
+
+	private JPanelWithValue setBlockDisplay(JLabel title, JRadioButton yesButton, JRadioButton noButton,
+			JPanelWithValue panel) {
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;

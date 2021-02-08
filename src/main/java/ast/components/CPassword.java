@@ -127,8 +127,6 @@ public class CPassword implements Component {
 	
 	private JPanelWithValue setPasswordInlineDisplay(JLabel title, JPasswordField passField,
 			JLabel errorMsg, JPanelWithValue panel) {
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
 		JToggleButton showButton = new JToggleButton();
 		showButton.setPreferredSize(new Dimension(22, 22));
 		passField.setEchoChar('\u25CF');
@@ -152,7 +150,13 @@ public class CPassword implements Component {
 				}
 			}
 		});
-		
+		return setInlineDisplay(title, passField, errorMsg, panel, showButton);
+	}
+
+	private JPanelWithValue setInlineDisplay(JLabel title, JPasswordField passField, JLabel errorMsg,
+			JPanelWithValue panel, JToggleButton showButton) {
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		passField.setPreferredSize(new Dimension(278, 22));
 		gbc.gridx = 0;
@@ -171,7 +175,6 @@ public class CPassword implements Component {
 
 	private JPanelWithValue setPasswordBlockDisplay(JLabel title, JPasswordField passField, JLabel errorMsg, JPanelWithValue panel) {
 		panel.setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
 		JToggleButton showButton = new JToggleButton();
 		showButton.setPreferredSize(new Dimension(22, 22));
 		passField.setEchoChar('\u25CF');
@@ -192,8 +195,14 @@ public class CPassword implements Component {
 					showButton.setIcon(showImg2);
 				}
 		});
+		return setBlockDisplay(title, passField, errorMsg, panel, showButton);
+	}
+
+	private JPanelWithValue setBlockDisplay(JLabel title, JPasswordField passField, JLabel errorMsg,
+			JPanelWithValue panel, JToggleButton showButton) {
 		JPanel passPanel = new JPanel(new GridBagLayout());
-		passPanel.setPreferredSize(new Dimension(310, 22));
+		GridBagConstraints gbc = new GridBagConstraints();
+		passPanel.setPreferredSize(new Dimension(325, 22));
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1.0;

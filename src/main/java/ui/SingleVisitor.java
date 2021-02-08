@@ -65,20 +65,17 @@ public class SingleVisitor extends UiVisitor {
 	
 	@Override
 	protected void constructDialog(JFrame frame, List<JPanelContainer> panels, String desc) {
-		GridBagConstraints gbc = new GridBagConstraints();
+		List<Map<String, String>> results = new ArrayList<>();
 		JTextArea jDesc = generateDesc(desc);
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.gridy = 0;
-		gbc.insets = new Insets(0, 0, 0, 0);
-		frame.add(jDesc, gbc);
-		gbc.anchor = GridBagConstraints.CENTER;
-		gbc.weightx = 1.0;
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		for(JPanel panel : panels) {
-			gbc.gridy++;
-			frame.add(panel, gbc);
-		}
+		GridBagConstraints gbc = addFrameComponents(frame, panels, jDesc);
+		addFrameButtons(frame, panels, results, gbc);
+		int frameHeight = frame.getPreferredSize().height;
+		if(frameHeight > getDialogMaxHeight())
+			throw new RangeException(RangeException.BAD_BOUNDARYPOINTS_ERR, "Dialog height is bigger than the screen height");
+	}
+
+	private void addFrameButtons(JFrame frame, List<JPanelContainer> panels, List<Map<String, String>> results,
+			GridBagConstraints gbc) {
 		gbc.fill = GridBagConstraints.NONE;
 		JPanel buttonsPanel = new JPanel(new GridBagLayout());
 		buttonsPanel.setBorder(new EmptyBorder(5, 0, 0, 0));
@@ -90,7 +87,6 @@ public class SingleVisitor extends UiVisitor {
 		buttonsPanel.add(cancelButton, gbc);
 		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.gridx = 0;
-		List<Map<String, String>> results = new ArrayList<>();
 		
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
@@ -117,9 +113,23 @@ public class SingleVisitor extends UiVisitor {
 		gbc.gridy++;
 		gbc.anchor = GridBagConstraints.CENTER;
 		frame.add(buttonsPanel, gbc);
-		int frameHeight = frame.getPreferredSize().height;
-		if(frameHeight > getDialogMaxHeight())
-			throw new RangeException(RangeException.BAD_BOUNDARYPOINTS_ERR, "Dialog height is bigger than the screen height");
+	}
+
+	private GridBagConstraints addFrameComponents(JFrame frame, List<JPanelContainer> panels, JTextArea jDesc) {
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 0, 0, 0);
+		frame.add(jDesc, gbc);
+		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.weightx = 1.0;
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		for(JPanel panel : panels) {
+			gbc.gridy++;
+			frame.add(panel, gbc);
+		}
+		return gbc;
 	}
 	
 }

@@ -76,6 +76,18 @@ public class DialogTests {
 		TestHelper.checkParseError(
 				"'Dialog Title' Tabular('dialog description'){approve=Approve}  name 'Name:' String");
 	}
+	
+	@Test public void wrongDialogInformation11() {
+		TestHelper.arrgumentException(
+				"'Dialog Title' Single('dialog description'){min=3}  name 'Name:' String",
+				"Single is not support Min constraint");
+	}
+	
+	@Test public void wrongDialogInformation12() {
+		TestHelper.arrgumentException(
+				"'Dialog Title' Single('dialog description'){max=3}  name 'Name:' String",
+				"Single is not support Max constraint");
+	}
 		
 	@Test public void dialog01() {
 		TestHelper.checkAst(
@@ -91,20 +103,6 @@ public class DialogTests {
 	}
 	
 	@Test public void dialog02() {
-		TestHelper.checkAst(
-				"""
-				'Dialog Title' Pages('dialog description') {min=4 max =  6}
-				name 'Name:' String
-				""",
-				"""
-				Query[dialog=Pages[title=Dialog Title, \
-				description=dialog description, \
-				constraints=[MinCon[value=4.0], MaxCon[value=6.0]]], \
-				containers=[String [name=name, prompt=Name:, defVal=, constraints=[]]]]\
-				""");
-	}
-	
-	@Test public void dialog03() {
 		TestHelper.checkAst("""
 				'Dialog Title' Single('dialog description')
 				name 'Name:' String('default value')
@@ -116,7 +114,7 @@ public class DialogTests {
 				""");
 	}
 	
-	@Test public void dialog04() {
+	@Test public void dialog03() {
 		TestHelper.checkAst("""
 				'Dialog Title' Single('dialog description')
 				'My group:' Group{
@@ -132,7 +130,7 @@ public class DialogTests {
 				""");
 	}
 	
-	@Test public void dialog05() {
+	@Test public void dialog04() {
 		TestHelper.checkAst("""
 				'Dialog Title' Single('dialog description')
 				'First Tab:' Tab{
@@ -153,7 +151,7 @@ public class DialogTests {
 				""");
 	}
 	
-	@Test public void dialog06() {
+	@Test public void dialog05() {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my 
 			description')
@@ -167,7 +165,7 @@ public class DialogTests {
 			""");
 	}
 	
-	@Test public void dialog07() {
+	@Test public void dialog06() {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description'){approve='Accept'}
 			name 'Name' String{optional}
@@ -180,7 +178,7 @@ public class DialogTests {
 			""");
 	}
 	
-	@Test public void dialog08() {
+	@Test public void dialog07() {
 		TestHelper.checkAst("""
 			'Single Dialog' Single('single my description'){cancel='Exit'}
 			name 'Name' String{optional}
@@ -191,5 +189,61 @@ public class DialogTests {
 			containers=[String [name=name, prompt=Name, defVal=, \
 			constraints=[Optional]]]]\
 			""");
+	}
+	
+	@Test public void dialog08() {
+		TestHelper.checkAst(
+				"""
+				'Dialog Title' Pages('dialog description')
+				name 'Name:' String
+				""",
+				"""
+				Query[dialog=Pages[title=Dialog Title, \
+				description=dialog description, \
+				constraints=[]], \
+				containers=[String [name=name, prompt=Name:, defVal=, constraints=[]]]]\
+				""");
+	}
+	
+	@Test public void dialog09() {
+		TestHelper.checkAst(
+				"""
+				'Dialog Title' Pages('dialog description') {min=4 max =  6 approve='OK' cancel= 'Exit'}
+				name 'Name:' String
+				""",
+				"""
+				Query[dialog=Pages[title=Dialog Title, \
+				description=dialog description, constraints=[MinCon[value=4.0], \
+				MaxCon[value=6.0], ApproveCon[value=OK], CancelCon[value=Exit]]], \
+				containers=[String [name=name, prompt=Name:, defVal=, constraints=[]]]]\
+				""");
+	}
+	
+	@Test public void dialog10() {
+		TestHelper.checkAst(
+				"""
+				'Dialog Title' Tabular('dialog description')
+				name 'Name:' String
+				""",
+				"""
+				Query[dialog=Tabular[title=Dialog Title, \
+				description=dialog description, \
+				constraints=[]], \
+				containers=[String [name=name, prompt=Name:, defVal=, constraints=[]]]]\
+				""");
+	}
+	
+	@Test public void dialog11() {
+		TestHelper.checkAst(
+				"""
+				'Dialog Title' Tabular('dialog description') {min=4 max =  6 approve='OK' cancel= 'Exit'}
+				name 'Name:' String
+				""",
+				"""
+				Query[dialog=Tabular[title=Dialog Title, \
+				description=dialog description, constraints=[MinCon[value=4.0], \
+				MaxCon[value=6.0], ApproveCon[value=OK], CancelCon[value=Exit]]], \
+				containers=[String [name=name, prompt=Name:, defVal=, constraints=[]]]]\
+				""");
 	}
 }

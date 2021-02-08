@@ -535,8 +535,8 @@ public class IQL {
 		
 		var l42Example = """
 				'Provide some points' Single('please provide a point')
-				x 'x coordinate =' Integer{optional}
-				y 'y coordinate =' Integer{optional}
+				x 'x  =' Integer{optional inline}
+				y 'y coordinate =' Integer{optional inline}
 				""";
 		
 		var multi = """
@@ -559,7 +559,7 @@ public class IQL {
 //		run(queryInline);
 //		List<Map<String, String>> results = run(query);
 		
-		List<Map<String, String>> results = run(multi);
+		List<Map<String, String>> results = run(allTabular);
 		System.out.println(results);
 	}
 

@@ -93,20 +93,16 @@ public class PagesVisitor extends UiVisitor {
 	@Override
 	protected void constructDialog(JFrame frame, List<JPanelContainer> panels, String desc) {
 		List<Map<String, String>> results = new ArrayList<>();
-		GridBagConstraints gbc = new GridBagConstraints();
 		JTextArea jDesc = generateDesc(desc);
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.gridy = 0;
-		gbc.insets = new Insets(0, 0, 0, 0);
-		frame.add(jDesc, gbc);
-		gbc.weightx = 1.0;
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.anchor = GridBagConstraints.CENTER;
-		for(JPanel panel : panels) {
-			gbc.gridy++;
-			frame.add(panel, gbc);
-		}
+		GridBagConstraints gbc = addFrameComponents(frame, panels, jDesc);
+		addFrameButtons(frame, panels, results, gbc);
+		int frameHeight = frame.getPreferredSize().height;
+		if(frameHeight > getDialogMaxHeight())
+			throw new RangeException(RangeException.BAD_BOUNDARYPOINTS_ERR, "Dialog height is bigger than the screen height");
+	}
+
+	private void addFrameButtons(JFrame frame, List<JPanelContainer> panels, List<Map<String, String>> results,
+			GridBagConstraints gbc) {
 		gbc.fill = GridBagConstraints.NONE;
 		JPanel buttonsPanel = new JPanel(new GridBagLayout());
 		JButton cancelButton = new JButton(cancelBtnLabel);
@@ -197,6 +193,28 @@ public class PagesVisitor extends UiVisitor {
 				results.remove(currentPage);
 			updateUiFields(panels, results.get(currentPage -1), false);
 		});
+		cancelButton.addActionListener(e-> {
+			results.clear();
+			results.add(getEntries(panels));
+			commitData(results);
+			frame.dispose();
+		});
+		
+		approveButton.addActionListener(e->{
+			if(totalPages < minEntries) {
+				JOptionPane.showMessageDialog(frame,
+						"You must have a least " + minEntries + " entries",
+						"Warning",
+					    JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			var saved = saveAsMap(panels);
+			if(saved==null) 
+				return;
+			updateDataList(results, saved, currentPage -1, false);
+			commitData(results);
+			frame.dispose();
+		});
 				
 		gbc.anchor = GridBagConstraints.EAST;
 		pagesPanel.add(nextButton, gbc);
@@ -214,28 +232,6 @@ public class PagesVisitor extends UiVisitor {
 		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.gridx++;
 		buttonsPanel.add(addButton, gbc);
-		
-		cancelButton.addActionListener(e-> {
-			results.clear();
-			results.add(getEntries(panels));
-			commitData(results);
-			frame.dispose();
-		});
-		approveButton.addActionListener(e->{
-			if(totalPages < minEntries) {
-				JOptionPane.showMessageDialog(frame,
-						"You must have a least " + minEntries + " entries",
-						"Warning",
-					    JOptionPane.WARNING_MESSAGE);
-				return;
-			}
-			var saved = saveAsMap(panels);
-			if(saved==null) 
-				return;
-			updateDataList(results, saved, currentPage -1, false);
-			commitData(results);
-			frame.dispose();
-		});
 		gbc.gridy++;
 		gbc.gridx = 0;
 		gbc.anchor = GridBagConstraints.CENTER;
@@ -244,9 +240,24 @@ public class PagesVisitor extends UiVisitor {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(10, 0, 0, 0);
 		frame.add(pagesPanel, gbc);
-		int frameHeight = frame.getPreferredSize().height;
-		if(frameHeight > getDialogMaxHeight())
-			throw new RangeException(RangeException.BAD_BOUNDARYPOINTS_ERR, "Dialog height is bigger than the screen height");
+	}
+
+	// Add the components to the frame and return the updated GridBagConstraints
+	private GridBagConstraints addFrameComponents(JFrame frame, List<JPanelContainer> panels, JTextArea jDesc) {
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(0, 0, 0, 0);
+		frame.add(jDesc, gbc);
+		gbc.weightx = 1.0;
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.anchor = GridBagConstraints.CENTER;
+		for(JPanel panel : panels) {
+			gbc.gridy++;
+			frame.add(panel, gbc);
+		}
+		return gbc;
 	}
 	
 	private void updateDataList(List<Map<String, String>> dataList, Map<String, String> value, int index, boolean setDefault) {

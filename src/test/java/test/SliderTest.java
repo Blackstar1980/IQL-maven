@@ -13,7 +13,6 @@ import ast.components.CSlider;
 import ast.constraints.Constraint;
 import ast.constraints.DisplayId;
 import fields.JPanelWithValue;
-import test.TestHelper;
 
 public class SliderTest {
 	

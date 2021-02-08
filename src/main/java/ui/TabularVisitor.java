@@ -102,8 +102,24 @@ public class TabularVisitor extends UiVisitor {
 
 	@Override
 	protected void constructDialog(JFrame frame, List<JPanelContainer> panels, String desc) {
-		GridBagConstraints gbc = new GridBagConstraints();
+		List<Map<String, String>> results = new ArrayList<>();
 		JTextArea jDesc = generateDesc(desc);
+		JPanel fieldsContainer = new JPanel(new GridBagLayout());
+		JScrollPane scroll = new JScrollPane(fieldsContainer, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		GridBagConstraints gbc = addFrameComponents(frame, panels, jDesc, scroll);
+		addFrameButtons(frame, panels, results, gbc, fieldsContainer);
+		int height = getDialogMaxHeight();
+		int frameWidth = frame.getPreferredSize().width;
+		if(frameWidth > getDialogMaxWidth())
+			throw new RangeException(RangeException.BAD_BOUNDARYPOINTS_ERR, "Dialog width is bigger than the screen width");
+		scroll.setMinimumSize(new Dimension(frameWidth, (int) (height*0.7-150)));
+		frame.setMinimumSize(new Dimension(frameWidth, (int) (height*0.7)));
+	}
+
+	private GridBagConstraints addFrameComponents(JFrame frame, List<JPanelContainer> panels, JTextArea jDesc,
+			JScrollPane scroll) {
+		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.gridy = 0;
 		gbc.insets = new Insets(0, 10, 0, 0);
@@ -125,16 +141,20 @@ public class TabularVisitor extends UiVisitor {
 		titlePanel.setBorder(new EmptyBorder(0,14,0,10));
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		frame.add(titlePanel, gbc);
-		JPanel fieldsContainer = new JPanel(new GridBagLayout());
+		
 		gbc.weighty = 1.0;
 		gbc.weightx = 1.0;
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		gbc.anchor = GridBagConstraints.PAGE_START;
-		JScrollPane scroll = new JScrollPane(fieldsContainer, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		
 		scroll.setMaximumSize(new Dimension(100, 150));
 		frame.add(scroll, gbc);
+		return gbc;
+	}
+
+	private void addFrameButtons(JFrame frame, List<JPanelContainer> panels, List<Map<String, String>> results,
+			GridBagConstraints gbc, JPanel fieldsContainer) {
 		JPanel buttonsPanel = new JPanel(new GridBagLayout());
 		buttonsPanel.setBorder(new EmptyBorder(5, 0, 0, 0));
 		JButton cancelButton = new JButton(cancelBtnLabel);
@@ -142,7 +162,6 @@ public class TabularVisitor extends UiVisitor {
 		JButton addButton = new JButton("Add");
 		addNewFields(frame, fieldsContainer, addButton);
 		disableButton(fieldsContainer);
-		List<Map<String, String>> results = new ArrayList<>();
 	
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
@@ -201,12 +220,6 @@ public class TabularVisitor extends UiVisitor {
 		gbc.ipady = 0; 
 		gbc.anchor = GridBagConstraints.PAGE_END;
 		frame.add(buttonsPanel, gbc);
-		int height = getDialogMaxHeight();
-		int frameWidth = frame.getPreferredSize().width;
-		if(frameWidth > getDialogMaxWidth())
-			throw new RangeException(RangeException.BAD_BOUNDARYPOINTS_ERR, "Dialog width is bigger than the screen width");
-		scroll.setMinimumSize(new Dimension(frameWidth, (int) (height*0.7-150)));
-		frame.setMinimumSize(new Dimension(frameWidth, (int) (height*0.7)));
 	}
 
 	private boolean updateData(Component[] components, List<Map<String, String>> results) {
@@ -260,11 +273,9 @@ public class TabularVisitor extends UiVisitor {
 			disableButton(fieldsContainer);
 			fieldsRowsCounter--;
 			addButton.setEnabled(true);
-//			frame.revalidate();
 			frame.validate();
 		});
 		fieldsRowsCounter++;
-//		frame.revalidate();
 		frame.validate();
 	}
 	

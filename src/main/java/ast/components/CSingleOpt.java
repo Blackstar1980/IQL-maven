@@ -114,6 +114,10 @@ public class CSingleOpt implements Component {
 				panel.setErrorLabel(errorMsg);
 			}
 		});
+		return setBlockListDisplay(title, combo, panel);
+	}
+
+	private JPanelWithValue setBlockListDisplay(JLabel title, JComboBox<String> combo, JPanelWithValue panel) {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -147,7 +151,10 @@ public class CSingleOpt implements Component {
 				panel.setErrorLabel(errorMsg);
 			}
 		});
+		return setInlineListDisplay(title, combo, panel);
+	}
 
+	private JPanelWithValue setInlineListDisplay(JLabel title, JComboBox<String> combo, JPanelWithValue panel) {
 		combo.setPreferredSize(new Dimension(300, 22));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.EAST;
@@ -176,6 +183,11 @@ public class CSingleOpt implements Component {
 		ButtonGroup buttonGroup = new ButtonGroup();
 		Map<String, JRadioButton> buttons = new HashMap<>();
 		JPanelWithValue panel = getRadioDisplayPanel(constraints, buttonGroup, buttons);
+		return setInlineRadioDisplay(title, constraints, buttonGroup, buttons, panel);
+	}
+
+	private JPanelWithValue setInlineRadioDisplay(JLabel title, Map<ConstraintId, Constraint> constraints,
+			ButtonGroup buttonGroup, Map<String, JRadioButton> buttons, JPanelWithValue panel) {
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
@@ -213,6 +225,11 @@ public class CSingleOpt implements Component {
 		ButtonGroup buttonGroup = new ButtonGroup();
 		Map<String, JRadioButton> buttons = new HashMap<>();
 		JPanelWithValue panel = getRadioDisplayPanel(constraints, buttonGroup, buttons);
+		return setBlockRadioDisplay(title, constraints, buttonGroup, buttons, panel);
+	}
+
+	private JPanelWithValue setBlockRadioDisplay(JLabel title, Map<ConstraintId, Constraint> constraints,
+			ButtonGroup buttonGroup, Map<String, JRadioButton> buttons, JPanelWithValue panel) {
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;

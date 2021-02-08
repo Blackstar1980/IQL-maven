@@ -34,7 +34,7 @@ public class DTabular implements Dialog {
 
 	@Override
 	public String toString() {
-		return "Multi[title=" + title + ", description=" + description + ", constraints=" + constraints + "]";
+		return "Tabular[title=" + title + ", description=" + description + ", constraints=" + constraints + "]";
 	}
 
 	// Support future operations

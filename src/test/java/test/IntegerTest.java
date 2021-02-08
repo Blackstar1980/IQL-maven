@@ -14,7 +14,6 @@ import ast.components.CInteger;
 import ast.constraints.Constraint;
 import ast.constraints.DisplayId;
 import fields.JPanelWithValue;
-import test.TestHelper;
 
 public class IntegerTest {
 	
