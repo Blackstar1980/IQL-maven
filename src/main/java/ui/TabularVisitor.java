@@ -167,7 +167,7 @@ public class TabularVisitor extends UiVisitor {
 			@Override
 		    public void windowClosed(WindowEvent e) {
 				results.clear();
-				results.add(getEntries(panels));
+				results.add(getEmptyEntries(panels));
 				commitData(results);
 				frame.dispose();
 		    }
@@ -184,7 +184,7 @@ public class TabularVisitor extends UiVisitor {
 		});
 		cancelButton.addActionListener(e-> {
 			results.clear();
-			results.add(getEntries(panels));
+			results.add(getEmptyEntries(panels));
 			commitData(results);
 			frame.dispose();
 		});
@@ -294,7 +294,7 @@ public class TabularVisitor extends UiVisitor {
 	}
 	
 	@Override
-	protected Map<String, String> getEntries(List<JPanelContainer> panels) {
+	protected Map<String, String> getEmptyEntries(List<JPanelContainer> panels) {
 		Map<String, String> data = new HashMap<>();
 		for(JPanelContainer panel: panels) {
 			checkComponentErrors(data, false, panel);

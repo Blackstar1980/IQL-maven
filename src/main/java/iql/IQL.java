@@ -1,5 +1,6 @@
 package iql;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,10 @@ public class IQL {
 		queryObj.accept(visitor);
 		return visitor.getData().join();
 	}
-	
+	/**
+	 * By cheching if IQL.run(..).get(0) instanceof IQL.EmptyEntriesMap the user can check.... 
+	 */
+	public static final class EmptyEntriesMap extends HashMap<String,String>{}
 	public static void main(String[] args) {
 //		var query = """
 //				'User Registration Form' Single(please provide some details)

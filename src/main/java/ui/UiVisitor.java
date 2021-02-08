@@ -22,6 +22,7 @@ import ast.Ast.Tabable;
 import ast.Id;
 import ast.components.*;
 import fields.*;
+import iql.IQL;
 
 public abstract class UiVisitor implements Visitor {
 	private CompletableFuture<List<Map<String, String>>> data = new CompletableFuture<>();
@@ -45,8 +46,8 @@ public abstract class UiVisitor implements Visitor {
 	}
 	
 		
-	protected Map<String, String> getEntries(List<JPanelContainer> panels) {
-		Map<String, String> data = new HashMap<>();
+	protected Map<String, String> getEmptyEntries(List<JPanelContainer> panels) {
+		Map<String, String> data = new IQL.EmptyEntriesMap();
 		for(JPanelContainer panel: panels) {
 			if(panel.getId() == Id.TabsContainer)
 				checkTabErrors(data, false, panel);
@@ -56,7 +57,7 @@ public abstract class UiVisitor implements Visitor {
 					checkComponentErrors(data, false, panel);
 				}
 		}
-		return setNullValues(data);
+		return data;
 	}
 	
 	protected Map<String, String> setNullValues(Map<String, String> entries) {
@@ -88,7 +89,7 @@ public abstract class UiVisitor implements Visitor {
 		if(comp instanceof JPanelWithValue) {
 			JPanelWithValue panelWithValue = (JPanelWithValue)comp;
 			haveErrors |=panelWithValue.checkForError();
-			String value = panelWithValue.getValue() == null || panelWithValue.getValue().isEmpty()? "": panelWithValue.getValue();
+			String value = panelWithValue.getValue() == null || panelWithValue.getValue().isBlank()? null: panelWithValue.getValue();
 			data.put(panelWithValue.getName(), value);
 		}
 		return haveErrors;

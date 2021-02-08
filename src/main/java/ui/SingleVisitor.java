@@ -92,14 +92,14 @@ public class SingleVisitor extends UiVisitor {
 			@Override
 		    public void windowClosed(WindowEvent e) {
 				results.clear();
-				results.add(getEntries(panels));
+				results.add(getEmptyEntries(panels));
 				commitData(results);
 				frame.dispose();
 		    }
 		});
 		cancelButton.addActionListener(e-> {
 			results.clear();
-			results.add(getEntries(panels));
+			results.add(getEmptyEntries(panels));
 			commitData(results);
 			frame.dispose();
 		});
