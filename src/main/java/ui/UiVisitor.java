@@ -57,7 +57,7 @@ public abstract class UiVisitor implements Visitor {
 					checkComponentErrors(data, false, panel);
 				}
 		}
-		return data;
+		return setNullValues(data);
 	}
 	
 	protected Map<String, String> setNullValues(Map<String, String> entries) {
@@ -168,7 +168,7 @@ public abstract class UiVisitor implements Visitor {
 		groupPanel.setBorder(new TitledBorder(new EtchedBorder(), title));
 		groupPanel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.anchor = GridBagConstraints.EAST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0;
 		gbc.gridy = 0;

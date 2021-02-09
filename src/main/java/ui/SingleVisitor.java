@@ -121,7 +121,7 @@ public class SingleVisitor extends UiVisitor {
 		gbc.gridy = 0;
 		gbc.insets = new Insets(0, 0, 0, 0);
 		frame.add(jDesc, gbc);
-		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.anchor = GridBagConstraints.EAST;
 		gbc.weightx = 1.0;
 		gbc.gridx = 0;
 		gbc.gridy = 1;

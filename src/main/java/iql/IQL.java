@@ -460,7 +460,7 @@ public class IQL {
 				""";
 		
 		var all = """
-				'title' Single('This is the descriptionaaaaaaaaa')
+				'title' Pages('This is the descriptionaaaaaaaaa')
 				'Tab1' Tab{
 				string 'String' String{optional}
 				password 'Password' Password{optional}
@@ -471,10 +471,30 @@ public class IQL {
 					}
 				}
 				'Tab2' Tab{
-				boolean 'Boolean' Boolean{blockList optional}
+				boolean 'Boolean' Boolean{ optional}
 				slider 'Slider' Slider['3,22']
 				singleOpt 'SingleOpt' SingleOpt['option1|option2']{optional}
-				multiOpt 'MultiOpt' MultiOpt['option1|option2']{blockList optional}
+				multiOpt 'MultiOpt' MultiOpt['option1|option2']{ optional}
+				}
+				""";
+		
+		
+		var allInline = """
+				'title' Pages('This is the descriptionaaaaaaaaa')
+				'Tab 1' Tab{
+					string 'String' String{optional inline}
+					password 'Password' Password{optional inline}
+						'Group' Group {
+							integer 'Integer' Integer{optional inline}
+							decimal 'Decimal' Decimal{optional inline}
+							textarea 'TextArea' TextArea{optional inline}
+					}
+				}
+				'Tab2' Tab{
+					boolean 'Boolean' Boolean{inlineList optional}
+					slider 'Slider' Slider['3,22']{inline}
+					singleOpt 'SingleOpt' SingleOpt['option1|option2']{optional inlineList}
+					multiOpt 'MultiOpt' MultiOpt['option1|option2']{inlineList optional}
 				}
 				""";
 		
@@ -551,6 +571,15 @@ public class IQL {
 				t 't' Boolean{inline}
 				""";
 		
+		var inline = """
+				'User Details' Single('Provide your detail')
+				name 'Name' String{inline optional}
+				another 'Another Name' String{inline optional}
+				age 'Age' Integer{inline optional}
+				comments 'Comments' TextArea{inline optional}
+				height 'Height' Decimal{inline optional}
+				password 'Password' Password{inline optional}
+				""";
 		
 //		  |'Provide some points'
 //		  |      Pages(@msg)
@@ -563,7 +592,7 @@ public class IQL {
 //		run(queryInline);
 //		List<Map<String, String>> results = run(query);
 		
-		List<Map<String, String>> results = run(allTabular);
+		List<Map<String, String>> results = run(all);
 		System.out.println(results);
 	}
 

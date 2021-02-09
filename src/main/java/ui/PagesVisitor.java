@@ -252,7 +252,7 @@ public class PagesVisitor extends UiVisitor {
 		gbc.weightx = 1.0;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.anchor = GridBagConstraints.EAST;
 		for(JPanel panel : panels) {
 			gbc.gridy++;
 			frame.add(panel, gbc);

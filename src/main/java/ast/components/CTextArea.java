@@ -42,7 +42,7 @@ public class CTextArea implements Component, BasicLayout {
 	}
 	
 	public JPanelWithValue make() {
-		PlaceholderTextAreaField textArea = new PlaceholderTextAreaField(5, 27);
+		PlaceholderTextAreaField textArea = new PlaceholderTextAreaField(5, 25);
 		Map<ConstraintId, Constraint> constraintMap = getMapConstraint(constraints);
 		JPanelWithValue panel = new JPanelWithValue(Id.TextArea, this, name, prompt){
 			@Override

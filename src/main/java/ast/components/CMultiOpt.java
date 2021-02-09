@@ -144,7 +144,7 @@ public class CMultiOpt implements Component {
 		JPanel comboBoxPanel = new JPanel(new GridBagLayout());
 		comboBoxPanel.add(ccb, gbc);
 		MultiOptComboBox comboBox = new MultiOptComboBox();
-		comboBoxPanel.setPreferredSize(new Dimension(300, 22));
+		comboBoxPanel.setPreferredSize(new Dimension(293, 22));
 		comboBox.setEditable(true);
 		comboBox.addItems(options);
 		gbc.gridx = 0;
@@ -191,7 +191,7 @@ public class CMultiOpt implements Component {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.EAST;
 		JPanel comboBoxPanel = new JPanel(new GridBagLayout());
-		comboBoxPanel.setPreferredSize(new Dimension(300, 22));
+		comboBoxPanel.setPreferredSize(new Dimension(293, 22));
 		gbc.weightx = 1.0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		comboBoxPanel.add(ccb, gbc);
@@ -239,7 +239,7 @@ public class CMultiOpt implements Component {
 		gbc.gridy++;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		panel.add(panel.getErrorLabel(), gbc);
-		panel.setPreferredSize(new Dimension(300, (int) panel.getPreferredSize().getHeight()));
+		panel.setPreferredSize(new Dimension(293, (int) panel.getPreferredSize().getHeight()));
 		return panel;
 	}
 
@@ -267,7 +267,7 @@ public class CMultiOpt implements Component {
 			checkBoxesPanel.add(checkBox, gbc);
 			gbc.gridx++;
 		});
-		checkBoxesPanel.setPreferredSize(new Dimension(300, (int) panel.getPreferredSize().getHeight()));
+		checkBoxesPanel.setPreferredSize(new Dimension(293, (int) panel.getPreferredSize().getHeight()));
 		gbc.gridx = 1;
 		panel.add(checkBoxesPanel, gbc);
 		gbc.gridy++;
