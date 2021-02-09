@@ -27,6 +27,7 @@ import ast.components.*;
 import ast.constraints.Constraint;
 import ast.constraints.ConstraintId;
 import fields.*;
+import iql.IQL;
 
 public class TabularVisitor extends UiVisitor {
 	private static final String BLOCK = "block";
@@ -295,7 +296,7 @@ public class TabularVisitor extends UiVisitor {
 	
 	@Override
 	protected Map<String, String> getEmptyEntries(List<JPanelContainer> panels) {
-		Map<String, String> data = new HashMap<>();
+		Map<String, String> data = new IQL.EmptyEntriesMap();
 		for(JPanelContainer panel: panels) {
 			checkComponentErrors(data, false, panel);
 		}

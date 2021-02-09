@@ -30,9 +30,15 @@ public class IQL {
 		return visitor.getData().join();
 	}
 	/**
-	 * By cheching if IQL.run(..).get(0) instanceof IQL.EmptyEntriesMap the user can check.... 
+	 * By checking if IQL.run(..).get(0) instanceof IQL.EmptyEntriesMap we can recognize
+	 * if we get the user data inside the list of hashmap or not.
+	 * IF IQL.run(..).get(0) instanceof IQL.EmptyEntriesMapwith then the the list of hashmap
+	 * keys equal to the component name and the values equals to null.
+	 * Otherwise, the list of hashmap contains the user data
 	 */
 	public static final class EmptyEntriesMap extends HashMap<String,String>{}
+	
+	
 	public static void main(String[] args) {
 //		var query = """
 //				'User Registration Form' Single(please provide some details)
