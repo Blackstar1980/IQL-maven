@@ -97,7 +97,7 @@ public class CSingleOpt implements Component {
 	private JPanelWithValue setSingleBlockListDisplay(JLabel title, Map<ConstraintId, Constraint> constraints) {
 		String[] optionsArray = toArrayStartWithEmptyValue(options);
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
-		combo.setPreferredSize(new Dimension(293, 22));
+		combo.setPreferredSize(new Dimension(326, 22));
 		combo.setBackground(Color.white);
 		JPanelWithValue panel = getListDisplayPanel(constraints, combo);
 		panel.setValueOrDefault("", true);
@@ -155,7 +155,7 @@ public class CSingleOpt implements Component {
 	}
 
 	private JPanelWithValue setInlineListDisplay(JLabel title, JComboBox<String> combo, JPanelWithValue panel) {
-		combo.setPreferredSize(new Dimension(293, 22));
+		combo.setPreferredSize(new Dimension(326, 22));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.EAST;
 		gbc.gridx = 0;
@@ -265,7 +265,7 @@ public class CSingleOpt implements Component {
 		gbc.gridy++;
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		panel.add(panel.getErrorLabel(), gbc);
-		panel.setPreferredSize(new Dimension(293, (int) panel.getPreferredSize().getHeight()));
+		panel.setPreferredSize(new Dimension(326, (int) panel.getPreferredSize().getHeight()));
 		return panel;
 	}
 

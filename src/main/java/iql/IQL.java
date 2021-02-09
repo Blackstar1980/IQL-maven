@@ -74,7 +74,7 @@ public class IQL {
 //		""";
 		
 		var queryBlock = """
-		'User Registration Form' Pages("please` `)
+		'User Registration Form' Pages('please` `')
 		name 'Full Name:' String{min=2}
 		age 'Age:' Integer{min=1 max=120 }
 		middle 'Middle Name' String{ min=5}
@@ -587,6 +587,16 @@ public class IQL {
 				password 'Password' Password{inline optional}
 				""";
 		
+		var pageMax = """
+				'User Details' Single('Provide your detail')
+				name 'Name' String{ optional inline}
+				another 'Another Name' String{inline optional}
+				age 'Age' Integer{inline optional}
+				comments 'Comments' TextArea{inline optional}
+				height 'Height' Decimal{inline optional}
+				password 'Password' Password{inline optional}
+				""";
+		
 //		  |'Provide some points'
 //		  |      Pages(@msg)
 //		  |x 'x coordinate =' Integer
@@ -598,7 +608,7 @@ public class IQL {
 //		run(queryInline);
 //		List<Map<String, String>> results = run(query);
 		
-		List<Map<String, String>> results = run(all);
+		List<Map<String, String>> results = run(inline);
 		System.out.println(results);
 	}
 

@@ -163,13 +163,15 @@ public class PagesVisitor extends UiVisitor {
 		});
 		
 		addButton.addActionListener(e -> {
+			if(totalPages <= maxEntries)
+				return;
 			var saved = saveAsMap(panels);
 			if(saved==null)
 				return;
 			updateDataList(results, saved, currentPage -1, true);
 			updateUiFields(panels, new HashMap<String, String>(), true);
 			totalPages++;
-			if(totalPages == maxEntries)
+			if(totalPages <= maxEntries)
 				addButton.setEnabled(false);
 			deleteButton.setEnabled(true);
 			if(totalPages > 1) 

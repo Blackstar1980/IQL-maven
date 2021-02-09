@@ -77,7 +77,7 @@ public class CBoolean implements Component {
 	private JPanelWithValue setBooleanBlockListDisplay(JLabel title, Map<ConstraintId, Constraint> constraintMap) {
 		String[] optionsArray = new String[]{"", "true", "false"};
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
-		combo.setPreferredSize(new Dimension(293, 22));
+		combo.setPreferredSize(new Dimension(326, 22));
 		combo.setBackground(Color.white);
 		JPanelWithValue panel = getListDisplayPanel(constraintMap, combo);
 		panel.setValueOrDefault("", true);
@@ -115,7 +115,7 @@ public class CBoolean implements Component {
 	private JPanelWithValue setBooleanInlineListDisplay(JLabel title, Map<ConstraintId, Constraint> constraintMap) {
 		String[] optionsArray = new String[]{"", "true", "false"};
 		JComboBox<String> combo = new JComboBox<String>(optionsArray);
-		combo.setPreferredSize(new Dimension(293, 22));
+		combo.setPreferredSize(new Dimension(326, 22));
 		combo.setBackground(Color.white);
 		JPanelWithValue panel = getListDisplayPanel(constraintMap, combo);
 		panel.setValueOrDefault("", true);
@@ -201,7 +201,7 @@ public class CBoolean implements Component {
 		gbc.weightx = 1;
 		gbc.gridx = 1;
 		buttonsPanel.add(noButton, gbc);
-		buttonsPanel.setPreferredSize(new Dimension(293, (int) panel.getPreferredSize().getHeight()));
+		buttonsPanel.setPreferredSize(new Dimension(326, (int) panel.getPreferredSize().getHeight()));
 		
 		panel.add(buttonsPanel, gbc);
 		gbc.gridx = 1;
@@ -262,7 +262,7 @@ public class CBoolean implements Component {
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		panel.add(panel.getErrorLabel(), gbc);
-		panel.setPreferredSize(new Dimension(293, (int) panel.getPreferredSize().getHeight()));
+		panel.setPreferredSize(new Dimension(326, (int) panel.getPreferredSize().getHeight()));
 		return panel;
 	}
 

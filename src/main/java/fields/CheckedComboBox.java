@@ -35,7 +35,7 @@ public class CheckedComboBox<E extends MultiOptItem> extends JComboBox<E> {
 
 	@Override
 	public Dimension getPreferredSize() {
-		return new Dimension(293, 22);
+		return new Dimension(326, 22);
 	}
 
 	@Override
