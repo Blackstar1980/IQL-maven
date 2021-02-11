@@ -18,7 +18,7 @@ Here is a list of the components and the dialogs that IQL support. For more deta
  - [Tab](#tab)
  
  ### String
-![](images/string.jpg)
+![](images/string.JPG)
 ```
 'User Details' Single(
   'Please provide your personal details')
