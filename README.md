@@ -2,7 +2,7 @@
 
 Input Query Language (IQL) is a query language that accepts a string and creates constrainable dialogs. IQL grammar is used to generate various types of dialogs in relatively few lines of code. Each dialog contains components that validate the user input according to the provided set of constraints.
 
-Here is a list of the components and the dialogs that IQL support. For more details about IQL components, dialogs, constraints and how to use please read the ![guide](images/guide.pdf) 
+Here is a list of the components and the dialogs that IQL support. For more details about IQL components, dialogs, constraints and how to use please read the ![guide](guide/guide.pdf) 
 
 ## Components
  - [String](#string)
@@ -26,7 +26,7 @@ name 'Full Name:' String
 ```
 
  ### Integer
-![](images/integer.jpg)
+![](images/integer.JPG)
 ```
 'User Details' Single(
   'Please provide your personal details')
@@ -36,7 +36,7 @@ age 'Age:' Integer{
   }
 ```
  ### Decimal
-![](images/decimal.jpg)
+![](images/decimal.JPG)
 ```
 'User Details' Single(
   'Please provide your personal details')
@@ -44,7 +44,7 @@ weight 'Weight:' Decimal
 ```
 
  ### Boolean
-![](images/boolean.jpg)
+![](images/boolean.JPG)
 ```
 'Personal details' Single(
   'Please provide your details below')
@@ -52,16 +52,15 @@ married 'Married?' Boolean
 ```
 
  ### TextArea
-![](images/textarea.jpg)
+![](images/textarea.JPG)
 ```
 'User Details' Single(
   'Please provide your personal details')
-comment 'Comment:' TextArea(
-  'My name is...')
+comment 'Comment:' TextArea('My name is...')
 ```
 
  ### Password
-![](images/password.jpg)
+![](images/password.JPG)
 ```
 'Create password' Single(
   'Please provide your details below')
@@ -70,40 +69,36 @@ password 'Password:' Password
 ```
 
  ### Slider
-![](images/slider.jpg)
+![](images/slider.JPG)
 ```
 'Personal details' Single(
   'Please provide your details below')
-children 'Number of children:' 
-  Slider['0,12']{
+children 'Number of children:' Slider['0,12']{
   majorTicks=3
   minorTicks=1
   }
 ```
 
  ### SingleOpt
-![](images/singleOpt.jpg)
+![](images/singleOpt.JPG)
 ```
 'Personal details' Single(
   'Please provide your details below')
 employment 'Employment Status:' 
-  SingleOpt['Full Time|Part Time
-    |Self Employed|Not Employed']
+  SingleOpt['Full Time|Part Time|Self Employed|Not Employed']
 	{optional}
 ```
 
  ### MultiOpt
-![](images/multiOpt.jpg)
+![](images/multiOpt.JPG)
 ```
 'Personal details' Single(
   'Please provide your details below')
-countries 'Visited countries:' 
-  MultiOpt['Chile|Peru
-    |Germany|Sweden']
+countries 'Visited countries:' MultiOpt['Chile|Peru|Germany|Sweden']
 ```
 
  ### Group
-![](images/group.jpg)
+![](images/group.JPG)
 ```
 'Personal details' Single(
   'Please provide your details below')
@@ -119,8 +114,8 @@ name 'Full Name:' String
 ```
 
  ### Tab
-![](images/tab1.jpg)
-![](images/tab2.jpg)
+![](images/tab1.JPG)
+![](images/tab2.JPG)
 ```
 'Personal details' Single('Please provide your details below')
 'Personal details' Tab{
@@ -143,7 +138,7 @@ name 'Full Name:' String
  - [Tabular](#tabular)
 
 ### Single
-![](images/singleDialog.jpg)
+![](images/singleDialog.JPG)
 ```
 'Personal details' Single(
   'Please provide your details below'){
@@ -162,7 +157,7 @@ name 'Full Name:' String
 ```
 
 ### Pages
-![](images/pagesDialog.jpg)
+![](images/pagesDialog.JPG)
 ```
 'Personal details' Pages(
   'Please provide your details below'){
@@ -182,7 +177,7 @@ name 'Full Name:' String
 	}
 ```
 ### Tabular
-![](images/tabularDialog.jpg)
+![](images/tabularDialog.JPG)
 ```
 'Personal details' Tabular(
   'Please provide your details below'){
@@ -204,7 +199,7 @@ occupation 'Current Occupation' SingleOpt[
 ## Examples
 
 ### Java
-![](images/java.jpg)
+![](images/java.JPG)
 ```
 import iql.IQL;
 
@@ -222,7 +217,7 @@ public class IqlJavaExample {
 ```
 
 ### [L42](https://github.com/ElvisResearchGroup/L42)
-![](images/l42.jpg)
+![](images/l42.JPG)
 ```
 reuse [AdamTowel]
 Point=Data:{Num x, Num y}
