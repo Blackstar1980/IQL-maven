@@ -2,7 +2,7 @@
 
 Input Query Language (IQL) is a query language that accepts a string and creates constrainable dialogs. IQL grammar is used to generate various types of dialogs in relatively few lines of code. Each dialog contains components that validate the user input according to the provided set of constraints.
 
-Here is a list of the components and the dialogs that IQL support. For more details about IQL components, dialogs, constraints and how to use please read the [guide](guides/guide.pdf) 
+Here is a list of the components and the dialogs that IQL support. For more details about IQL components, dialogs, constraints and how to use please read the [guide](guides/guide.pdf).
 
 ## Components
  - [String](#string)
